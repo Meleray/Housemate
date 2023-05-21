@@ -4,17 +4,17 @@
     "description": "Backend for the HouseMate Application. Made by Team 30.",
     "main": "index.js",
     "scripts": {
-      "start": "node index.js",
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "node index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Team 30: Mikhail Konov, Maria Cherepnina, Elsa Fernanda, Andrian Naibaho",
     "license": "ISC",
     "dependencies": {
-      "body-parser": "^1.20.0",
-      "dotenv": "^16.0.3",
-      "express": "^4.18.1",
-      "mongoose": "^6.3.5",
-      "uuid": "^8.3.2"
+        "body-parser": "^1.20.0",
+        "dotenv": "^16.0.3",
+        "express": "^4.18.1",
+        "mongodb": "^5.5.0",
+        "mongoose": "^6.3.5",
+        "uuid": "^8.3.2"
     }
-  }
-  
+}
