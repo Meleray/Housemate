@@ -14,6 +14,7 @@ docker compose up
 
 Run the backend
 ```bash
+cd backend
 npm i  # initialize js packages
 nmp start  # run the project
 ```
