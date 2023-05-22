@@ -19,6 +19,14 @@ class UserService {
     };
   };
 
+  addProfile = async (course) => {
+    // this service posts a course to the database
+    try {
+      await course.save();
+    } catch (error) {
+      console.log("Error while adding course service", error.message);
+    }
+  };
 }
 
 module.exports = new UserService();
