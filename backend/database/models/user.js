@@ -10,6 +10,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  email: {
+    type: String,
+    trim: true,
+    // need to add validation for email
+    // validate: [validateLocalStrategyProperty, 'Please fill in your email'],
+    // match: [/.+\@.+\..+/, "Please fill a valid email address"],
+  },
 
 });
 

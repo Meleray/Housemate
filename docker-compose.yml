@@ -5,7 +5,7 @@ services:
     image: mongo:latest
     volumes:
       - mongodbdata:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro  # script for adding a user for the app
     environment:
       - MONGO_INITDB_DATABASE=houseDB
       # you can access to the db via "$ mongosh -u houseAdmin -p housePassAdmin"
