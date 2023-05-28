@@ -2,7 +2,9 @@ require("dotenv").config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const routing = require("./routes/Routing");
-const gymvaultDb = require("./database/database");
+const houseDb = require("./database/database");
+
+const port = 3000
 
 const app = express();
 
@@ -12,8 +14,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 app.use("/api", routing)
 
-const port = 12345
-app.listen(process.env.PORT || 12345, () => {
+app.listen(process.env.PORT || port, () => {
   console.log('Express server is up and running on http://localhost:%i/', port);
-  gymvaultDb.connect()
+  houseDb.connect()
 });

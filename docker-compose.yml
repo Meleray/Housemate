@@ -2,10 +2,11 @@ version: '3.8'
 
 services:
   database:
+    container_name: housemate_db
     image: mongo:latest
     volumes:
       - mongodbdata:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro  # script for adding a user for the app
     environment:
       - MONGO_INITDB_DATABASE=houseDB
       # you can access to the db via "$ mongosh -u houseAdmin -p housePassAdmin"
@@ -13,14 +14,14 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=housePassAdmin
     command: mongod --auth
     ports:
-      - '27017-27019:27017-27019'
+      - '27017:27017'
 
 
   server:
     container_name: housemate_backend
     build: ./backend
     environment:
-      - MONGODB_URI=mongodb://database:27017/houseDB
+      - MONGODB_URI=mongodb://housemate_db:27017/houseDB
       - PORT=3000
     ports:
       - "3000:3000"

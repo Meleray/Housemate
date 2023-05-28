@@ -9,6 +9,7 @@ Launch the database
 # docker-compose down && docker-compose rm
 # docker volume rm -f housemate_mongodbdata
 
+docker compose build
 docker compose up
 ```
 
@@ -17,4 +18,11 @@ Run the backend
 cd backend
 npm i  # initialize js packages
 nmp start  # run the project
+```
+
+Send REST API requests
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"email": "shpala@google.ru", "firstName": "Mikhail",  "lastName": "Konov"} ' localhost:3000/api/add-profile
+
+curl -X GET -H "Content-Type: application/json" -d '{"email": "shpala@google.ru"}' localhost:3000/api/profile
 ```
