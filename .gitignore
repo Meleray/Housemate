@@ -1,3 +1,6 @@
+# Mac users
+.DS_Store
+
 # Webstorm
 .idea
 
