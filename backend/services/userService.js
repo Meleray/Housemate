@@ -2,29 +2,29 @@
 const userModel = require("../database/models/user");
 
 class UserService {
-  getProfile = async (email) => {
-    const user = await userModel.findOne({ email });
+  getUserById = async (_id) => {
+    const user = await userModel.findById( _id );
     if (!user) {
       return {
         error: {
           type: "PROFILE_NOT_FOUND",
-          message: "There is no profile for this email",
+          message: "There is no profile for this id",
         },
       };
     }
     return {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email
+      userName: user.userName,
+      userDescription: user.userDescription,
+      userSpacesId: user.userSpacesId,
+      userPicture: user.userPicture,
     };
   };
 
-  addProfile = async (course) => {
-    // this service posts a course to the database
+  addUser = async (user) => {
     try {
-      await course.save();
+      await user.save();
     } catch (error) {
-      console.log("Error while adding course service", error.message);
+      console.log("Error while adding user service", error.message);
     }
   };
 }

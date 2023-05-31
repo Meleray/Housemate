@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const routing = require("./routes/Routing");
+const routing = require("./routes/routing");
 const houseDb = require("./database/database");
 
 const port = 3000

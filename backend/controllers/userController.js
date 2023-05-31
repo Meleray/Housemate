@@ -1,20 +1,20 @@
 const userService = require("../services/userService");
 const userModel = require("../database/models/user");
 
-const getProfile = async (req, res) => {
-    const email = req.body.email;
-    const profileDetails = await userService.getProfile(email);
+const getUserById = async (req, res) => {
+    const userId = req.body.userId;
+    const profileDetails = await userService.getUserById(userId);
     if (profileDetails.error) {
         return res.status(404).json({error: profileDetails.error});
     }
     res.status(200).json(profileDetails);
 };
 
-const addProfile = async (req, res) => {
+const addUser = async (req, res) => {
     //this controller function uses the course service to add a course to a database
     try {
         const user = new userModel(req.body);
-        userService.addProfile(user)
+        userService.addUser(user)
 
         res
             .status(200)
@@ -27,4 +27,4 @@ const addProfile = async (req, res) => {
 
 
 
-module.exports = {getProfile, addProfile};
+module.exports = {getUserById, addUser};
