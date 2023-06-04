@@ -18,13 +18,10 @@ const UserSchema = new mongoose.Schema({
         type: Number,  // HEX colour
         required: true,
     },
-    userSpacesId: {
-        type: [Number],
-        required: false,
-    }
 
 });
 
-const User = mongoose.model("User", UserSchema);
+UserSchema.set('versionKey', false);  // don't store {..., "__v":0}
 
+const User = mongoose.model("User", UserSchema);
 module.exports = User;

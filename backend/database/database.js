@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-// const MONGO_DB_URL = process.env.MONGODB_CONNECTION_STRING;
 const MONGO_DB_URL = "mongodb://houseApp:housePass@localhost:27017/houseDB?retryWrites=true&w=majority";
+
 class Database {
   connect = async () => {
     const connectionParams = {
@@ -8,6 +8,7 @@ class Database {
       useUnifiedTopology: true,
     };
 
+    mongoose.set('strictQuery', true);
     mongoose
       .connect(MONGO_DB_URL, connectionParams)
       .then(() => {

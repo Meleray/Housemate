@@ -20,6 +20,12 @@ npm i  # initialize js packages
 nmp start  # run the project
 ```
 
+Run API endpoints tests (with launched backend only)
+```bash
+mocha backend-tests/test.js
+```
+
+
 Send REST API requests
 ```bash
 curl -X POST -H "Content-Type: application/json" \
