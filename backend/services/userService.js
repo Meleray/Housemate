@@ -1,16 +1,8 @@
 const userModel = require("../database/models/user");
 const spaceModel = require("../database/models/space");
-const {getSpaceById} = require("../controllers/spaceController");
 
 class UserService {
     getUserById = async (userId) => {
-        // userModel.findById(userId, function (err, user) {
-        //     if (err) {
-        //         return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${userId}`}}
-        //     } else {
-        //         return user;
-        //     }
-        // });
         const user = await userModel.findById(userId);
         if (!user) {
             return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${userId}`}};
@@ -18,19 +10,23 @@ class UserService {
         return user;
     };
 
-    addUser = async (user) => {
-        await user.save();
+    addUser = async (userData) => {
+        try {
+            return await userModel.create(userData);
+        } catch(err) {
+            return {error: {type: "FAILED_TO_ADD_USER", message: err.message}};
+        }
     };
 
     getSpacesByUserId = async (userId) => {
         return spaceModel.find({spaceMembers: userId}).select("_id")
     }
 
-    updateUser = async (user) => {
-        let newValues = user
+    updateUser = async (userData) => {
+        let newValues = userData
         delete newValues._id
 
-        return userModel.findByIdAndUpdate(user._id, {$set: newValues})
+        return userModel.findByIdAndUpdate(userData._id, {$set: newValues})
     }
 
     deleteUser = async (userId) => {

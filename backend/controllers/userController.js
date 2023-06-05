@@ -1,9 +1,6 @@
 const HttpStatus = require('http-status-codes');
 
 const userService = require("../services/userService");
-const userModel = require("../database/models/user");
-const spaceService = require("../services/spaceService");
-const {getSpaceById} = require("./spaceController");
 
 const getUserById = async (req, res) => {
     const userId = req.body.userId;
@@ -15,17 +12,16 @@ const getUserById = async (req, res) => {
 };
 
 const addUser = async (req, res) => {
-    const user = new userModel(req.body);
-    await userService.addUser(user)
-
+    const user = await userService.addUser(req.body);
+    if (user.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(user);
+    }
     return res.status(HttpStatus.OK).json({message: "A user added successfully", response: user});
 };
 
 const updateUser = async (req, res) => {
-    const user = new userModel(req.body);
-    await userService.updateUser(user)
-
-    return res.status(HttpStatus.OK).json({message: "A user updated successfully", response: user});
+    const updatedUser = await userService.updateUser(req.body)
+    return res.status(HttpStatus.OK).json({message: "A user updated successfully", response: updatedUser});
 }
 const getSpacesByUserId = async (req, res) => {
     const userId = req.body.userId;

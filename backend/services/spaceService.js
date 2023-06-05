@@ -1,4 +1,5 @@
 const spaceModel = require("../database/models/space");
+const userModel = require("../database/models/user");
 
 class SpaceService {
     getSpaceById = async (spaceId) => {
@@ -14,8 +15,12 @@ class SpaceService {
         return space;
     };
 
-    addSpace = async (space) => {
-        await space.save();
+    addSpace = async (spaceData) => {
+        try {
+            return await spaceModel.create(spaceData);
+        } catch(err) {
+            return {error: {type: "FAILED_TO_ADD_SPACE", message: err.message}};
+        }
     };
 }
 

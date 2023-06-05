@@ -20,9 +20,9 @@ npm i  # initialize js packages
 nmp start  # run the project
 ```
 
-Run API endpoints tests (with launched backend only)
+Run API endpoints tests (with launched backend only, from the `backend` directory)
 ```bash
-mocha backend-tests/test.js
+mocha backend-tests
 ```
 
 
