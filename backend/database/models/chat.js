@@ -17,7 +17,7 @@ const ChatSchema = new mongoose.Schema({
         required: true
     },
     members: [
-        {type: Schema.Types.ObjectId, ref: 'Ingredient'}
+        {type: Schema.Types.ObjectId, ref: 'Space'}
     ]
 });
 
