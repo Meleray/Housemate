@@ -1,12 +1,32 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs")
 
 const UserSchema = new mongoose.Schema({
 
     userName: {
         type: String,
         required: true,
+        minlength: 3,
+        maxlength: 100,
     },
-    userDescription: String,
+    userEmail: {
+        type: String,
+        required: true,
+        // Be careful - not a validator
+        unique: true,
+        validate: {
+            validator: function(value) {
+                // RFC 5322
+                var reg = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g;
+                return reg.test(value);
+            },
+            message: "Invalid email address provided"
+        }
+    },
+    userDescription: {
+        type: String,
+        maxlength: 1000,
+    },
     userPassword: {
         type: String,
         required: true,
@@ -17,6 +37,22 @@ const UserSchema = new mongoose.Schema({
     },
 
 });
+
+UserSchema.pre("save", async (next) => {
+    try {
+        if (this.isModified("userPassword")) {
+            const saltRounds = 10;
+            this.userPassword = bcrypt.hashSync(this.userPassword, saltRounds);
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+})
+
+UserSchema.methods.checkPassword = async function (pwd) {
+    return await bcrypt.compare(pwd, this.password);
+};
 
 UserSchema.set('versionKey', false);  // don't store {..., "__v":0}
 
