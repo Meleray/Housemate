@@ -12,6 +12,7 @@ const getUserById = async (req, res) => {
 };
 
 const addUser = async (req, res) => {
+    console.log(req.body);
     const user = await userService.addUser(req.body);
     if (user.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(user);

@@ -3,8 +3,7 @@ const HttpStatus = require('http-status-codes');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 const utilsForTests = require("./utilsForTests");
-const server = 'localhost:3000';
-
+const server = 'localhost:5000';
 
 chai.use(chaiHttp);
 
@@ -14,17 +13,20 @@ describe('Chat and Message schemes', () => {
     let userMember1 = {
         userName: "Member First",
         userPassword: "qwerty",
-        userPicture: 456
+        userPicture: 456,
+        userEmail: "test1@test.ru"
     }
     let userMember2 = {
         userName: "Member Second",
         userPassword: "qwerty",
-        userPicture: 123
+        userPicture: 123,
+        userEmail: "test2@test.ru"
     }
     let userNotMember = {
         userName: "Spy",
         userPassword: "qwerty",
-        userPicture: 789
+        userPicture: 789,
+        userEmail: "test3@test.ru"
     }
     let chat = {
         // _id: will be filled out further
@@ -36,14 +38,26 @@ describe('Chat and Message schemes', () => {
 
     before('prepare data', (done) => {
         // add all the users to the DB
-        [userMember1, userMember2, userNotMember].forEach(user =>
-            chai.request(server).post('/api/add-user').send(user)
-                .end((err, res) => {
-                    utilsForTests.logRequest(res.request);
-                    chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                    userMember1._id = res.body.response._id;
-                })
-        );
+        //const tokens = new Map();
+        [userMember1, userMember2, userNotMember].forEach(user => {
+            chai.request(server).post('/api/add-user').send(user).end((err, res) => {
+                utilsForTests.logRequest(res.request);
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                user._id = res.body.response._id;
+        });
+            
+        });
+        /*chai.request(server).post('/api/auth/login').send({
+            email: user.userEmail,
+            password: user.userPassword
+        }).end((err, res) => {
+            utilsForTests.logRequest(res.request);
+            chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+            chai.expect(res.headers).to.have.property('set-cookie');
+            console.log(res.headers['set-cookie']);
+            tokens.set(userMember1.userEmail, res.headers['set-cookie'])
+        });
+        console.log(tokens);*/
 
         // add a space to the DB
         chai.request(server)

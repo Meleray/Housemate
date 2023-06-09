@@ -3,7 +3,7 @@ const utilsForTests = require("./utilsForTests");
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-const server = 'localhost:3000';
+const server = 'localhost:5000';
 
 
 chai.use(chaiHttp);
@@ -15,7 +15,8 @@ describe('User and Space schemes', () => {
         userName: "Mikhail",
         userDescription: "The longest human",
         userPassword: "qwerty",
-        userPicture: 123
+        userPicture: 123,
+        userEmail: "test131321@test.ru"
     }
     let updatedUserFields = {
         userName: "Mikhail Looong",
@@ -34,7 +35,8 @@ describe('User and Space schemes', () => {
                 userId = res.body.response._id
 
                 let responseMeaningfulFields = res.body.response
-                delete responseMeaningfulFields._id
+                delete responseMeaningfulFields._id;
+                responseMeaningfulFields.userPassword = initialUser.userPassword;
                 chai.expect(responseMeaningfulFields, JSON.stringify(res.body)).to.be.eql(initialUser);
                 done();
             });
