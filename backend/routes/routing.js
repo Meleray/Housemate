@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { checkJWT } = require("../middleware/checkAuth");
+const { encryptPassword } = require("../middleware/encryptPassword");
 const userController = require("../controllers/userController");
 const spaceController = require("../controllers/spaceController");
 const chatController = require("../controllers/chatController");
@@ -9,8 +10,8 @@ const authRouter = require("./subsystems/authRouter");
 
 // Database OPs
 router.get("/find-user", checkJWT, userController.getUserById);
-router.post("/add-user", userController.addUser);
-router.put("/update-user", checkJWT, userController.updateUser);
+router.post("/add-user", encryptPassword ,userController.addUser);
+router.put("/update-user", checkJWT, encryptPassword, userController.updateUser);
 router.delete("/delete-user", checkJWT, userController.deleteUser);
 router.put("/add-space-member", checkJWT, userController.addUserToSpace);
 router.delete("/delete-space-member", checkJWT, userController.deleteUserFromSpace);

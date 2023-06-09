@@ -25,7 +25,6 @@ class UserService {
     updateUser = async (userData) => {
         let newValues = userData
         delete newValues._id
-
         return userModel.findByIdAndUpdate(userData._id, {$set: newValues})
     }
 

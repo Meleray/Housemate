@@ -38,20 +38,8 @@ const UserSchema = new mongoose.Schema({
 
 });
 
-UserSchema.pre("save", async (next) => {
-    try {
-        if (this.isModified("userPassword")) {
-            const saltRounds = 10;
-            this.userPassword = bcrypt.hashSync(this.userPassword, saltRounds);
-        }
-        next();
-    } catch (error) {
-        next(error);
-    }
-})
-
 UserSchema.methods.checkPassword = async function (pwd) {
-    return await bcrypt.compare(pwd, this.password);
+    return await bcrypt.compare(pwd, this.userPassword);
 };
 
 UserSchema.set('versionKey', false);  // don't store {..., "__v":0}

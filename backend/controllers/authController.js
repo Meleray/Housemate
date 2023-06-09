@@ -26,7 +26,7 @@ const login = async (req, res) => {
             return res.status(401).json({error: {type: "INVALID_CREDENTIALS", message: "Invalid email or password"}});
         }
     } catch(error) {
-        return res.status(500).json({error: {type: "SERVER_ERROR", message: "Server error while logging in the user"}});
+        return res.status(500).json({error: {type: "SERVER_ERROR", message: error.message}});
     } 
 }
 
