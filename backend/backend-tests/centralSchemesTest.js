@@ -36,8 +36,8 @@ describe('User and Space schemes', () => {
                 userId = res.body.response._id
 
                 let responseMeaningfulFields = res.body.response
-                delete responseMeaningfulFields._id
-                responseMeaningfulFields.userPassword = "$2a$10$iAypzWX0o/2KgEJwbEruDukbRxnhCLFgzkzTxbILu0teh.irvsyoa"
+                delete responseMeaningfulFields._id;
+                responseMeaningfulFields.userPassword = initialUser.userPassword;
                 chai.expect(responseMeaningfulFields, JSON.stringify(res.body)).to.be.eql(initialUser);
                 done();
             });
