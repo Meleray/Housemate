@@ -11,7 +11,6 @@ chai.use(chaiHttp);
 describe('User and Space schemes', () => {
 
     let userId;
-    let cookie;
     let initialUser = {
         userName: "Mikhail",
         userDescription: "The longest human",
@@ -43,26 +42,10 @@ describe('User and Space schemes', () => {
             });
     });
 
-    it('login user', (done) => {
-        chai.request(server)
-            .post('/api/auth/login')
-            .send({
-                email: initialUser.userEmail,
-                password: initialUser.userPassword
-            }).end((err, res) => {
-                utilsForTests.logRequest(res.request)
-                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.headers).to.have.property('set-cookie');
-                cookie = res.header['set-cookie'];
-                done();
-            })
-    })
-
 
     it('update user', (done) => {
         chai.request(server)
             .put('/api/update-user')
-            .set("Cookie", cookie)
             .send(updatedUserFields)
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
@@ -84,7 +67,6 @@ describe('User and Space schemes', () => {
     it('get user', (done) => {
         chai.request(server)
             .get('/api/find-user')
-            .set("Cookie", cookie)
             .send({userId: userId,})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
@@ -98,7 +80,6 @@ describe('User and Space schemes', () => {
     it('add space', (done) => {
         chai.request(server)
             .post('/api/add-space')
-            .set("Cookie", cookie)
             .send({spaceName: "A house with high ceilings"})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
@@ -112,7 +93,6 @@ describe('User and Space schemes', () => {
     it('get space', (done) => {
         chai.request(server)
             .get('/api/find-space')
-            .set("Cookie", cookie)
             .send({spaceId: spaceId,})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
@@ -137,7 +117,6 @@ describe('User and Space schemes', () => {
     it('add a user to a space', (done) => {
         chai.request(server)
             .put('/api/add-space-member')
-            .set("Cookie", cookie)
             .send({userId: userId, spaceId: spaceId})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
@@ -150,7 +129,6 @@ describe('User and Space schemes', () => {
     it('delete a user who is a space member', (done) => {
         chai.request(server)
             .delete('/api/delete-user')
-            .set("Cookie", cookie)
             .send({userId: userId})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
@@ -163,7 +141,6 @@ describe('User and Space schemes', () => {
     it('delete user from space', (done) => {
         chai.request(server)
             .delete('/api/delete-space-member')
-            .set("Cookie", cookie)
             .send({userId: userId, spaceId: spaceId})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
@@ -176,7 +153,6 @@ describe('User and Space schemes', () => {
     it('delete a user', (done) => {
         chai.request(server)
             .delete('/api/delete-user')
-            .set("Cookie", cookie)
             .send({userId: userId})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
@@ -189,7 +165,6 @@ describe('User and Space schemes', () => {
     it('delete a not existed user', (done) => {
         chai.request(server)
             .delete('/api/delete-user')
-            .set("Cookie", cookie)
             .send({userId: '647cec8519573b0ea70c196c'})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
