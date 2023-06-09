@@ -1,7 +1,8 @@
 const chatModel = require("../database/models/chat");
 const userModel = require("../database/models/user");
+const spaceModel = require("../database/models/space");
 
-class ChatService{
+class ChatService {
 
     getChatById = async (chatId) => {
         const chat = await chatModel.findById(chatId);
@@ -14,21 +15,31 @@ class ChatService{
     addChat = async (chat) => {
         try {
             return await chatModel.create(chat);
-        } catch(err) {
+        } catch (err) {
             return {error: {type: "FAILED_TO_ADD_CHAT", message: err.message}};
         }
     };
 
     addChatMember = async (chatId, userId) => {
-        if (!(await userModel.exists({_id: userId}))) {
-            return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${userId}`}};
+        const chatExtracted = await chatModel.findById(chatId)
+            .populate({path: 'space'})
+
+        if (chatExtracted == null){
+            return {error: {type: "FAILED_TO_ADD_CHAT_MEMBER", message: `There is no chat with id=${chatId}`}};
         }
+        let spaceMembers = chatExtracted.space.spaceMembers
+        if (! spaceMembers.includes(userId)) {
+            return {
+                error: {
+                    type: "FAILED_TO_ADD_CHAT_MEMBER",
+                    message: `The user id=${userId} is not a member of the chat's space ${chatExtracted.space._id.toString()}`
+                }
+            };
+        }
+
         const chat = await chatModel.findByIdAndUpdate({_id: chatId}, {
             $addToSet: {chatMembers: userId}  // update 'chatMembers' only if userId is not presented in it
         })
-        // const space = await spaceModel.findByIdAndUpdate({_id: spaceId}, {
-        //     $addToSet: {spaceMembers: userId}  // update 'spaceMembers' only if userId is not presented in it
-        // })
         if (!chat) {
             return {
                 error: {type: "CHAT_NOT_FOUND", message: `There is no chat for id=${chatId}`}

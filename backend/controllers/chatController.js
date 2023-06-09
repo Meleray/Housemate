@@ -17,7 +17,7 @@ const addChat = async (req, res) => {
     if (chat.error) {
         return res.status(HttpStatus.BAD_REQUEST).json({error: chat.error});
     }
-    return res.status(HttpStatus.OK).json({message: "A chat added successfully", response: chat});
+    return res.status(HttpStatus.OK).json(chat);
 };
 
 const addChatMember = async (req, res) => {

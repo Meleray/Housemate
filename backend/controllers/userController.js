@@ -17,12 +17,12 @@ const addUser = async (req, res) => {
     if (user.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(user);
     }
-    return res.status(HttpStatus.OK).json({message: "A user added successfully", response: user});
+    return res.status(HttpStatus.OK).json(user);
 };
 
 const updateUser = async (req, res) => {
     const updatedUser = await userService.updateUser(req.body)
-    return res.status(HttpStatus.OK).json({message: "A user updated successfully", response: updatedUser});
+    return res.status(HttpStatus.OK).json(updatedUser);
 }
 const getSpacesByUserId = async (req, res) => {
     const userId = req.body.userId;

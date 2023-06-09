@@ -6,11 +6,15 @@ function logRequest(request) {
     console.log(cyanColor, message);
 }
 
-function checkResponse(responseObj, referenceObj){
-    // all the fields from reference object should be presented in the response object
-    for (let key in referenceObj) {
+function compareObjects(responseObj, referenceObj, ignoreKeys=new Set([])) {
+    let keyUnion = [...new Set([...Object.keys(responseObj), ...Object.keys(referenceObj)])];
+    for (let key in keyUnion) {
+        if (!ignoreKeys.has(key)) {
             chai.expect(responseObj[key], JSON.stringify(responseObj.body)).to.be.eql(referenceObj[key]);
+        }
     }
 }
 
-module.exports = {logRequest, checkResponse};
+const nonExistId = "ffffffffffffffffffffffff"
+
+module.exports = {logRequest, compareObjects, nonExistId};

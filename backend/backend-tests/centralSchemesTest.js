@@ -31,13 +31,9 @@ describe('User and Space schemes', () => {
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                userId = res.body._id
 
-                userId = res.body.response._id
-
-                let responseMeaningfulFields = res.body.response
-                delete responseMeaningfulFields._id;
-                responseMeaningfulFields.userPassword = initialUser.userPassword;
-                chai.expect(responseMeaningfulFields, JSON.stringify(res.body)).to.be.eql(initialUser);
+                utilsForTests.compareObjects(res.body, initialUser, new Set(["_id", "userPassword"]))
                 done();
             });
     });
@@ -50,7 +46,7 @@ describe('User and Space schemes', () => {
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                let reposeUser = res.body.response
+                let reposeUser = res.body
                 for (let key in reposeUser) {
                     if (key in updatedUserFields) {  // check that all the fields of updatedUserFields are updated
                         chai.expect(reposeUser[key], JSON.stringify(res.body)).to.be.eql(updatedUserFields[key]);
@@ -84,7 +80,7 @@ describe('User and Space schemes', () => {
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                spaceId = res.body.response._id
+                spaceId = res.body._id
                 done();
             });
     });
@@ -93,7 +89,7 @@ describe('User and Space schemes', () => {
     it('get space', (done) => {
         chai.request(server)
             .get('/api/find-space')
-            .send({spaceId: spaceId,})
+            .send({spaceId: spaceId})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -103,10 +99,9 @@ describe('User and Space schemes', () => {
     });
 
     it('add a non-exist user to a space', (done) => {
-        let fakeUserId = "247e441b47c5186700420030";
         chai.request(server)
             .put('/api/add-space-member')
-            .send({userId: fakeUserId, spaceId: spaceId})  // fake userId
+            .send({userId: utilsForTests.nonExistId, spaceId: spaceId})  // fake userId
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
@@ -165,7 +160,7 @@ describe('User and Space schemes', () => {
     it('delete a not existed user', (done) => {
         chai.request(server)
             .delete('/api/delete-user')
-            .send({userId: '647cec8519573b0ea70c196c'})
+            .send({userId: utilsForTests.nonExistId})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);

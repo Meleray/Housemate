@@ -16,7 +16,7 @@ const addSpace = async (req, res) => {
     if (space.error) {
         return res.status(HttpStatus.BAD_REQUEST).json({error: space.error});
     }
-    return res.status(HttpStatus.OK).json({message: "A space added successfully", response: space});
+    return res.status(HttpStatus.OK).json(space);
 };
 
 
