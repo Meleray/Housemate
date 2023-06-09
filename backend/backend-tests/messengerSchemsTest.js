@@ -14,17 +14,20 @@ describe('Chat and Space schemes', () => {
     let userMember1 = {
         userName: "Member First",
         userPassword: "qwerty",
-        userPicture: 456
+        userPicture: 456,
+        userEmail: "test1@test.ru"
     }
     let userMember2 = {
         userName: "Member Second",
         userPassword: "qwerty",
-        userPicture: 123
+        userPicture: 123,
+        userEmail: "test2@test.ru"
     }
     let userNotMember = {
         userName: "Spy",
         userPassword: "qwerty",
-        userPicture: 789
+        userPicture: 789,
+        userEmail: "test3@test.ru"
     }
     let chat = {
         // chat._id will be filled out further
