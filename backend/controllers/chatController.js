@@ -1,6 +1,7 @@
 const HttpStatus = require('http-status-codes');
 
 const chatService = require("../services/chatService");
+const userService = require("../services/userService");
 
 const getChatById = async (req, res) => {
     const chatId = req.body.chatId;
@@ -19,5 +20,15 @@ const addChat = async (req, res) => {
     return res.status(HttpStatus.OK).json({message: "A chat added successfully", response: chat});
 };
 
+const addChatMember = async (req, res) => {
+    const userId = req.body.userId;
+    const chatId = req.body.chatId;
+    const chat = await chatService.addChatMember(chatId, userId);
 
-module.exports = {getChatById, addChat};
+    if (chat.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(chat);
+    }
+    return res.status(HttpStatus.OK).json(chat)
+};
+
+module.exports = {getChatById, addChat, addChatMember};

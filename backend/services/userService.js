@@ -13,7 +13,7 @@ class UserService {
     addUser = async (userData) => {
         try {
             return await userModel.create(userData);
-        } catch(err) {
+        } catch (err) {
             return {error: {type: "FAILED_TO_ADD_USER", message: err.message}};
         }
     };
@@ -49,22 +49,18 @@ class UserService {
     }
 
     addUserToSpace = async (userId, spaceId) => {
-        if (!userModel.exists({_id: userId})) {
+        if (!(await userModel.exists({_id: userId}))) {
             return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${userId}`}};
         }
-
-        const space = await spaceModel.findById(spaceId);
+        const space = await spaceModel.findByIdAndUpdate({_id: spaceId}, {
+            $addToSet: {spaceMembers: userId}  // update 'spaceMembers' only if userId is not presented in it
+        })
         if (!space) {
-            return {error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}};
-        }
-
-        if (space.spaceMembers.includes(userId)) {
             return {
-                error: {type: "FAILED_TO_ADD_SPACE_MEMBER", message: `The user ${userId} is already ${spaceId} member`},
-            };
+                error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}
+            }
         }
-        space.spaceMembers.push(userId);
-        await space.save();
+        await space.save()
         return this.getSpacesByUserId(userId);  // return spaces of the user
     }
 

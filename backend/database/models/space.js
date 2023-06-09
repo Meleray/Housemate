@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;  // for foreign keys
 
 const SpaceSchema = new mongoose.Schema({
 
@@ -6,8 +7,13 @@ const SpaceSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    spaceMembers: [String],
-    spaceAdmins: [String],
+    spaceMembers: [
+        {type: Schema.Types.ObjectId, ref: 'User'}
+    ],
+
+    spaceAdmins: [
+        {type: Schema.Types.ObjectId, ref: 'User'}
+    ],
     premiumExpiration: Date,
 });
 

@@ -19,5 +19,6 @@ router.post("/add-space", spaceController.addSpace);
 
 router.get("/find-chat", chatController.getChatById);
 router.post("/add-chat", chatController.addChat);
+router.put("/add-chat-member", chatController.addChatMember)
 
 module.exports = router
