@@ -3,8 +3,8 @@ const HttpStatus = require('http-status-codes');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 const utilsForTests = require("./utilsForTests");
-const server = 'localhost:3000';
-
+const { use } = require('chai');
+const server = 'localhost:5000';
 
 chai.use(chaiHttp);
 
@@ -39,18 +39,33 @@ describe('Chat and Space schemes', () => {
 
     before('prepare data', (done) => {
         // add all the users to the DB
-        [userMember1, userMember2, userNotMember].forEach(user =>
+        const tokens = new Map();
+        [userMember1, userMember2, userNotMember].forEach(user => {
+            console.log(user.userEmail);
             chai.request(server).post('/api/add-user').send(user)
                 .end((err, res) => {
                     utilsForTests.logRequest(res.request);
                     chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                    userMember1._id = res.body.response._id;
-                })
-        );
+                    user._id = res.body.response._id;
+                });
+            console.log("Added user");
+            chai.request(server).post('/api/auth/login').send({
+                email: user.userEmail,
+                password: user.userPassword
+            }).end((err, res) => {
+                utilsForTests.logRequest(res.request);
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                chai.expect(res.headers).to.have.property('set-cookie');
+                console.log(res.headers['set-cookie']);
+                tokens.set(user.userEmail, res.headers['set-cookie'])
+            });
+        });
+        console.log(tokens);
 
         // add a space to the DB
         chai.request(server)
             .post('/api/add-space')
+            .set("Cookie", tokens.get('test1@test.ru'))
             .send({spaceName: "Another house with high ceilings"})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
@@ -64,6 +79,7 @@ describe('Chat and Space schemes', () => {
     it('add chat', (done) => {
         chai.request(server)
             .post('/api/add-chat')
+            .set("Cookie", tokens.get('test1@test.ru'))
             .send(chat)
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
@@ -80,6 +96,7 @@ describe('Chat and Space schemes', () => {
         fakeChat._id = "147e441b47c5186700420030"  // non-existed space
         chai.request(server)
             .post('/api/add-chat')
+            .set("Cookie", tokens.get('test1@test.ru'))
             .send(fakeChat)
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
@@ -92,6 +109,7 @@ describe('Chat and Space schemes', () => {
     it('get chat', (done) => {
         chai.request(server)
             .get('/api/find-chat')
+            .set("Cookie", tokens.get('test1@test.ru'))
             .send({chatId: chat._id})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)

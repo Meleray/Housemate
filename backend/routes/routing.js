@@ -9,6 +9,7 @@ const chatController = require("../controllers/chatController");
 const authRouter = require("./subsystems/authRouter");
 
 // Database OPs
+
 router.get("/find-user", checkJWT, userController.getUserById);
 router.post("/add-user", encryptPassword ,userController.addUser);
 router.put("/update-user", checkJWT, encryptPassword, userController.updateUser);
