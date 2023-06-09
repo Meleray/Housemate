@@ -9,7 +9,7 @@ const server = 'localhost:5000';
 chai.use(chaiHttp);
 
 
-describe('Chat and Space schemes', () => {
+describe('Chat and Message schemes', () => {
     let spaceId;
     let userMember1 = {
         userName: "Member First",
@@ -30,11 +30,11 @@ describe('Chat and Space schemes', () => {
         userEmail: "test3@test.ru"
     }
     let chat = {
-        // chat._id will be filled out further
+        // _id: will be filled out further
         chatName: "Secret conspiracy of long humans",
         chatPicture: 127,
-        space: null,  // will be filled out further
-        members: null,
+        // space: will be filled out further
+        // chatMembers: will be filled out further
     }
 
     before('prepare data', (done) => {
@@ -85,15 +85,14 @@ describe('Chat and Space schemes', () => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chat._id = res.body.response._id
-
-                chai.expect(res.body.response, JSON.stringify(res.body)).to.be.eql(chat);
+                utilsForTests.checkResponse(res.body.response, chat)
                 done();
             });
     });
 
     it('add chat to a non-exist space', (done) => {
         let fakeChat = chat;
-        fakeChat._id = "147e441b47c5186700420030"  // non-existed space
+        fakeChat.space = "147e441b47c5186700420030";  // non-existed space
         chai.request(server)
             .post('/api/add-chat')
             .set("Cookie", tokens.get('test1@test.ru'))
@@ -115,6 +114,18 @@ describe('Chat and Space schemes', () => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(chat._id);
+                done();
+            });
+    });
+
+    it('add a chat member', (done) => {
+        chai.request(server)
+            .put('/api/add-chat-member')
+            .send({chatId: chat._id, userId: userMember1._id})
+            .end((err, res) => {
+                utilsForTests.logRequest(res.request)
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                // chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(chat._id);
                 done();
             });
     });

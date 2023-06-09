@@ -13,12 +13,13 @@ const ChatSchema = new mongoose.Schema({
     },
     space: {
         type: Schema.Types.ObjectId,
-        ref: 'Ingredient',
+        ref: 'Space',
         required: true
     },
-    members: [
-        {type: Schema.Types.ObjectId, ref: 'Space'}
-    ]
+    chatMembers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+    }]
 });
 
 ChatSchema.set('versionKey', false);  // don't store {..., "__v":0}

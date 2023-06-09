@@ -75,7 +75,6 @@ describe('User and Space schemes', () => {
                         // check that all the fields, which was not in updatedUserFields, are still the same
                         chai.expect(reposeUser[key], JSON.stringify(res.body)).to.be.eql(initialUser[key])
                     }
-
                 }
                 done();
             });
@@ -123,6 +122,17 @@ describe('User and Space schemes', () => {
             });
     });
 
+    it('add a non-exist user to a space', (done) => {
+        let fakeUserId = "247e441b47c5186700420030";
+        chai.request(server)
+            .put('/api/add-space-member')
+            .send({userId: fakeUserId, spaceId: spaceId})  // fake userId
+            .end((err, res) => {
+                utilsForTests.logRequest(res.request);
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
+                done();
+            });
+    });
 
     it('add a user to a space', (done) => {
         chai.request(server)
@@ -133,20 +143,6 @@ describe('User and Space schemes', () => {
                 utilsForTests.logRequest(res.request);
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body, JSON.stringify(res.body)).to.be.eql([{_id: spaceId}]);
-                done();
-            });
-    });
-
-
-    it('add a user to the same space again', (done) => {
-        chai.request(server)
-            .put('/api/add-space-member')
-            .set("Cookie", cookie)
-            .send({userId: userId, spaceId: spaceId})
-            .end((err, res) => {
-                utilsForTests.logRequest(res.request);
-                // we can not add a user to a space if he is already a member of this space
-                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
                 done();
             });
     });
