@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { btnReset, v } from "../../styles/variables";
 
 export const SSidebar = styled.div`
-    width: ${v.sidebarWidth};
+    width: ${({ isOpen }) => (!isOpen ? `auto` : v.sidebarWidth)};
     background: ${({ theme }) => theme.bg};
     height: 100vh;
     padding: ${v.lgSpacing};
@@ -30,17 +30,16 @@ export const SSidebarButton = styled.button`
     transform: ${({ isOpen }) => (!isOpen ? `rotate(180deg)` : `initial`)};
 `;
 
-
 export const SLogo = styled.div`
-    width: 180px;
+    width: 150px;
 
     img {
         max-width: 100%;
         height: auto;
     }
-    cursor: pointer;
 
     margin-bottom: ${v.lgSpacing};
+    margin-left: 25px;
 `;
 
 export const SSearch = styled.div`
