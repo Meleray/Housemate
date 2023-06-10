@@ -14,19 +14,19 @@ describe('Chat and Message schemes', () => {
         userName: "Member First",
         userPassword: "qwerty",
         userPicture: 456,
-        userEmail: "test1@test.ru"
+        userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
     }
     let userMember2 = {
         userName: "Member Second",
         userPassword: "qwerty",
         userPicture: 123,
-        userEmail: "test2@test.ru"
+        userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
     }
     let userNotMember = {
         userName: "Spy",
         userPassword: "qwerty",
         userPicture: 789,
-        userEmail: "test3@test.ru"
+        userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
     }
     let chat = {
         // _id: will be filled out further

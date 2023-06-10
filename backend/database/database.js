@@ -5,6 +5,7 @@ class Database {
     const connectionParams = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      autoIndex: true,
     };
 
     mongoose.set('strictQuery', true);

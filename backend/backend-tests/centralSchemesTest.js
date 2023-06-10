@@ -10,13 +10,13 @@ chai.use(chaiHttp);
 
 describe('User and Space schemes', () => {
 
-    let userId;
     let initialUser = {
         userName: "Mikhail",
         userDescription: "The longest human",
         userPassword: "qwerty",
         userPicture: 123,
-        userEmail: "test131321@test.ru"
+        userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
+        // initialUser._id will be set further
     }
     let updatedUserFields = {
         userName: "Mikhail Looong",
@@ -31,9 +31,22 @@ describe('User and Space schemes', () => {
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                userId = res.body._id
 
                 utilsForTests.compareObjects(res.body, initialUser, new Set(["_id", "userPassword"]))
+                initialUser._id = res.body._id
+                done();
+            });
+    });
+
+    it('add user with duplicated email', (done) => {
+        let userCopy = structuredClone(initialUser)
+        delete userCopy._id
+        chai.request(server)
+            .post('/api/add-user')
+            .send(userCopy)
+            .end((err, res) => {
+                utilsForTests.logRequest(res.request)
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
                 done();
             });
     });
@@ -63,11 +76,11 @@ describe('User and Space schemes', () => {
     it('get user', (done) => {
         chai.request(server)
             .get('/api/find-user')
-            .send({userId: userId,})
+            .send({userId: initialUser._id})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(userId);
+                chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(initialUser._id);
                 done();
             });
     });
@@ -112,7 +125,7 @@ describe('User and Space schemes', () => {
     it('add a user to a space', (done) => {
         chai.request(server)
             .put('/api/add-space-member')
-            .send({userId: userId, spaceId: spaceId})
+            .send({userId: initialUser._id, spaceId: spaceId})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -124,7 +137,7 @@ describe('User and Space schemes', () => {
     it('delete a user who is a space member', (done) => {
         chai.request(server)
             .delete('/api/delete-user')
-            .send({userId: userId})
+            .send({userId: initialUser._id})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
                 // we can not delete a user who is a space member
@@ -136,7 +149,7 @@ describe('User and Space schemes', () => {
     it('delete user from space', (done) => {
         chai.request(server)
             .delete('/api/delete-space-member')
-            .send({userId: userId, spaceId: spaceId})
+            .send({userId: initialUser._id, spaceId: spaceId})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -148,7 +161,7 @@ describe('User and Space schemes', () => {
     it('delete a user', (done) => {
         chai.request(server)
             .delete('/api/delete-user')
-            .send({userId: userId})
+            .send({userId: initialUser._id})
             .end((err, res) => {
                 utilsForTests.logRequest(res.request);
                 // we can not delete a user if he is not in any space
