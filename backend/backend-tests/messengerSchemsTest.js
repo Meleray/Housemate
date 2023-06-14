@@ -30,7 +30,7 @@ describe('Chat and Message schemes', () => {
     }
     let chat = {
         // _id: will be filled out further
-        chatName: "Secret conspiracy of long humans",
+        chatName: "Secret conspiracy of long humans", // will be changed
         chatPicture: 127,
         // space: will be filled out further
         // chatMembers: will be filled out further
@@ -135,7 +135,43 @@ describe('Chat and Message schemes', () => {
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                // chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(chat._id);
+                chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.be.eql([userMember1._id]);
+                done();
+            });
+    });
+
+    it('add the same chat member twice', (done) => {
+        chai.request(server)
+            .put('/api/add-chat-member')
+            .send({chatId: chat._id, userId: userMember1._id})
+            .end((err, res) => {
+                utilsForTests.logRequest(res.request)
+                chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.be.eql([userMember1._id]);
+                done();
+            });
+    });
+
+    it('update chat', (done) => {
+        let newName = "The longest"
+        chai.request(server)
+            .put('/api/update-chat')
+            .send({_id: chat._id, chatName: newName})
+            .end((err, res) => {
+                utilsForTests.logRequest(res.request)
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                chai.expect(res.body.chatName, JSON.stringify(res.body)).to.be.eql(newName);
+                done();
+            });
+    });
+
+    it('delete a chat member', (done) => {
+        chai.request(server)
+            .delete('/api/delete-chat-member')
+            .send({chatId: chat._id, userId: userMember1._id})
+            .end((err, res) => {
+                utilsForTests.logRequest(res.request)
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.not.include(userMember1._id);
                 done();
             });
     });

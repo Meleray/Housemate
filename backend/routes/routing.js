@@ -25,7 +25,10 @@ router.post("/add-space", checkJWT, spaceController.addSpace);
 // Chat Subsystem OPs
 router.get("/find-chat", checkJWT, chatController.getChatById);
 router.post("/add-chat", checkJWT, chatController.addChat);
-router.put("/add-chat-member", checkJWT, chatController.addChatMember)
+router.put("/add-chat-member", checkJWT, chatController.addChatMember);
+router.put("/update-chat", checkJWT, chatController.updateChat);
+router.delete("/delete-chat-member", checkJWT, chatController.deleteChatMember)
+
 
 router.use("/auth", authRouter)
 

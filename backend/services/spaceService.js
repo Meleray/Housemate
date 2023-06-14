@@ -6,10 +6,7 @@ class SpaceService {
         const space = await spaceModel.findById(spaceId);
         if (!space) {
             return {
-                error: {
-                    type: "PROFILE_NOT_FOUND",
-                    message: "There is no profile for this id",
-                },
+                error: {type: "SPACE_NOT_FOUND", message: "There is no space for this id"},
             };
         }
         return space;
@@ -18,7 +15,7 @@ class SpaceService {
     addSpace = async (spaceData) => {
         try {
             return await spaceModel.create(spaceData);
-        } catch(err) {
+        } catch (err) {
             return {error: {type: "FAILED_TO_ADD_SPACE", message: err.message}};
         }
     };

@@ -21,14 +21,13 @@ class ChatService {
     };
 
     addChatMember = async (chatId, userId) => {
-        const chatExtracted = await chatModel.findById(chatId)
-            .populate({path: 'space'})
+        const chatExtracted = await chatModel.findById(chatId).populate({path: 'space'})
 
-        if (chatExtracted == null){
+        if (chatExtracted == null) {
             return {error: {type: "FAILED_TO_ADD_CHAT_MEMBER", message: `There is no chat with id=${chatId}`}};
         }
         let spaceMembers = chatExtracted.space.spaceMembers
-        if (! spaceMembers.includes(userId)) {
+        if (!spaceMembers.includes(userId)) {
             return {
                 error: {
                     type: "FAILED_TO_ADD_CHAT_MEMBER",
@@ -36,18 +35,35 @@ class ChatService {
                 }
             };
         }
+        chatExtracted.set( {chatMembers: userId})
+        return chatExtracted.save();
+    };
 
-        const chat = await chatModel.findByIdAndUpdate({_id: chatId}, {
-            $addToSet: {chatMembers: userId}  // update 'chatMembers' only if userId is not presented in it
-        })
+    deleteChatMember = async (chatId, userId) => {
+        const chat = await chatModel.findByIdAndUpdate(chatId, {
+            $pull: {chatMembers: userId}  // update 'chatMembers' only if userId is not presented in it
+        }, {new: true})
         if (!chat) {
             return {
                 error: {type: "CHAT_NOT_FOUND", message: `There is no chat for id=${chatId}`}
             }
         }
-        await chat.save();
-        return chat;
+        return chat.save();
     };
+
+    updateChat = async (chatData) => {
+        let validUpdKeys = ['chatName'];
+        let updValues = structuredClone(chatData)
+        delete updValues._id
+        Object.keys(updValues).forEach((key) => {
+            if (!validUpdKeys.includes(key)) {
+                return {
+                    error: {type: "FAILED_TO_UPDATE_CHAT", message: `The field '${key}' can not be updated`}
+                }
+            }
+        });
+        return chatModel.findByIdAndUpdate(chatData._id, updValues, {new: true})
+    }
 }
 
 module.exports = new ChatService();

@@ -23,9 +23,17 @@ class UserService {
     }
 
     updateUser = async (userData) => {
-        let newValues = userData
-        delete newValues._id
-        return userModel.findByIdAndUpdate(userData._id, {$set: newValues})
+        let validUpdKeys = ['userPassword', 'userDescription', 'userEmail', 'userName'];
+        let updValues = structuredClone(userData)
+        delete updValues._id
+        Object.keys(updValues).forEach((key) => {
+            if (!validUpdKeys.includes(key)) {
+                return {
+                    error: {type: "FAILED_TO_UPDATE_USER", message: `The field '${key}' can not be updated`}
+                }
+            }
+        });
+        return userModel.findByIdAndUpdate(userData._id, {$set: updValues}, {new: true})
     }
 
     deleteUser = async (userId) => {
@@ -51,9 +59,10 @@ class UserService {
         if (!(await userModel.exists({_id: userId}))) {
             return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${userId}`}};
         }
-        const space = await spaceModel.findByIdAndUpdate({_id: spaceId}, {
-            $addToSet: {spaceMembers: userId}  // update 'spaceMembers' only if userId is not presented in it
-        })
+        const space = await spaceModel.findByIdAndUpdate(spaceId,
+            {$addToSet: {spaceMembers: userId}}, // update 'spaceMembers' only if userId is not presented in it
+            {new: true}
+        )
         if (!space) {
             return {
                 error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}
