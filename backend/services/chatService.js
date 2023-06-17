@@ -1,6 +1,7 @@
 const chatModel = require("../database/models/chat");
 const userModel = require("../database/models/user");
 const spaceModel = require("../database/models/space");
+const utilsForServices = require("./utilsForServices");
 
 class ChatService {
 
@@ -26,7 +27,7 @@ class ChatService {
         if (chatExtracted == null) {
             return {error: {type: "FAILED_TO_ADD_CHAT_MEMBER", message: `There is no chat with id=${chatId}`}};
         }
-        let spaceMembers = chatExtracted.space.spaceMembers
+        let spaceMembers = chatExtracted.space.spaceMembers;
         if (!spaceMembers.includes(userId)) {
             return {
                 error: {
@@ -35,8 +36,10 @@ class ChatService {
                 }
             };
         }
-        chatExtracted.set( {chatMembers: userId})
-        return chatExtracted.save();
+        return chatModel.findByIdAndUpdate(chatId,
+            {$addToSet: {chatMembers: userId}}, // update 'spaceMembers' only if userId is not presented in it
+            {new: true}
+        )
     };
 
     deleteChatMember = async (chatId, userId) => {
@@ -52,16 +55,12 @@ class ChatService {
     };
 
     updateChat = async (chatData) => {
-        let validUpdKeys = ['chatName'];
         let updValues = structuredClone(chatData)
         delete updValues._id
-        Object.keys(updValues).forEach((key) => {
-            if (!validUpdKeys.includes(key)) {
-                return {
-                    error: {type: "FAILED_TO_UPDATE_CHAT", message: `The field '${key}' can not be updated`}
-                }
-            }
-        });
+        let keysCheck = utilsForServices.areKeysValid(updValues,["chatName"])
+        if (keysCheck.errorMessage != null) {
+            return {error: {type: "FAILED_TO_UPDATE_CHAT", message: keysCheck.errorMessage}};
+        }
         return chatModel.findByIdAndUpdate(chatData._id, updValues, {new: true})
     }
 }

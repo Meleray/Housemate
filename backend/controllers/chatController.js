@@ -1,7 +1,6 @@
 const HttpStatus = require('http-status-codes');
 
 const chatService = require("../services/chatService");
-const userService = require("../services/userService");
 
 const getChatById = async (req, res) => {
     const chatId = req.body.chatId;

@@ -1,5 +1,4 @@
 const spaceModel = require("../database/models/space");
-const userModel = require("../database/models/user");
 
 class SpaceService {
     getSpaceById = async (spaceId) => {

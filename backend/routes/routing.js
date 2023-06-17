@@ -5,6 +5,7 @@ const { encryptPassword } = require("../middleware/encryptPassword");
 const userController = require("../controllers/userController");
 const spaceController = require("../controllers/spaceController");
 const chatController = require("../controllers/chatController");
+const messageController = require("../controllers/messageCotroller");
 
 const authRouter = require("./subsystems/authRouter");
 
@@ -27,7 +28,11 @@ router.get("/find-chat", checkJWT, chatController.getChatById);
 router.post("/add-chat", checkJWT, chatController.addChat);
 router.put("/add-chat-member", checkJWT, chatController.addChatMember);
 router.put("/update-chat", checkJWT, chatController.updateChat);
-router.delete("/delete-chat-member", checkJWT, chatController.deleteChatMember)
+router.delete("/delete-chat-member", checkJWT, chatController.deleteChatMember);
+
+// Message Subsystem Ops
+router.post("/send-message", checkJWT, messageController.addMessage);
+router.get("/get-message-chunk", checkJWT, messageController.getMessagesChunk);
 
 
 router.use("/auth", authRouter)

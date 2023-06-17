@@ -1,5 +1,6 @@
 const userModel = require("../database/models/user");
 const spaceModel = require("../database/models/space");
+const utilsForServices = require("./utilsForServices");
 
 class UserService {
     getUserById = async (userId) => {
@@ -23,16 +24,14 @@ class UserService {
     }
 
     updateUser = async (userData) => {
-        let validUpdKeys = ['userPassword', 'userDescription', 'userEmail', 'userName'];
         let updValues = structuredClone(userData)
         delete updValues._id
-        Object.keys(updValues).forEach((key) => {
-            if (!validUpdKeys.includes(key)) {
-                return {
-                    error: {type: "FAILED_TO_UPDATE_USER", message: `The field '${key}' can not be updated`}
-                }
-            }
-        });
+        let keysCheck = utilsForServices.areKeysValid(updValues,
+            ['userPassword', 'userDescription', 'userEmail', 'userName'])
+        if (keysCheck.errorMessage != null) {
+            return {error: {type: "FAILED_TO_UPDATE_USER", message: keysCheck.errorMessage}};
+        }
+
         return userModel.findByIdAndUpdate(userData._id, {$set: updValues}, {new: true})
     }
 

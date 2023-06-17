@@ -8,8 +8,7 @@ const server = 'localhost:5000';
 chai.use(chaiHttp);
 
 
-describe('Chat and Message schemes', () => {
-    let spaceId;
+describe('Chat system', () => {
     let userMember1 = {
         userName: "Member First",
         userPassword: "qwerty",
@@ -43,8 +42,7 @@ describe('Chat and Message schemes', () => {
             .send({spaceName: "Another house with high ceilings"})
         utilsForTests.logRequest(resAddSpace.request);
         chai.expect(resAddSpace, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
-        spaceId = resAddSpace.body._id;
-        chat.space = spaceId;
+        chat.space = resAddSpace.body._id;
 
         // add the users to the DB and make them members of the space
         for (const user of [userMember1, userMember2]) {
@@ -147,6 +145,19 @@ describe('Chat and Message schemes', () => {
             .end((err, res) => {
                 utilsForTests.logRequest(res.request)
                 chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.be.eql([userMember1._id]);
+                done();
+            });
+    });
+
+    it('add the second chat member', (done) => {
+        chai.request(server)
+            .put('/api/add-chat-member')
+            .send({chatId: chat._id, userId: userMember2._id})
+            .end((err, res) => {
+                utilsForTests.logRequest(res.request)
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.be.eql(
+                    [userMember1._id, userMember2._id]);
                 done();
             });
     });
