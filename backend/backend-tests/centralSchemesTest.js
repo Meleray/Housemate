@@ -14,7 +14,6 @@ describe('User and Space schemes', () => {
         userName: "Mikhail",
         userDescription: "The longest human",
         userPassword: "qwerty",
-        userPicture: 123,
         userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
         // initialUser._id will be set further
     }

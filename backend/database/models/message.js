@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;  // for foreign keys
 
 const MessageSchema = new mongoose.Schema({
 
-    body: {
+    messageText: {
         type: String,
         required: true,
     },

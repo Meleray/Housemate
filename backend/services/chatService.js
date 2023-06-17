@@ -22,17 +22,17 @@ class ChatService {
     };
 
     addChatMember = async (chatId, userId) => {
-        const chatExtracted = await chatModel.findById(chatId).populate({path: 'space'})
+        const chatExtracted = await chatModel.findById(chatId).populate({path: 'spaceId'})
 
         if (chatExtracted == null) {
             return {error: {type: "FAILED_TO_ADD_CHAT_MEMBER", message: `There is no chat with id=${chatId}`}};
         }
-        let spaceMembers = chatExtracted.space.spaceMembers;
+        let spaceMembers = chatExtracted.spaceId.spaceMembers;
         if (!spaceMembers.includes(userId)) {
             return {
                 error: {
                     type: "FAILED_TO_ADD_CHAT_MEMBER",
-                    message: `The user id=${userId} is not a member of the chat's space ${chatExtracted.space._id.toString()}`
+                    message: `The user id=${userId} is not a member of the chat's space ${chatExtracted.spaceId._id.toString()}`
                 }
             };
         }

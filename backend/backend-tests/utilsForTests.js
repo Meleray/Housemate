@@ -17,7 +17,7 @@ function compareObjects(responseObj, referenceObj, ignoreKeys=new Set([])) {
 
 function generateRandomStr(){
     // return random string like 'feq9n', 'relrj', '5mxg9', ...
-    return (Math.random() + 1).toString(36).substring(7)
+    return (Math.random() + 1).toString(36).substring(8)
 }
 const nonExistId = "ffffffffffffffffffffffff"
 

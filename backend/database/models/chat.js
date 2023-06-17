@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const utilsForModels = require("./utilsForModels");
 const Schema = mongoose.Schema;  // for foreign keys
 
 const ChatSchema = new mongoose.Schema({
@@ -8,10 +9,18 @@ const ChatSchema = new mongoose.Schema({
         required: true,
     },
     chatPicture: {
-        type: Number,  // HEX colour
+        type: String,  // HEX colour
         required: true,
+        default: () => utilsForModels.randomHexColorCode(),
+        validate: {
+            validator: function (value) {
+                let reg = /[\dabcdef]{6}/g;
+                return reg.test(value);
+            },
+            message: "Invalid hex color code"
+        }
     },
-    space: {
+    spaceId: {
         type: Schema.Types.ObjectId,
         ref: 'Space',
         required: true

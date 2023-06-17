@@ -1,3 +1,5 @@
+const utilsForModels = require("./utilsForModels");
+
 const mongoose = require("mongoose");
 const uniqueValidator = require('mongoose-unique-validator');
 
@@ -34,8 +36,16 @@ const UserSchema = new mongoose.Schema({
         required: true,
     },
     userPicture: {
-        type: Number,  // HEX colour
+        type: String, // HEX colour
         required: true,
+        default: () => utilsForModels.randomHexColorCode(),
+        validate: {
+            validator: function (value) {
+                let reg = /[\dabcdef]{6}/g;
+                return reg.test(value);
+            },
+            message: "Invalid hex color code"
+        }
     },
 
 });

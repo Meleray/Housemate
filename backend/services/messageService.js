@@ -8,7 +8,7 @@ class MessageService {
 
     addMessage = async (messageData) => {
         let keysCheck = utilsForServices.areKeysValid(messageData,
-            ["body", "chatId", "senderId", "isNotification"])
+            ["messageText", "chatId", "senderId", "isNotification"])
         if (keysCheck.errorMessage != null) {
             return {error: {type: "FAILED_TO_ADD_MESSAGE", message: keysCheck.errorMessage}};
         }

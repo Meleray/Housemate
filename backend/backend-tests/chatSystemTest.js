@@ -12,26 +12,22 @@ describe('Chat system', () => {
     let userMember1 = {
         userName: "Member First",
         userPassword: "qwerty",
-        userPicture: 456,
         userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
     }
     let userMember2 = {
         userName: "Member Second",
         userPassword: "qwerty",
-        userPicture: 123,
         userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
     }
     let userNotMember = {
         userName: "Spy",
         userPassword: "qwerty",
-        userPicture: 789,
         userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
     }
     let chat = {
         // _id: will be filled out further
         chatName: "Secret conspiracy of long humans", // will be changed
-        chatPicture: 127,
-        // space: will be filled out further
+        // spaceId: will be filled out further
         // chatMembers: will be filled out further
     }
 
@@ -42,7 +38,7 @@ describe('Chat system', () => {
             .send({spaceName: "Another house with high ceilings"})
         utilsForTests.logRequest(resAddSpace.request);
         chai.expect(resAddSpace, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
-        chat.space = resAddSpace.body._id;
+        chat.spaceId = resAddSpace.body._id;
 
         // add the users to the DB and make them members of the space
         for (const user of [userMember1, userMember2]) {
@@ -53,7 +49,7 @@ describe('Chat system', () => {
 
             const resAddMember = await chai.request(server)
                 .put('/api/add-space-member')
-                .send({userId: user._id, spaceId: chat.space})
+                .send({userId: user._id, spaceId: chat.spaceId})
             utilsForTests.logRequest(resAddMember.request);
             chai.expect(resAddMember, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
         }
@@ -80,7 +76,7 @@ describe('Chat system', () => {
 
     it('add chat to a non-exist space', (done) => {
         let fakeChat = chat;
-        fakeChat.space = utilsForTests.nonExistId;  // non-existed space
+        fakeChat.spaceId = utilsForTests.nonExistId;  // non-existed space
         chai.request(server)
             .post('/api/add-chat')
             .send(fakeChat)
