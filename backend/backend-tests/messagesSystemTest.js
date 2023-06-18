@@ -37,34 +37,29 @@ describe('Message system', () => {
         const resAddSpace = await chai.request(server)
             .post('/api/add-space')
             .send({spaceName: "Another house with high ceilings"})
-        utilsForTests.logRequest(resAddSpace.request);
         chai.expect(resAddSpace, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
         spaceId = resAddSpace.body._id;
         chat.spaceId = spaceId;
 
         // add a chat
         const resAddChat = await chai.request(server).post('/api/add-chat').send(chat)
-        utilsForTests.logRequest(resAddChat.request);
         chai.expect(resAddChat, JSON.stringify(resAddChat.body)).to.have.status(HttpStatus.OK);
         chat = resAddChat.body;
 
         // add the users to the DB and make them members of the space and of the chat
         for (const user of [userMember1, userMember2]) {
             const resAddUser = await chai.request(server).post('/api/add-user').send(user)
-            utilsForTests.logRequest(resAddUser.request);
             chai.expect(resAddUser, JSON.stringify(resAddUser.body)).to.have.status(HttpStatus.OK);
             user._id = resAddUser.body._id;
 
             const resAddSpaceMember = await chai.request(server)
                 .put('/api/add-space-member')
                 .send({userId: user._id, spaceId: chat.spaceId})
-            utilsForTests.logRequest(resAddSpaceMember.request);
             chai.expect(resAddSpaceMember, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
 
             const resAddChatMember = await chai.request(server)
                 .put('/api/add-chat-member')
                 .send({userId: user._id, chatId: chat._id})
-            utilsForTests.logRequest(resAddChatMember.request);
             chai.expect(resAddChatMember, JSON.stringify(resAddChatMember.body)).to.have.status(HttpStatus.OK);
         }
     });
@@ -72,12 +67,10 @@ describe('Message system', () => {
     it('send incorrect messages', async () => {
         const resSendMessage1 = await chai.request(server).post('/api/send-message').send(
             {messageText: "", chatId: utilsForTests.nonExistId, senderId: userMember1._id})
-        utilsForTests.logRequest(resSendMessage1.request);
         chai.expect(resSendMessage1, JSON.stringify(resSendMessage1.body)).to.have.status(HttpStatus.BAD_REQUEST);
 
         const resSendMessage2 = await chai.request(server).post('/api/send-message').send(
             {messageText: "", chatId: chat._id, senderId: utilsForTests.nonExistId})
-        utilsForTests.logRequest(resSendMessage2.request);
         chai.expect(resSendMessage2, JSON.stringify(resSendMessage2.body)).to.have.status(HttpStatus.BAD_REQUEST);
     });
 
@@ -90,14 +83,12 @@ describe('Message system', () => {
                 isNotification: false
             }
             const resSendMessage = await chai.request(server).post('/api/send-message').send(messageData)
-            utilsForTests.logRequest(resSendMessage.request);
             chai.expect(resSendMessage, JSON.stringify(resSendMessage.body)).to.have.status(HttpStatus.OK);
             utilsForTests.compareObjects(resSendMessage.body, messageData, new Set(["_id", "date"]))
         }
 
         const resSendAnswer = await chai.request(server).post('/api/send-message').send(
             {messageText: messages.at(-1), chatId: chat._id, senderId: userMember2._id})
-        utilsForTests.logRequest(resSendAnswer.request);
         chai.expect(resSendAnswer, JSON.stringify(resSendAnswer.body)).to.have.status(HttpStatus.OK);
         utilsForTests.compareObjects(resSendAnswer.body, resSendAnswer, new Set(["_id", "date"]))
     });
@@ -105,15 +96,13 @@ describe('Message system', () => {
     it('read messages', async () => {
         const reversedMessages = messages.reverse()
         const plainReadRes = await chai.request(server)
-            .get('/api/get-message-chunk').send({chatId: chat._id})
-        utilsForTests.logRequest(plainReadRes.request)
+            .post('/api/get-message-chunk').send({chatId: chat._id})
         let messagesBodies = plainReadRes.body.map(b => b.messageText);
         chai.expect(messagesBodies, JSON.stringify(messagesBodies)).to.be.eql(reversedMessages);
 
         const thirdMessageTime = plainReadRes.body.at(2).date; // yes third => at 2
         const olderReadRes = await chai.request(server)
-            .get('/api/get-message-chunk').send({chatId: chat._id, getOlderThan: thirdMessageTime})
-        utilsForTests.logRequest(olderReadRes.request)
+            .post('/api/get-message-chunk').send({chatId: chat._id, getOlderThan: thirdMessageTime})
         let oldMessagesBodies = olderReadRes.body.map(b => b.messageText);
         chai.expect(oldMessagesBodies, JSON.stringify(oldMessagesBodies)).to.be.eql(reversedMessages.slice(0, 2));
     });

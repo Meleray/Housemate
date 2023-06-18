@@ -36,27 +36,23 @@ describe('Chat system', () => {
         const resAddSpace = await chai.request(server)
             .post('/api/add-space')
             .send({spaceName: "Another house with high ceilings"})
-        utilsForTests.logRequest(resAddSpace.request);
         chai.expect(resAddSpace, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
         chat.spaceId = resAddSpace.body._id;
 
         // add the users to the DB and make them members of the space
         for (const user of [userMember1, userMember2]) {
             const resAddUser = await chai.request(server).post('/api/add-user').send(user)
-            utilsForTests.logRequest(resAddUser.request);
             chai.expect(resAddUser, JSON.stringify(resAddUser.body)).to.have.status(HttpStatus.OK);
             user._id = resAddUser.body._id;
 
             const resAddMember = await chai.request(server)
                 .put('/api/add-space-member')
                 .send({userId: user._id, spaceId: chat.spaceId})
-            utilsForTests.logRequest(resAddMember.request);
             chai.expect(resAddMember, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
         }
 
         // add spy who is not the spase member
         const resAddSpy = await chai.request(server).post('/api/add-user').send(userNotMember)
-        utilsForTests.logRequest(resAddSpy.request);
         chai.expect(resAddSpy, JSON.stringify(resAddSpy.body)).to.have.status(HttpStatus.OK);
         userNotMember._id = resAddSpy.body._id;
     });
@@ -66,7 +62,6 @@ describe('Chat system', () => {
             .post('/api/add-chat')
             .send(chat)
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chat._id = res.body._id
                 utilsForTests.compareObjects(res.body, chat)
@@ -81,7 +76,6 @@ describe('Chat system', () => {
             .post('/api/add-chat')
             .send(fakeChat)
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
                 done();
             });
@@ -93,7 +87,6 @@ describe('Chat system', () => {
             .get('/api/find-chat')
             .send({chatId: chat._id})
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(chat._id);
                 done();
@@ -105,7 +98,6 @@ describe('Chat system', () => {
             .put('/api/add-chat-member')
             .send({chatId: chat._id, userId: userNotMember._id})
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
                 done();
             });
@@ -116,7 +108,6 @@ describe('Chat system', () => {
             .put('/api/add-chat-member')
             .send({chatId: utilsForTests.nonExistId, userId: userMember1._id})
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
                 done();
             });
@@ -127,7 +118,6 @@ describe('Chat system', () => {
             .put('/api/add-chat-member')
             .send({chatId: chat._id, userId: userMember1._id})
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.be.eql([userMember1._id]);
                 done();
@@ -139,7 +129,6 @@ describe('Chat system', () => {
             .put('/api/add-chat-member')
             .send({chatId: chat._id, userId: userMember1._id})
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.be.eql([userMember1._id]);
                 done();
             });
@@ -150,10 +139,21 @@ describe('Chat system', () => {
             .put('/api/add-chat-member')
             .send({chatId: chat._id, userId: userMember2._id})
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.be.eql(
                     [userMember1._id, userMember2._id]);
+                done();
+            });
+    });
+
+    it('get chas by userId',(done) => {
+        chai.request(server)
+            .post('/api/get-chat-by-userid')
+            .send({userId: userMember1._id})
+            .end((err, res) => {
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                const chatIds = res.body.map(chat => chat._id)
+                chai.expect(chatIds, JSON.stringify(res.body)).to.be.eql([chat._id]);
                 done();
             });
     });
@@ -164,7 +164,6 @@ describe('Chat system', () => {
             .put('/api/update-chat')
             .send({_id: chat._id, chatName: newName})
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body.chatName, JSON.stringify(res.body)).to.be.eql(newName);
                 done();
@@ -174,11 +173,10 @@ describe('Chat system', () => {
     it('delete a chat member', (done) => {
         chai.request(server)
             .delete('/api/delete-chat-member')
-            .send({chatId: chat._id, userId: userMember1._id})
+            .send({chatId: chat._id, userId: userMember2._id})
             .end((err, res) => {
-                utilsForTests.logRequest(res.request)
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.not.include(userMember1._id);
+                chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.not.include(userMember2._id);
                 done();
             });
     });

@@ -30,6 +30,20 @@ const addChatMember = async (req, res) => {
     return res.status(HttpStatus.OK).json(chat)
 };
 
+const createChatAndAddUser = async (req, res) => {
+    let chatData = structuredClone(req.body)
+    delete chatData.userId
+    const chat = await chatService.addChat(chatData)
+
+    const userId = req.body.userId;
+    const chatUpdated = await chatService.addChatMember(chat._id, userId);
+
+    if (chatUpdated == null || chatUpdated.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(chatUpdated);
+    }
+    return res.status(HttpStatus.OK).json(chatUpdated)
+}
+
 const updateChat = async (req, res) => {
     const updatedChat = await chatService.updateChat(req.body)
     if (updatedChat == null || updatedChat.error) {
@@ -49,4 +63,22 @@ const deleteChatMember = async (req, res) => {
     return res.status(HttpStatus.OK).json(chat)
 }
 
-module.exports = {getChatById, addChat, addChatMember, deleteChatMember, updateChat};
+const getChatsByUserId = async (req, res) => {
+    const userId = req.body.userId;
+    const chats = await chatService.getChatsByUserId(userId);
+
+    if (chats == null || chats.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(chats);
+    }
+    return res.status(HttpStatus.OK).json(chats)
+}
+
+module.exports = {
+    getChatById,
+    addChat,
+    addChatMember,
+    createChatAndAddUser,
+    deleteChatMember,
+    updateChat,
+    getChatsByUserId
+};

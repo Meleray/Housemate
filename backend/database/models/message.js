@@ -5,6 +5,8 @@ const MessageSchema = new mongoose.Schema({
 
     messageText: {
         type: String,
+        minLength: 1,
+        maxLength: 512,
         required: true,
     },
     chatId: {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from "styled-components";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { GlobalStyle } from "./components/Dashboard/styles/globalStyles";
@@ -8,7 +8,7 @@ import LandingPage from "./pages/LandingPage/LandingPage.jsx";
 import LoginPage from "./pages/LandingPage/Login";
 import RegisterPage from "./pages/LandingPage/Register";
 import BillTrackerPage from './pages/Dashboard/BillTrackerPage';
-import MessagesPage from './pages/Dashboard/MessagesPage';
+import MessagesPage from './pages/MessageingSystem/MessagesPage';
 import SettingsPage from './pages/Dashboard/SettingsPage';
 import ToDoPage from "./pages/Dashboard/ToDoPage";
 
@@ -22,6 +22,7 @@ const App = () => {
     <ThemeContext.Provider value={{ setTheme, theme }}>
       <ThemeProvider theme={themeStyle}>
         <GlobalStyle />
+        <HelmetProvider>
         <Helmet>
           <title>Housemate</title>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,6 +32,7 @@ const App = () => {
             rel="stylesheet"
           />
         </Helmet>
+        </HelmetProvider>
         <BrowserRouter>
           <Switch>
             <Route exact path="/">

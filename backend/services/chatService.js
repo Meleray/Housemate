@@ -63,6 +63,14 @@ class ChatService {
         }
         return chatModel.findByIdAndUpdate(chatData._id, updValues, {new: true})
     }
+
+    getChatsByUserId = async (userId) => {
+        try {
+            return await chatModel.find({chatMembers: { "$in" : [userId]} })
+        } catch (err) {
+            return {error: {type: "FAILED_TO_FIND_CHAT", message: err.message}};
+        }
+    }
 }
 
 module.exports = new ChatService();

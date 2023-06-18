@@ -26,13 +26,15 @@ router.post("/add-space", checkJWT, spaceController.addSpace);
 // Chat Subsystem OPs
 router.get("/find-chat", checkJWT, chatController.getChatById);
 router.post("/add-chat", checkJWT, chatController.addChat);
+router.post("/add-chat-and-member", checkJWT, chatController.createChatAndAddUser);
 router.put("/add-chat-member", checkJWT, chatController.addChatMember);
+router.post("/get-chat-by-userid", checkJWT,chatController.getChatsByUserId);
 router.put("/update-chat", checkJWT, chatController.updateChat);
 router.delete("/delete-chat-member", checkJWT, chatController.deleteChatMember);
 
 // Message Subsystem Ops
 router.post("/send-message", checkJWT, messageController.addMessage);
-router.get("/get-message-chunk", checkJWT, messageController.getMessagesChunk);
+router.post("/get-message-chunk", checkJWT, messageController.getMessagesChunk);
 
 
 router.use("/auth", authRouter)
