@@ -28,11 +28,7 @@ class MessageService {
             };
         }
 
-        try {
-            return await messageModel.create(messageData);
-        } catch (err) {
-            return {error: {type: "FAILED_TO_ADD_MESSAGE", message: err.message}};
-        }
+        return messageModel.create(messageData);
     };
 
     getMessagesChunk = async (chatId, getOlderThan) => {

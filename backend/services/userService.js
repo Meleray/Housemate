@@ -12,11 +12,7 @@ class UserService {
     };
 
     addUser = async (userData) => {
-        try {
-            return await userModel.create(userData);
-        } catch (err) {
-            return {error: {type: "FAILED_TO_ADD_USER", message: err.message}};
-        }
+        return userModel.create(userData);
     };
 
     getSpacesByUserId = async (userId) => {

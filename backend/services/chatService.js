@@ -14,11 +14,7 @@ class ChatService {
     };
 
     addChat = async (chat) => {
-        try {
-            return await chatModel.create(chat);
-        } catch (err) {
-            return {error: {type: "FAILED_TO_ADD_CHAT", message: err.message}};
-        }
+        return chatModel.create(chat);
     };
 
     addChatMember = async (chatId, userId) => {
@@ -57,7 +53,7 @@ class ChatService {
     updateChat = async (chatData) => {
         let updValues = structuredClone(chatData)
         delete updValues._id
-        let keysCheck = utilsForServices.areKeysValid(updValues,["chatName"])
+        let keysCheck = utilsForServices.areKeysValid(updValues, ["chatName"])
         if (keysCheck.errorMessage != null) {
             return {error: {type: "FAILED_TO_UPDATE_CHAT", message: keysCheck.errorMessage}};
         }
@@ -65,11 +61,7 @@ class ChatService {
     }
 
     getChatsByUserId = async (userId) => {
-        try {
-            return await chatModel.find({chatMembers: { "$in" : [userId]} })
-        } catch (err) {
-            return {error: {type: "FAILED_TO_FIND_CHAT", message: err.message}};
-        }
+        return chatModel.find({chatMembers: {"$in": [userId]}})
     }
 }
 

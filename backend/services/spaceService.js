@@ -12,11 +12,7 @@ class SpaceService {
     };
 
     addSpace = async (spaceData) => {
-        try {
-            return await spaceModel.create(spaceData);
-        } catch (err) {
-            return {error: {type: "FAILED_TO_ADD_SPACE", message: err.message}};
-        }
+        return spaceModel.create(spaceData);
     };
 }
 
