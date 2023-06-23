@@ -9,7 +9,11 @@ function RegisterPage({ history }) {
 
   function handleFormSubmit(event) {
     event.preventDefault();
-    axios.post('http://localhost:5001/api/add-user', {"userName": name, "userEmail": email, "userPassword": password, "userPicture": 2045}) // Server host, register is the route of the server
+    axios.post('http://localhost:5001/api/add-user',
+              {"userName": name, 
+               "userEmail": email, 
+               "userPassword": password, 
+               "userPicture": 2045}) // Server host, register is the route of the server
     history.push("/login");
   }
 

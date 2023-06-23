@@ -5,6 +5,7 @@ const { encryptPassword } = require("../middleware/encryptPassword");
 const userController = require("../controllers/userController");
 const spaceController = require("../controllers/spaceController");
 const chatController = require("../controllers/chatController");
+const todoController = require("../controllers/todoController");
 
 const authRouter = require("./subsystems/authRouter");
 
@@ -26,6 +27,9 @@ router.post("/add-space", checkJWT, spaceController.addSpace);
 router.get("/find-chat", checkJWT, chatController.getChatById);
 router.post("/add-chat", checkJWT, chatController.addChat);
 router.put("/add-chat-member", checkJWT, chatController.addChatMember)
+
+// ToDo OPs
+router.post("/add-todo", checkJWT ,todoController.addToDo);
 
 router.use("/auth", authRouter)
 
