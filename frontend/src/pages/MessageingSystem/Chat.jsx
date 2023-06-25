@@ -2,25 +2,47 @@ import React, {useState, useEffect} from "react"
 
 import axios from "axios";
 import SendMessageForm from "./SendMessageForm";
+import AddMemberDropDown from "./AddMemberDropDown";
 
 
 function Chat({chatId}) {
     const [messages, setMessages] = useState([]);
+    const [chatMembers, setChatMembers] = useState([]);
+
+    async function fetchMessagesChunk() {
+        // TODO load old messages
+        // console.log(chatId)
+        const result = await axios.request({
+            method: 'POST',
+            url: 'http://localhost:5000/api/get-message-chunk',
+            headers: {'content-type': 'application/json',},
+            data: {chatId: chatId},
+        });
+        setMessages(result.data)
+    }
+
+    useEffect(() => {
+        fetchMessagesChunk();  // update chat immediately after switch
+        const interval = setInterval(() => {
+            fetchMessagesChunk();
+        }, 2000);  // rerender every N seconds
+        return () => clearInterval(interval);
+    }, [chatId]);
 
 
     useEffect(() => {
-        async function fetchData() {
+        async function fetchChatMembers() {
             const result = await axios.request({
                 method: 'POST',
-                url: 'http://localhost:5000/api/get-message-chunk',
+                url: 'http://localhost:5000/api/find-chat-members',
                 headers: {'content-type': 'application/json',},
                 data: {chatId: chatId},
             });
-            setMessages(result.data)
+            setChatMembers(result.data.chatMembers)
         }
 
-        fetchData();
-    }, []);
+        fetchChatMembers();
+    }, [chatId]);
 
     function requestExitChat() {
         axios.request({
@@ -38,11 +60,23 @@ function Chat({chatId}) {
 
     return (
         <div>
-            <button type="button" onClick={requestExitChat}>Exit chat</button>
+            <div>
+                Chat members:
+                <ul>
+                    {chatMembers.map((r, index) =>
+                        <li key={r._id}>
+                            color={r.userPicture}, {r.userName}
+                        </li>
+                    )}
+                </ul>
+            </div>
+
+            <button type="button" onClick={requestExitChat}>Leave chat</button>
+            <AddMemberDropDown chatId={chatId}/>
 
             {emptyMessage}
 
-            <ul className="list-group">
+            <ul>
                 {messages.map((r, index) =>
                     <li key={r._id}>
                         {r.messageText}, {r.date}

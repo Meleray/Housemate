@@ -7,7 +7,7 @@ function AddSpaceForm() {
     function fetchData() {
         axios.request({
             method: 'POST',
-            url: 'http://localhost:5000/api/add-space-and-member',
+            url: 'http://localhost:5000/api/create-space-and-member',
             headers: {'content-type': 'application/json',},
             data: {
                 spaceName: spaceName,

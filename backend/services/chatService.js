@@ -13,6 +13,11 @@ class ChatService {
         return chat;
     };
 
+    getChatMembers = async (chatId) => {
+        return chatModel.findById(chatId).populate({path: 'chatMembers', select: ['userName', 'userPicture']})
+            .select(['chatMembers', '-_id'])
+    };
+
     addChat = async (chat) => {
         return chatModel.create(chat);
     };

@@ -11,6 +11,15 @@ const getChatById = async (req, res) => {
     return res.status(HttpStatus.OK).json(chat);
 };
 
+const getChatMembers  = async (req, res) => {
+    const chatId = req.body.chatId;
+    const chatMembers = await chatService.getChatMembers(chatId);
+    if (chatMembers == null || chatMembers.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(chatMembers);
+    }
+    return res.status(HttpStatus.OK).json(chatMembers);
+};
+
 const addChat = async (req, res) => {
     const chat = await chatService.addChat(req.body)
     if (chat == null || chat.error) {
@@ -76,6 +85,7 @@ const getChatsBySpaceAndUserId = async (req, res) => {
 
 module.exports = {
     getChatById,
+    getChatMembers,
     addChat,
     addChatMember,
     createChatAndAddUser,

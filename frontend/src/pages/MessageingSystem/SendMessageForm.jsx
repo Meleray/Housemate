@@ -6,7 +6,9 @@ import axios from "axios";
 function SendMessageForm({chatId}) {
     const [messageText, setMessageText] = useState(null);
 
-    function fetchData() {
+    function fetchData(e) {
+        e.preventDefault();
+
         axios.request({
             method: 'POST',
             url: 'http://localhost:5000/api/send-message',
@@ -16,11 +18,11 @@ function SendMessageForm({chatId}) {
                 chatId: chatId,
                 messageText: messageText
             },
-        });
+        }).then(e.target.reset());
     }
 
     return (
-        <form onSubmit={fetchData}>
+        <form onSubmit={e => fetchData(e)}>
             <input
                 type="text"
                 placeholder="Text"

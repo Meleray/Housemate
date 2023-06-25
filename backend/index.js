@@ -26,12 +26,18 @@ function requestLoggerMiddleware(req, res, next) {
 
 function responseLoggerMiddleware(req, res, next) {
     // copied from https://stackoverflow.com/a/69549821/13221007
-    const cyanColor = '\x1b[1;35m%s\x1b[0m'
+    const purpleColor = '\x1b[1;35m%s\x1b[0m'
+    const redColor = '\x1b[1;31m%s\x1b[0m'
 
     let send = res.send;
     res.send = c => {
         const message = `StatusCode: ${res.statusCode}, ${c}`
-        console.log(cyanColor, message);
+        if (Math.floor(res.statusCode / 100) === 2){
+            console.log(purpleColor, message);
+        }
+        else {
+            console.log(redColor, message);
+        }
         res.send = send;
         return res.send(c);
     }

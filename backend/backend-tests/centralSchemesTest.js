@@ -25,7 +25,7 @@ describe('User and Space schemes', () => {
 
     it('add user', (done) => {
         chai.request(server)
-            .post('/api/add-user')
+            .post('/api/create-user')
             .send(initialUser)
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -40,7 +40,7 @@ describe('User and Space schemes', () => {
         let userCopy = structuredClone(initialUser)
         delete userCopy._id
         chai.request(server)
-            .post('/api/add-user')
+            .post('/api/create-user')
             .send(userCopy)
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
@@ -71,7 +71,7 @@ describe('User and Space schemes', () => {
 
     it('get user', (done) => {
         chai.request(server)
-            .get('/api/find-user')
+            .post('/api/find-user')
             .send({userId: initialUser._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -83,7 +83,7 @@ describe('User and Space schemes', () => {
 
     it('add space', (done) => {
         chai.request(server)
-            .post('/api/add-space')
+            .post('/api/create-space')
             .send({spaceName: "A house with high ceilings"})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -95,7 +95,7 @@ describe('User and Space schemes', () => {
 
     it('get space', (done) => {
         chai.request(server)
-            .get('/api/find-space')
+            .post('/api/find-space')
             .send({spaceId: spaceId})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -106,7 +106,7 @@ describe('User and Space schemes', () => {
 
     it('add a non-exist user to a space', (done) => {
         chai.request(server)
-            .put('/api/add-space-member')
+            .put('/api/create-space-member')
             .send({userId: utilsForTests.nonExistId, spaceId: spaceId})  // fake userId
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
@@ -116,7 +116,7 @@ describe('User and Space schemes', () => {
 
     it('add a user to a non-exist space', (done) => {
         chai.request(server)
-            .put('/api/add-space-member')
+            .put('/api/create-space-member')
             .send({userId: initialUser._id, spaceId: utilsForTests.nonExistId})  // fake userId
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
@@ -126,7 +126,7 @@ describe('User and Space schemes', () => {
 
     it('add a user to a space', (done) => {
         chai.request(server)
-            .put('/api/add-space-member')
+            .put('/api/create-space-member')
             .send({userId: initialUser._id, spaceId: spaceId})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);

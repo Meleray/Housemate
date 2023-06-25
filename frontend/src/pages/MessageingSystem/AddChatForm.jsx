@@ -6,10 +6,10 @@ import axios from "axios";
 function AddChatForm() {
     const [chatName, setChatName] = useState("New chat");
 
-    function fetchData() {
+    function requestAddChat() {
         axios.request({
             method: 'POST',
-            url: 'http://localhost:5000/api/add-chat-and-member',
+            url: 'http://localhost:5000/api/create-chat-and-member',
             headers: {'content-type': 'application/json',},
             data: {
                 chatName: chatName,
@@ -20,7 +20,7 @@ function AddChatForm() {
     }
 
     return (
-        <form onSubmit={fetchData}>
+        <form onSubmit={requestAddChat}>
             <input
                 type="text"
                 placeholder="Chat name"

@@ -35,30 +35,30 @@ describe('Message system', () => {
     before('prepare data', async () => {
         // add a space to the DB
         const resAddSpace = await chai.request(server)
-            .post('/api/add-space')
+            .post('/api/create-space')
             .send({spaceName: "Another house with high ceilings"})
         chai.expect(resAddSpace, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
         spaceId = resAddSpace.body._id;
         chat.spaceId = spaceId;
 
         // add a chat
-        const resAddChat = await chai.request(server).post('/api/add-chat').send(chat)
+        const resAddChat = await chai.request(server).post('/api/create-chat').send(chat)
         chai.expect(resAddChat, JSON.stringify(resAddChat.body)).to.have.status(HttpStatus.OK);
         chat = resAddChat.body;
 
         // add the users to the DB and make them members of the space and of the chat
         for (const user of [userMember1, userMember2]) {
-            const resAddUser = await chai.request(server).post('/api/add-user').send(user)
+            const resAddUser = await chai.request(server).post('/api/create-user').send(user)
             chai.expect(resAddUser, JSON.stringify(resAddUser.body)).to.have.status(HttpStatus.OK);
             user._id = resAddUser.body._id;
 
             const resAddSpaceMember = await chai.request(server)
-                .put('/api/add-space-member')
+                .put('/api/create-space-member')
                 .send({userId: user._id, spaceId: chat.spaceId})
             chai.expect(resAddSpaceMember, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
 
             const resAddChatMember = await chai.request(server)
-                .put('/api/add-chat-member')
+                .put('/api/create-chat-member')
                 .send({userId: user._id, chatId: chat._id})
             chai.expect(resAddChatMember, JSON.stringify(resAddChatMember.body)).to.have.status(HttpStatus.OK);
         }

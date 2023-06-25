@@ -25,24 +25,25 @@ const handleErrorAsync = func => async (req, res, next) => {
 };
 
 // Database OPs
-router.get("/find-user", checkJWT, handleErrorAsync(userController.getUserById));
-router.post("/add-user", encryptPassword, handleErrorAsync(userController.addUser));
+router.post("/find-user", checkJWT, handleErrorAsync(userController.getUserById));
+router.post("/create-user", encryptPassword, handleErrorAsync(userController.addUser));
 router.put("/update-user", checkJWT, encryptPassword, handleErrorAsync(userController.updateUser));
 router.delete("/delete-user", checkJWT, handleErrorAsync(userController.deleteUser));
 
 // Space OPs
-router.get("/find-space", checkJWT, handleErrorAsync(spaceController.getSpaceById));
-router.post("/add-space", checkJWT, handleErrorAsync(spaceController.addSpace));
-router.put("/add-space-member", checkJWT, handleErrorAsync(spaceController.addUserToSpace));
+router.post("/find-space", checkJWT, handleErrorAsync(spaceController.getSpaceById));
+router.post("/create-space", checkJWT, handleErrorAsync(spaceController.addSpace));
+router.put("/create-space-member", checkJWT, handleErrorAsync(spaceController.addUserToSpace));
 router.delete("/delete-space-member", checkJWT, handleErrorAsync(spaceController.deleteUserFromSpace));
-router.post("/add-space-and-member", checkJWT, handleErrorAsync(spaceController.createSpaceAndAddUser));
+router.post("/create-space-and-member", checkJWT, handleErrorAsync(spaceController.createSpaceAndAddUser));
 router.post("/find-spaces-by-userid", checkJWT, handleErrorAsync(spaceController.getSpacesByUserId));
 
 // Chat Subsystem OPs
-router.get("/find-chat", checkJWT, handleErrorAsync(chatController.getChatById));
-router.post("/add-chat", checkJWT, handleErrorAsync(chatController.addChat));
-router.post("/add-chat-and-member", checkJWT, handleErrorAsync(chatController.createChatAndAddUser));
-router.put("/add-chat-member", checkJWT, handleErrorAsync(chatController.addChatMember));
+router.post("/find-chat", checkJWT, handleErrorAsync(chatController.getChatById));
+router.post("/find-chat-members", checkJWT, handleErrorAsync(chatController.getChatMembers));
+router.post("/create-chat", checkJWT, handleErrorAsync(chatController.addChat));
+router.post("/create-chat-and-member", checkJWT, handleErrorAsync(chatController.createChatAndAddUser));
+router.put("/create-chat-member", checkJWT, handleErrorAsync(chatController.addChatMember));
 router.post("/find-chats-by-space-and-userid", checkJWT, handleErrorAsync(chatController.getChatsByUserId));
 router.put("/update-chat", checkJWT, handleErrorAsync(chatController.updateChat));
 router.delete("/delete-chat-member", checkJWT, handleErrorAsync(chatController.deleteChatMember));

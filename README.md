@@ -35,7 +35,7 @@ Send REST API requests
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   -d '{"userName": "Mikhail", "userDescription": "The longest human", "userPassword": "qwerty", "userPicture": 123, "userSpacesId": [69, 96]}' \
-  localhost:3000/api/add-user
+  localhost:3000/api/create-user
 
 curl -X GET -H "Content-Type: application/json" -d '{"userId": "6477d70d31b225820c91362d"}' \
   localhost:3000/api/find-user

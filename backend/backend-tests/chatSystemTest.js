@@ -34,32 +34,32 @@ describe('Chat system', () => {
     before('prepare data', async () => {
         // add a space to the DB
         const resAddSpace = await chai.request(server)
-            .post('/api/add-space')
+            .post('/api/create-space')
             .send({spaceName: "Another house with high ceilings"})
         chai.expect(resAddSpace, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
         chat.spaceId = resAddSpace.body._id;
 
         // add the users to the DB and make them members of the space
         for (const user of [userMember1, userMember2]) {
-            const resAddUser = await chai.request(server).post('/api/add-user').send(user)
+            const resAddUser = await chai.request(server).post('/api/create-user').send(user)
             chai.expect(resAddUser, JSON.stringify(resAddUser.body)).to.have.status(HttpStatus.OK);
             user._id = resAddUser.body._id;
 
             const resAddMember = await chai.request(server)
-                .put('/api/add-space-member')
+                .put('/api/create-space-member')
                 .send({userId: user._id, spaceId: chat.spaceId})
             chai.expect(resAddMember, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
         }
 
         // add spy who is not the spase member
-        const resAddSpy = await chai.request(server).post('/api/add-user').send(userNotMember)
+        const resAddSpy = await chai.request(server).post('/api/create-user').send(userNotMember)
         chai.expect(resAddSpy, JSON.stringify(resAddSpy.body)).to.have.status(HttpStatus.OK);
         userNotMember._id = resAddSpy.body._id;
     });
 
     it('add chat', (done) => {
         chai.request(server)
-            .post('/api/add-chat')
+            .post('/api/create-chat')
             .send(chat)
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -73,7 +73,7 @@ describe('Chat system', () => {
         let fakeChat = structuredClone(chat);
         fakeChat.spaceId = utilsForTests.nonExistId;  // non-existed space
         chai.request(server)
-            .post('/api/add-chat')
+            .post('/api/create-chat')
             .send(fakeChat)
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
@@ -84,7 +84,7 @@ describe('Chat system', () => {
 
     it('get chat', (done) => {
         chai.request(server)
-            .get('/api/find-chat')
+            .post('/api/find-chat')
             .send({chatId: chat._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -95,7 +95,7 @@ describe('Chat system', () => {
 
     it("add to a chat not member of a chat's space", (done) => {
         chai.request(server)
-            .put('/api/add-chat-member')
+            .put('/api/create-chat-member')
             .send({chatId: chat._id, userId: userNotMember._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
@@ -105,7 +105,7 @@ describe('Chat system', () => {
 
     it('add a chat member to a non-existed chat', (done) => {
         chai.request(server)
-            .put('/api/add-chat-member')
+            .put('/api/create-chat-member')
             .send({chatId: utilsForTests.nonExistId, userId: userMember1._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
@@ -115,7 +115,7 @@ describe('Chat system', () => {
 
     it('add a chat member', (done) => {
         chai.request(server)
-            .put('/api/add-chat-member')
+            .put('/api/create-chat-member')
             .send({chatId: chat._id, userId: userMember1._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -126,7 +126,7 @@ describe('Chat system', () => {
 
     it('add the same chat member twice', (done) => {
         chai.request(server)
-            .put('/api/add-chat-member')
+            .put('/api/create-chat-member')
             .send({chatId: chat._id, userId: userMember1._id})
             .end((err, res) => {
                 chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.be.eql([userMember1._id]);
@@ -136,7 +136,7 @@ describe('Chat system', () => {
 
     it('add the second chat member', (done) => {
         chai.request(server)
-            .put('/api/add-chat-member')
+            .put('/api/create-chat-member')
             .send({chatId: chat._id, userId: userMember2._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -146,7 +146,7 @@ describe('Chat system', () => {
             });
     });
 
-    it('get chas by spaceId and userId', (done) => {
+    it('get chats by spaceId and userId', (done) => {
         chai.request(server)
             .post('/api/find-chats-by-space-and-userid')
             .send({spaceId: chat.spaceId, userId: userMember1._id})
@@ -154,6 +154,19 @@ describe('Chat system', () => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 const chatIds = res.body.map(chat => chat._id)
                 chai.expect(chatIds, JSON.stringify(res.body)).to.be.eql([chat._id]);
+                done();
+            });
+    });
+
+    it('find chat members', (done) => {
+        chai.request(server)
+            .post('/api/find-chat-members')
+            .send({chatId: chat._id})
+            .end((err, res) => {
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                console.log(res.body)
+                utilsForTests.compareObjects(res.body.chatMembers[0], userMember1,
+                    new Set(["usrPicture", "userPassword", "userEmail"]))
                 done();
             });
     });
