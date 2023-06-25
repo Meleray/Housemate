@@ -15,9 +15,6 @@ class UserService {
         return userModel.create(userData);
     };
 
-    getSpacesByUserId = async (userId) => {
-        return spaceModel.find({spaceMembers: userId}).select("_id")
-    }
 
     updateUser = async (userData) => {
         let updValues = structuredClone(userData)
@@ -32,7 +29,7 @@ class UserService {
     }
 
     deleteUser = async (userId) => {
-        let spaces = await this.getSpacesByUserId(userId);
+        let spaces = await spaceModel.find({spaceMembers: userId}).select("_id");
         if (spaces.length > 0) {
             return {
                 error: {
@@ -48,33 +45,6 @@ class UserService {
             };
         }
         return deletedUser
-    }
-
-    addUserToSpace = async (userId, spaceId) => {
-        if (!(await userModel.exists({_id: userId}))) {
-            return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${userId}`}};
-        }
-        const space = await spaceModel.findByIdAndUpdate(spaceId,
-            {$addToSet: {spaceMembers: userId}}, // update 'spaceMembers' only if userId is not presented in it
-            {new: true}
-        )
-        if (!space) {
-            return {
-                error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}
-            }
-        }
-        await space.save()
-        return this.getSpacesByUserId(userId);  // return spaces of the user
-    }
-
-    deleteUserFromSpace = async (userId, spaceId) => {
-        const space = await spaceModel.findById(spaceId);
-        if (!space) {
-            return {error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}};
-        }
-        space.spaceMembers.pull(userId);
-        await space.save();
-        return this.getSpacesByUserId(userId);  // return spaces of the user
     }
 
 }

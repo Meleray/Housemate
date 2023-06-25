@@ -63,9 +63,10 @@ const deleteChatMember = async (req, res) => {
     return res.status(HttpStatus.OK).json(chat)
 }
 
-const getChatsByUserId = async (req, res) => {
+const getChatsBySpaceAndUserId = async (req, res) => {
     const userId = req.body.userId;
-    const chats = await chatService.getChatsByUserId(userId);
+    const spaceId = req.body.spaceId;
+    const chats = await chatService.getChatsBySpaceAndUserId(spaceId, userId);
 
     if (chats == null || chats.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(chats);
@@ -80,5 +81,5 @@ module.exports = {
     createChatAndAddUser,
     deleteChatMember,
     updateChat,
-    getChatsByUserId
+    getChatsByUserId: getChatsBySpaceAndUserId
 };

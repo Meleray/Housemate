@@ -23,11 +23,6 @@ const updateUser = async (req, res) => {
     const updatedUser = await userService.updateUser(req.body)
     return res.status(HttpStatus.OK).json(updatedUser);
 }
-const getSpacesByUserId = async (req, res) => {
-    const userId = req.body.userId;
-    const spaceIds = await userService.getSpacesByUserId(userId);
-    return res.status(HttpStatus.OK).json(spaceIds);
-};
 
 const deleteUser = async (req, res) => {
     const userId = req.body.userId;
@@ -38,26 +33,4 @@ const deleteUser = async (req, res) => {
     return res.status(HttpStatus.OK).json(deletedUser)
 };
 
-const addUserToSpace = async (req, res) => {
-    const userId = req.body.userId;
-    const spaceId = req.body.spaceId;
-    const spaceIds = await userService.addUserToSpace(userId, spaceId);
-
-    if (spaceId == null || spaceIds.error) {
-        return res.status(HttpStatus.BAD_REQUEST).json(spaceIds);
-    }
-    return res.status(HttpStatus.OK).json(spaceIds)
-};
-
-const deleteUserFromSpace = async (req, res) => {
-    const userId = req.body.userId;
-    const spaceId = req.body.spaceId;
-    const spaceIds = await userService.deleteUserFromSpace(userId, spaceId);
-
-    if (spaceId == null || spaceIds.error) {
-        return res.status(HttpStatus.BAD_REQUEST).json(spaceIds);
-    }
-    return res.status(HttpStatus.OK).json(spaceIds)
-}
-
-module.exports = {getUserById, addUser, updateUser, getSpacesByUserId, deleteUser, addUserToSpace, deleteUserFromSpace};
+module.exports = {getUserById, addUser, updateUser, deleteUser};

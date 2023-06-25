@@ -1,10 +1,8 @@
-import React, {useState, useEffect} from "react"
-
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 
-
-function ChatList({onSelectChat}) {
-    const [chats, setChats] = useState([]);
+function SpaceList() {
+    const [spaces, setSpaces] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(-1);
 
 
@@ -12,34 +10,36 @@ function ChatList({onSelectChat}) {
         async function fetchData() {
             const result = await axios.request({
                 method: 'POST',
-                url: 'http://localhost:5000/api/find-chats-by-space-and-userid',
+                url: 'http://localhost:5000/api/find-spaces-by-userid',
                 headers: {'content-type': 'application/json',},
-                data: {
-                    spaceId: localStorage.getItem("spaceId"),
-                    userId: localStorage.getItem("userId")
-                },
+                data: {userId: localStorage.getItem("userId")},
             });
-            setChats(result.data)
+            setSpaces(result.data)
         }
 
         fetchData();
     }, []);
 
-    const emptyMessage = (chats.length === 0 && <h1>No chats found</h1>)
+    function onSelectSpace(spaceId){
+        localStorage.setItem("spaceId", spaceId);
+        window.location.reload(false);
+    }
+
+    const emptyMessage = (spaces.length === 0 && <h1>No spaces found</h1>)
 
     return (
         <div>
             {emptyMessage}
             <ul className="list-group">
-                {chats.map((r, index) =>
+                {spaces.map((r, index) =>
                     <li className={selectedIndex === index ? "list-group-item active" : "active"}
                         key={r._id}
                         onClick={() => {
                             setSelectedIndex(index);
-                            onSelectChat(r._id); // call an external function
+                            onSelectSpace(r._id);
                         }}
                     >
-                        {r.chatName}
+                        {r.spaceName}
                     </li>
                 )}
             </ul>
@@ -47,4 +47,4 @@ function ChatList({onSelectChat}) {
     )
 }
 
-export default ChatList;
+export default SpaceList;

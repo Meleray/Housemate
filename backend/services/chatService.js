@@ -60,8 +60,13 @@ class ChatService {
         return chatModel.findByIdAndUpdate(chatData._id, updValues, {new: true})
     }
 
-    getChatsByUserId = async (userId) => {
-        return chatModel.find({chatMembers: {"$in": [userId]}})
+    getChatsBySpaceAndUserId = async (spaceId, userId) => {
+        return chatModel.find({
+            $and: [
+                {spaceId: spaceId},
+                {chatMembers: {"$in": [userId]}}
+            ]
+        })
     }
 }
 

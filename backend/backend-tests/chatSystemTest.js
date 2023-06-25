@@ -70,7 +70,7 @@ describe('Chat system', () => {
     });
 
     it('add chat to a non-exist space', (done) => {
-        let fakeChat = chat;
+        let fakeChat = structuredClone(chat);
         fakeChat.spaceId = utilsForTests.nonExistId;  // non-existed space
         chai.request(server)
             .post('/api/add-chat')
@@ -146,10 +146,10 @@ describe('Chat system', () => {
             });
     });
 
-    it('get chas by userId',(done) => {
+    it('get chas by spaceId and userId', (done) => {
         chai.request(server)
-            .post('/api/get-chat-by-userid')
-            .send({userId: userMember1._id})
+            .post('/api/find-chats-by-space-and-userid')
+            .send({spaceId: chat.spaceId, userId: userMember1._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 const chatIds = res.body.map(chat => chat._id)
