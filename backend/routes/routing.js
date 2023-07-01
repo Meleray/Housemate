@@ -53,6 +53,11 @@ router.post("/send-message", checkJWT, handleErrorAsync(messageController.addMes
 router.post("/get-message-chunk", checkJWT, handleErrorAsync(messageController.getMessagesChunk));
 
 
+// Task OPs
+router.post("/add-task", checkJWT ,taskController.addTask);
+router.post("/find-task", checkJWT ,taskController.getTaskById);
+
+
 router.use("/auth", authRouter)
 
 module.exports = router

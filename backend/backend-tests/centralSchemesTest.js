@@ -3,7 +3,7 @@ const utilsForTests = require("./utilsForTests");
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-const server = 'localhost:5000';
+const server = 'localhost:5001';
 
 
 chai.use(chaiHttp);
