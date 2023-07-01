@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from "react"
 
 import axios from "axios";
+import {ApiFindChatsBySpaceAndUserId} from "../../constants";
+import {isError} from "../../utils";
 
 
 function ChatList({onSelectChat}) {
@@ -10,16 +12,19 @@ function ChatList({onSelectChat}) {
 
     useEffect(() => {
         async function fetchData() {
-            const result = await axios.request({
+            const response = await axios.request({
                 method: 'POST',
-                url: 'http://localhost:5000/api/find-chats-by-space-and-userid',
+                url: ApiFindChatsBySpaceAndUserId,
                 headers: {'content-type': 'application/json',},
                 data: {
                     spaceId: localStorage.getItem("spaceId"),
                     userId: localStorage.getItem("userId")
                 },
             });
-            setChats(result.data)
+            if (isError(response)){
+                return
+            }
+            setChats(response.data)
         }
 
         fetchData();

@@ -13,7 +13,7 @@ import { ReactComponent as LogoSVG } from "../../../assets/images/Housemate.svg"
 import { AiOutlineMessage, AiOutlineSetting } from "react-icons/ai";
 import { MdFormatListBulleted, MdLogout } from "react-icons/md";
 import { RiMoneyEuroBoxLine } from 'react-icons/ri';
-import AddSpaceForm from "./AddSpaceForm";
+import SpaceManagementComponent from "./SpaceManagementComponent";
 import SpaceList from "./SpaceList";
 
 const Sidebar = () => {
@@ -29,7 +29,7 @@ const Sidebar = () => {
             </SLogo>
             <SDivider />
             <SpaceList/>
-            <AddSpaceForm/>
+            <SpaceManagementComponent/>
             <SDivider />
             {linksArray.map(({ icon, label, to }) => (
                 <SLinkContainer key={label} isActive={pathname === to}>

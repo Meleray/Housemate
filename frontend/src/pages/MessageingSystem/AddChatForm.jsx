@@ -1,15 +1,19 @@
 import React, {useState, useEffect} from "react"
 
 import axios from "axios";
+import {ApiCreateChatAndMember, ApiCreateSpaceAndMember} from "../../constants";
+import {isError} from "../../utils";
 
 
 function AddChatForm() {
     const [chatName, setChatName] = useState("New chat");
 
-    function requestAddChat() {
-        axios.request({
+    const handleAddChat = async event => {
+        event.preventDefault();  // prevent reload
+        event.target.reset();
+        let response = await axios.request({
             method: 'POST',
-            url: 'http://localhost:5000/api/create-chat-and-member',
+            url: ApiCreateChatAndMember,
             headers: {'content-type': 'application/json',},
             data: {
                 chatName: chatName,
@@ -17,10 +21,15 @@ function AddChatForm() {
                 userId: localStorage.getItem("userId"),
             },
         });
+
+        if (isError(response)) {
+            return;
+        }
+        // TODO update chat list
     }
 
     return (
-        <form onSubmit={requestAddChat}>
+        <form onSubmit={handleAddChat}>
             <input
                 type="text"
                 placeholder="Chat name"

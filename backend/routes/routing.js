@@ -44,14 +44,14 @@ router.post("/find-chat", checkJWT, handleErrorAsync(chatController.getChatById)
 router.post("/find-chat-members", checkJWT, handleErrorAsync(chatController.getChatMembers));
 router.post("/create-chat", checkJWT, handleErrorAsync(chatController.addChat));
 router.post("/create-chat-and-member", checkJWT, handleErrorAsync(chatController.createChatAndAddUser));
-router.put("/create-chat-member", checkJWT, handleErrorAsync(chatController.addChatMember));
+router.put("/add-chat-member", checkJWT, handleErrorAsync(chatController.addChatMember));
 router.post("/find-chats-by-space-and-userid", checkJWT, handleErrorAsync(chatController.getChatsByUserId));
 router.put("/update-chat", checkJWT, handleErrorAsync(chatController.updateChat));
 router.delete("/delete-chat-member", checkJWT, handleErrorAsync(chatController.deleteChatMember));
 
 // Message Subsystem Ops
 router.post("/send-message", checkJWT, handleErrorAsync(messageController.addMessage));
-router.post("/get-message-chunk", checkJWT, handleErrorAsync(messageController.getMessagesChunk));
+router.post("/load-message-chunk", checkJWT, handleErrorAsync(messageController.getMessagesChunk));
 
 
 // Task OPs

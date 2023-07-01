@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
+import {ApiFindSpacesByUserId} from "../../../constants";
 
 function SpaceList() {
     const [spaces, setSpaces] = useState([]);
@@ -10,7 +11,7 @@ function SpaceList() {
         async function fetchData() {
             const result = await axios.request({
                 method: 'POST',
-                url: 'http://localhost:5000/api/find-spaces-by-userid',
+                url: ApiFindSpacesByUserId,
                 headers: {'content-type': 'application/json',},
                 data: {userId: localStorage.getItem("userId")},
             });

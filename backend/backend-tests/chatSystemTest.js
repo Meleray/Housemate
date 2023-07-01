@@ -95,7 +95,7 @@ describe('Chat system', () => {
 
     it("add to a chat not member of a chat's space", (done) => {
         chai.request(server)
-            .put('/api/create-chat-member')
+            .put('/api/add-chat-member')
             .send({chatId: chat._id, userId: userNotMember._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
@@ -105,7 +105,7 @@ describe('Chat system', () => {
 
     it('add a chat member to a non-existed chat', (done) => {
         chai.request(server)
-            .put('/api/create-chat-member')
+            .put('/api/add-chat-member')
             .send({chatId: utilsForTests.nonExistId, userId: userMember1._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
@@ -115,7 +115,7 @@ describe('Chat system', () => {
 
     it('add a chat member', (done) => {
         chai.request(server)
-            .put('/api/create-chat-member')
+            .put('/api/add-chat-member')
             .send({chatId: chat._id, userId: userMember1._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
@@ -126,7 +126,7 @@ describe('Chat system', () => {
 
     it('add the same chat member twice', (done) => {
         chai.request(server)
-            .put('/api/create-chat-member')
+            .put('/api/add-chat-member')
             .send({chatId: chat._id, userId: userMember1._id})
             .end((err, res) => {
                 chai.expect(res.body.chatMembers, JSON.stringify(res.body)).to.be.eql([userMember1._id]);
@@ -136,7 +136,7 @@ describe('Chat system', () => {
 
     it('add the second chat member', (done) => {
         chai.request(server)
-            .put('/api/create-chat-member')
+            .put('/api/add-chat-member')
             .send({chatId: chat._id, userId: userMember2._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
