@@ -5,7 +5,12 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import axios from 'axios';
-import { useState} from "react";
+import { useState } from "react";
+import TextField from '@mui/material/TextField';
+import TaskSelectUser from './TaskSelectUser';
+import TaskDateTimePicker from './TaskDatePicker';
+import GutterlessList from '../TaskListContainer';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,22 +39,24 @@ export default function AddTaskButton() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [taskDescription, setTaskDescription] = useState()
-  const [responsibleUser, setResponsibleUser] = useState()
-  const [dateTime, setDateTime] = useState()
-  const [completionStatus, setCompletionStatus] = useState()
-
+  const [taskName, setTaskName] = useState();
+  const [dateTime, setDateTime] = useState();
+  const [completionStatus, setCompletionStatus] = useState();
 
   function handleFormSubmit(event) {
     event.preventDefault();
-    axios.post('http://localhost:5001/api/add-todo',
-              {"taskDescription": taskDescription, 
-               "responsibleUser": responsibleUser, 
-               "dateTime": dateTime, 
-               "completionStatus": "Incomplete"}
-               ); // Server host, register is the route of the server
+    axios.post('http://localhost:5001/api/add-task', {
+      "start_date": "String",
+      "end_date": "String",
+      "complexity": "String",
+      "repetition": "String",
+      "body": taskName,
+      "notification_type": "String",
+      "notification_time": "String",
+      "admin_approval": "String",
+    });
+    // Server host, register is the route of the server
   }
-
 
   return (
     <div className={classes.root}>
@@ -60,39 +67,34 @@ export default function AddTaskButton() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style} onSubmit={handleFormSubmit}>
+        <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Task Description
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Title
-            <div />
-            <input 
-                type="text" 
-                id="title"
-                onChange={(e) => setTaskDescription(e.target.value)}
-                />
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Responsible User
-            <div />
-            <input 
-                type="text" 
-                id="title" 
-                onChange={(e) => setResponsibleUser(e.target.value)}
-                />
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Date
-            <div />
-            <input 
-                type="text" 
-                id="title" 
-                onChange={(e) => setDateTime(e.target.value)}
-                />
-          </Typography>
-          <Button onClick={handleOpen}>Add Task</Button>
-          <Button onClick={handleClose}>Cancel</Button>
+          <form onSubmit={handleFormSubmit}>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              Task Name
+              <TextField
+                fullWidth
+                id="taskName"
+                value={taskName}
+                onChange={(event) => setTaskName(event.target.value)}
+              />
+              <div />
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              Responsible User
+              <TaskSelectUser />
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              Date and Time
+              <TaskDateTimePicker />
+            </Typography>
+            <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
+              <Button type="submit" onClick={handleClose}>Add Task</Button>
+              <Button onClick={handleClose}>Cancel</Button>
+            </div>
+          </form>
         </Box>
       </Modal>
     </div>

@@ -10,7 +10,7 @@ import RegisterPage from "./pages/LandingPage/Register";
 import BillTrackerPage from './pages/Dashboard/BillTrackerPage';
 import MessagesPage from './pages/Dashboard/MessagesPage';
 import SettingsPage from './pages/Dashboard/SettingsPage';
-import ToDoPage from "./pages/Dashboard/ToDoPage";
+import TaskPage from "./pages/Dashboard/TaskPage";
 
 export const ThemeContext = React.createContext(null);
 
@@ -48,8 +48,8 @@ const App = () => {
             <Route exact path="/messages">
               <MessagesPage />
             </Route>
-            <Route exact path="/todo">
-              <ToDoPage />
+            <Route exact path="/task">
+              <TaskPage />
             </Route>
             <Route exact path="/settings">
               <SettingsPage />

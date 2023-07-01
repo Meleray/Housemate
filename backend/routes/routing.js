@@ -5,7 +5,7 @@ const { encryptPassword } = require("../middleware/encryptPassword");
 const userController = require("../controllers/userController");
 const spaceController = require("../controllers/spaceController");
 const chatController = require("../controllers/chatController");
-const todoController = require("../controllers/todoController");
+const taskController = require("../controllers/taskController");
 
 const authRouter = require("./subsystems/authRouter");
 
@@ -28,8 +28,10 @@ router.get("/find-chat", checkJWT, chatController.getChatById);
 router.post("/add-chat", checkJWT, chatController.addChat);
 router.put("/add-chat-member", checkJWT, chatController.addChatMember)
 
-// ToDo OPs
-router.post("/add-todo", checkJWT ,todoController.addToDo);
+// Task OPs
+router.post("/add-task", checkJWT ,taskController.addTask);
+router.post("/find-task", checkJWT ,taskController.getTaskById);
+
 
 router.use("/auth", authRouter)
 
