@@ -6,6 +6,7 @@ const userController = require("../controllers/userController");
 const spaceController = require("../controllers/spaceController");
 const chatController = require("../controllers/chatController");
 const messageController = require("../controllers/messageCotroller");
+const taskController = require("../controllers/taskController");
 
 const authRouter = require("./subsystems/authRouter");
 
