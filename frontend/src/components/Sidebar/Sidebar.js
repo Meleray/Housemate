@@ -9,11 +9,11 @@ import {
     SLogo,
     SSidebar
 } from "./styles";
-import { ReactComponent as LogoSVG } from "../../../assets/images/Housemate.svg";
+import { ReactComponent as LogoSVG } from "../../images/logo.svg";
 import { AiOutlineMessage, AiOutlineSetting } from "react-icons/ai";
 import { MdFormatListBulleted, MdLogout } from "react-icons/md";
 import { RiMoneyEuroBoxLine } from 'react-icons/ri';
-import SpaceManagementComponent from "./SpaceManagementComponent";
+import AddSpaceForm from "./AddSpaceForm";
 import SpaceList from "./SpaceList";
 
 const Sidebar = () => {
@@ -29,7 +29,7 @@ const Sidebar = () => {
             </SLogo>
             <SDivider />
             <SpaceList/>
-            <SpaceManagementComponent/>
+            <AddSpaceForm/>
             <SDivider />
             {linksArray.map(({ icon, label, to }) => (
                 <SLinkContainer key={label} isActive={pathname === to}>
@@ -59,9 +59,9 @@ const Sidebar = () => {
 
 const linksArray = [
     {
-        label: "To-Do", // label: "Home",
+        label: "Tasks", // label: "Home",
         icon: <MdFormatListBulleted />,
-        to: "/todo",
+        to: "/tasks",
         notification: 0,
     },
     {

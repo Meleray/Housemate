@@ -1,5 +1,5 @@
 import React from "react";
-import ProfilePic from "../../assets/images/john-doe-image.png";
+import ProfilePic from "../../images/john-doe-image.png";
 import { AiFillStar } from "react-icons/ai";
 
 const Testimonial = () => {

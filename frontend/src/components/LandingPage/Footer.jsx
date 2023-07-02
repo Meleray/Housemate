@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../../assets/images/Housemate.svg";
+import Logo from "../../images/logo.svg";
 import { BsTwitter } from "react-icons/bs";
 import { SiLinkedin } from "react-icons/si";
 import { BsYoutube } from "react-icons/bs";

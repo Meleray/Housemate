@@ -3,7 +3,7 @@ const HttpStatus = require('http-status-codes');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 const utilsForTests = require("./utilsForTests");
-const server = 'localhost:5001';
+const server = 'localhost:5000';
 
 chai.use(chaiHttp);
 
@@ -58,7 +58,7 @@ describe('Message system', () => {
             chai.expect(resAddSpaceMember, JSON.stringify(resAddSpace.body)).to.have.status(HttpStatus.OK);
 
             const resAddChatMember = await chai.request(server)
-                .put('/api/add-chat-member')
+                .put('/api/create-chat-member')
                 .send({userId: user._id, chatId: chat._id})
             chai.expect(resAddChatMember, JSON.stringify(resAddChatMember.body)).to.have.status(HttpStatus.OK);
         }
@@ -96,13 +96,13 @@ describe('Message system', () => {
     it('read messages', async () => {
         const reversedMessages = messages.reverse()
         const plainReadRes = await chai.request(server)
-            .post('/api/load-message-chunk').send({chatId: chat._id})
+            .post('/api/get-message-chunk').send({chatId: chat._id})
         let messagesBodies = plainReadRes.body.map(b => b.messageText);
         chai.expect(messagesBodies, JSON.stringify(messagesBodies)).to.be.eql(reversedMessages);
 
         const thirdMessageTime = plainReadRes.body.at(2).date; // yes third => at 2
         const olderReadRes = await chai.request(server)
-            .post('/api/load-message-chunk').send({chatId: chat._id, getOlderThan: thirdMessageTime})
+            .post('/api/get-message-chunk').send({chatId: chat._id, getOlderThan: thirdMessageTime})
         let oldMessagesBodies = olderReadRes.body.map(b => b.messageText);
         chai.expect(oldMessagesBodies, JSON.stringify(oldMessagesBodies)).to.be.eql(reversedMessages.slice(0, 2));
     });

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {ApiAddChatMember, ApiFindSpace} from "../../constants";
 
 function AddMemberDropDown({chatId}) {
     const [open, setOpen] = useState(false);
@@ -13,7 +12,7 @@ function AddMemberDropDown({chatId}) {
         async function fetchData() {
             const result = await axios.request({
                 method: 'POST',
-                url: ApiFindSpace,
+                url: 'http://localhost:5001/api/find-space',
                 headers: {'content-type': 'application/json',},
                 data: {spaceId: localStorage.getItem("spaceId")},
             });
@@ -26,7 +25,7 @@ function AddMemberDropDown({chatId}) {
     function requestAddMember(newMemberId) {
         axios.request({
             method: 'PUT',
-            url: ApiAddChatMember,
+            url: 'http://localhost:5001/api/create-chat-member',
             headers: {'content-type': 'application/json',},
             data: {
                 chatId: chatId,

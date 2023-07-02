@@ -1,7 +1,6 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 
 import axios from "axios";
-import {ApiSendMessage} from "../../constants";
 
 
 function SendMessageForm({chatId}) {
@@ -12,7 +11,7 @@ function SendMessageForm({chatId}) {
 
         axios.request({
             method: 'POST',
-            url: ApiSendMessage,
+            url: 'http://localhost:5001/api/send-message',
             headers: {'content-type': 'application/json',},
             data: {
                 senderId: localStorage.getItem("userId"),

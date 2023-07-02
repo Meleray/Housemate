@@ -9,7 +9,6 @@ import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import TaskSelectUser from './TaskSelectUser';
 import TaskDateTimePicker from './TaskDatePicker';
-import GutterlessList from '../TaskListContainer';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,8 +39,6 @@ export default function AddTaskButton() {
   const handleClose = () => setOpen(false);
 
   const [taskName, setTaskName] = useState();
-  const [dateTime, setDateTime] = useState();
-  const [completionStatus, setCompletionStatus] = useState();
 
   function handleFormSubmit(event) {
     event.preventDefault();
@@ -54,9 +51,17 @@ export default function AddTaskButton() {
       "notification_type": "String",
       "notification_time": "String",
       "admin_approval": "String",
-    });
-    // Server host, register is the route of the server
-  }
+    })
+    .then(response => {
+      // Handle the response from the server if needed
+      console.log(response.data); // Log the response data for debugging
+      handleClose(); // Close the modal after successful submission
+    })
+    .catch(error => {
+      // Handle any errors that occur during the POST request
+      console.error(error);
+      });
+    }
 
   return (
     <div className={classes.root}>
@@ -91,7 +96,7 @@ export default function AddTaskButton() {
               <TaskDateTimePicker />
             </Typography>
             <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
-              <Button type="submit" onClick={handleClose}>Add Task</Button>
+              <Button type="submit">Add Task</Button>
               <Button onClick={handleClose}>Cancel</Button>
             </div>
           </form>

@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from "styled-components";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { GlobalStyle } from "./components/Dashboard/styles/globalStyles";
-import { lightTheme, darkTheme } from "./components/Dashboard/styles/theme";
-import LandingPage from "./pages/LandingPage/LandingPage.jsx";
-import LoginPage from "./pages/LandingPage/Login";
-import RegisterPage from "./pages/LandingPage/Register";
-import BillTrackerPage from './pages/Dashboard/BillTrackerPage';
-import MessagesPage from './pages/MessageingSystem/MessagesPage';
-import SettingsPage from './pages/Dashboard/SettingsPage';
-import TaskPage from "./pages/Dashboard/TaskPage";
+import { GlobalStyle } from "./components/Layout/styles/globalStyles"; 
+import { lightTheme, darkTheme } from "./components/Layout/styles/theme";
+import LandingPage from "./components/LandingPage/LandingPage.jsx";
+import LoginPage from "./components/LandingPage/Login";
+import RegisterPage from "./components/LandingPage/Register";
+import BillTrackerPage from "./components/BillTrackerSystem/BillTrackerPage";
+import MessagesPage from "./components/MessagingSystem/MessagesPage";
+import SettingsPage from './components/SettingsPage';
+import TaskPage from "./components/TaskSystem/TaskPage";
 
 export const ThemeContext = React.createContext(null);
 
@@ -50,7 +50,7 @@ const App = () => {
             <Route exact path="/messages">
               <MessagesPage />
             </Route>
-            <Route exact path="/task">
+            <Route exact path="/tasks">
               <TaskPage />
             </Route>
             <Route exact path="/settings">
