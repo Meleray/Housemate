@@ -48,7 +48,7 @@ const addSpaceMember = async (req, res) => {
     const spaceId = req.body.spaceId;
     const space = await spaceService.addSpaceMember(spaceId, userId);
 
-    if (spaceId == null || space.error) {
+    if (space == null || space.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(space);
     }
     return res.status(HttpStatus.OK).json(space)
@@ -59,7 +59,18 @@ const deleteSpaceMember = async (req, res) => {
     const spaceId = req.body.spaceId;
     const space = await spaceService.deleteSpaceMember(spaceId, userId);
 
-    if (spaceId == null || space.error) {
+    if (space == null || space.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(space);
+    }
+    return res.status(HttpStatus.OK).json(space)
+}
+
+const promoteToAdmin = async (req, res) => {
+    const userId = req.body.userId;
+    const spaceId = req.body.spaceId;
+    const space = await spaceService.promoteToAdmin(spaceId, userId);
+
+    if (space == null || space.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(space);
     }
     return res.status(HttpStatus.OK).json(space)
@@ -70,6 +81,7 @@ module.exports = {
     addSpace,
     createSpaceAndAddUser,
     getSpacesByUserId,
-    addUserToSpace: addSpaceMember,
-    deleteUserFromSpace: deleteSpaceMember
+    addSpaceMember,
+    deleteSpaceMember,
+    promoteToAdmin
 };

@@ -167,6 +167,8 @@ describe('Chat system', () => {
                 console.log(res.body)
                 utilsForTests.compareObjects(res.body.chatMembers[0], userMember1,
                     new Set(["usrPicture", "userPassword", "userEmail"]))
+                utilsForTests.compareObjects(res.body.chatMembers[1], userMember2,
+                    new Set(["usrPicture", "userPassword", "userEmail"]))
                 done();
             });
     });

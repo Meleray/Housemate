@@ -7,13 +7,22 @@ const SpaceSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+
     spaceMembers: [
-        {type: Schema.Types.ObjectId, ref: 'User'}
+        {
+            _id: false, // Stop Mongoose from creating _id property for sub-document
+            memberId: {
+                type: Schema.Types.ObjectId,
+                ref: 'User',
+                required: true,
+            },
+            isAdmin: {
+                type: Boolean,
+                default: false
+            }
+        }
     ],
 
-    spaceAdmins: [
-        {type: Schema.Types.ObjectId, ref: 'User'}
-    ],
     premiumExpiration: Date,
 });
 

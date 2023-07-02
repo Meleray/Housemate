@@ -130,7 +130,32 @@ describe('User and Space schemes', () => {
             .send({userId: initialUser._id, spaceId: spaceId})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body.spaceMembers, JSON.stringify(res.body)).to.be.eql([initialUser._id]);
+
+                const expectedValue = [{memberId: initialUser._id, isAdmin: false}]
+                chai.expect(res.body.spaceMembers, JSON.stringify(res.body)).to.be.eql(expectedValue);
+                done();
+            });
+    });
+
+    it('promote to admin', (done) => {
+        chai.request(server)
+            .put('/api/promote-to-admin')
+            .send({userId: initialUser._id, spaceId: spaceId})
+            .end((err, res) => {
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+
+                const expectedValue = [{memberId: initialUser._id, isAdmin: true}]
+                chai.expect(res.body.spaceMembers, JSON.stringify(res.body)).to.be.eql(expectedValue);
+                done();
+            });
+    });
+
+    it('promote a non-exist user to admin', (done) => {
+        chai.request(server)
+            .put('/api/promote-to-admin')
+            .send({userId: utilsForTests.nonExistId, spaceId: spaceId})
+            .end((err, res) => {
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
                 done();
             });
     });

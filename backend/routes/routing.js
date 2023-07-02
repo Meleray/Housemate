@@ -34,10 +34,11 @@ router.delete("/delete-user", checkJWT, handleErrorAsync(userController.deleteUs
 // Space OPs
 router.post("/find-space", checkJWT, handleErrorAsync(spaceController.getSpaceById));
 router.post("/create-space", checkJWT, handleErrorAsync(spaceController.addSpace));
-router.put("/create-space-member", checkJWT, handleErrorAsync(spaceController.addUserToSpace));
-router.delete("/delete-space-member", checkJWT, handleErrorAsync(spaceController.deleteUserFromSpace));
-router.post("/create-space-and-member", checkJWT, handleErrorAsync(spaceController.createSpaceAndAddUser));
 router.post("/find-spaces-by-userid", checkJWT, handleErrorAsync(spaceController.getSpacesByUserId));
+router.put("/create-space-member", checkJWT, handleErrorAsync(spaceController.addSpaceMember));
+router.delete("/delete-space-member", checkJWT, handleErrorAsync(spaceController.deleteSpaceMember));
+router.post("/create-space-and-member", checkJWT, handleErrorAsync(spaceController.createSpaceAndAddUser));
+router.put("/promote-to-admin", checkJWT, handleErrorAsync(spaceController.promoteToAdmin));
 
 // Chat Subsystem OPs
 router.post("/find-chat", checkJWT, handleErrorAsync(chatController.getChatById));
