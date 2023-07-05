@@ -1,5 +1,9 @@
 # Housemate
 
+Housemate is a centralized platform designed to help people engaged in communal
+living resolve the mess with their household chores and expenses with easy-to-use
+scheduling and messaging system.
+
 ## Launch the application
 
 Our application uses docker. It has 2 containers: database and backend (TODO: Add frontend container). To launch the app you need docker-compose:
