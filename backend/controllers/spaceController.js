@@ -33,8 +33,7 @@ const createSpaceAndAddUser = async (req, res) => {
 }
 
 const getSpacesByUserId = async (req, res) => {
-    const userId = req.body.userId;
-    const spaces = await spaceService.getSpacesByUserId(userId);
+    const spaces = await spaceService.getSpacesByUserId(req.body);
 
     if (spaces == null || spaces.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(spaces);

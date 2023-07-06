@@ -1,7 +1,6 @@
 const userModel = require("../database/models/user");
-const spaceModel = require("../database/models/space");
-const utilsForServices = require("./utilsForServices");
 const {assertKeysValid, pick} = require("./utilsForServices");
+const spaceService = require("./spaceService");
 
 
 const returnableUserFields = ['_id', 'userName', 'userEmail', 'userDescription', 'userPicture'];
@@ -36,7 +35,7 @@ class UserService {
     deleteUser = async (requestBody) => {
         assertKeysValid(requestBody, ['userId'], [])
         const userId = requestBody.userId
-        let spaces = await spaceModel.find({'spaceMembers.memberId': userId})  // TODO
+        let spaces = await spaceService.getSpacesByUserId({userId: userId})
 
         if (spaces.length > 0) {
             return {

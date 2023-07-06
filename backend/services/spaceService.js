@@ -17,8 +17,9 @@ class SpaceService {
         return space;
     };
 
-    getSpacesByUserId = async (userId) => {  // TODO
-        return spaceModel.find({'spaceMembers.memberId': userId})
+    getSpacesByUserId = async (requestBody) => {
+        assertKeysValid(requestBody, ['userId'], [])
+        return spaceModel.find({'spaceMembers.memberId': requestBody.userId}).select('_id')
     }
 
     addSpace = async (spaceData) => {
