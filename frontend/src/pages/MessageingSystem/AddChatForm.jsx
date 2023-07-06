@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from "react"
+import React, {useState} from "react"
 
 import axios from "axios";
 import {ApiCreateChatAndMember, ApiCreateSpaceAndMember} from "../../constants";
-import {isError} from "../../utils";
 
 
 function AddChatForm() {
@@ -22,9 +21,9 @@ function AddChatForm() {
             },
         });
 
-        if (isError(response)) {
-            return;
-        }
+        // if (isError(response)) {
+        //     return;
+        // }
         // TODO update chat list
     }
 

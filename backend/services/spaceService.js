@@ -1,5 +1,6 @@
 const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
+const {randomInviteCode} = require("./utilsForServices");
 
 class SpaceService {
     getSpaceById = async (spaceId) => {
@@ -12,11 +13,12 @@ class SpaceService {
         return space;
     };
 
-    getSpacesByUserId = async (userId) => {
-        return spaceModel.find({spaceMembers: userId})
+    getSpacesByUserId = async (userId) => {  // TODO
+        return spaceModel.find({'spaceMembers.memberId': userId})
     }
 
     addSpace = async (spaceData) => {
+        spaceData.inviteCode = randomInviteCode()
         return spaceModel.create(spaceData);
     };
 
@@ -43,6 +45,14 @@ class SpaceService {
             {new: true}
         )
     };
+
+    joinSpace = async (inviteCode, userId) => {
+        let spaceId = await spaceModel.findOne({inviteCode: inviteCode})
+        if (spaceId === null) {
+            return {error: {type: "INVALID_INVITE_CODE", message: `The code ${inviteCode} is invalid`}}
+        }
+        return this.addSpaceMember(spaceId, userId)
+    }
 
     deleteSpaceMember = async (spaceId, userId) => {
         const space = await spaceModel.findByIdAndUpdate(spaceId, {
@@ -71,6 +81,19 @@ class SpaceService {
 
         return spaceModel.findOneAndUpdate(filter, update, {new: true})
     };
+
+    getInviteCode = async (spaceId) => {
+        return spaceModel.findById(spaceId).select("inviteCode");
+    }
+
+    changeInviteCode = async (spaceId) => {
+        const newInviteCode = randomInviteCode()
+        return spaceModel.findByIdAndUpdate(
+            spaceId,
+            {inviteCode: newInviteCode},
+            {new: true}).select("inviteCode");
+    }
 }
+
 
 module.exports = new SpaceService();

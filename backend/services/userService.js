@@ -29,7 +29,7 @@ class UserService {
     }
 
     deleteUser = async (userId) => {
-        let spaces = await spaceModel.find({'spaceMembers.memberId': userId})
+        let spaces = await spaceModel.find({'spaceMembers.memberId': userId})  // TODO
 
         if (spaces.length > 0) {
             return {

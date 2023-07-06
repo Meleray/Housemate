@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react"
 
 import axios from "axios";
 import {ApiFindChatsBySpaceAndUserId} from "../../constants";
-import {isError} from "../../utils";
 
 
 function ChatList({onSelectChat}) {
@@ -21,9 +20,9 @@ function ChatList({onSelectChat}) {
                     userId: localStorage.getItem("userId")
                 },
             });
-            if (isError(response)){
-                return
-            }
+            // if (isError(response)){
+            //     return
+            // }
             setChats(response.data)
         }
 

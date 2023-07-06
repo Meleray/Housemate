@@ -54,6 +54,17 @@ const addSpaceMember = async (req, res) => {
     return res.status(HttpStatus.OK).json(space)
 };
 
+const joinSpace = async (req, res) => {
+    const userId = req.body.userId;
+    const inviteCode = req.body.inviteCode;
+    const space = await spaceService.joinSpace(inviteCode, userId);
+
+    if (space == null || space.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(space);
+    }
+    return res.status(HttpStatus.OK).json(space)
+};
+
 const deleteSpaceMember = async (req, res) => {
     const userId = req.body.userId;
     const spaceId = req.body.spaceId;
@@ -76,12 +87,34 @@ const promoteToAdmin = async (req, res) => {
     return res.status(HttpStatus.OK).json(space)
 }
 
+const getInviteCode = async (req, res) => {
+    const code = await spaceService.getInviteCode(req.body.spaceId);
+
+    if (code == null || code.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(code);
+    }
+    return res.status(HttpStatus.OK).json(code)
+}
+
+const changeInviteCode = async (req, res) => {
+    const code = await spaceService.changeInviteCode(req.body.spaceId);
+
+    if (code == null || code.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(code);
+    }
+    return res.status(HttpStatus.OK).json(code)
+}
+
+
 module.exports = {
     getSpaceById,
     addSpace,
     createSpaceAndAddUser,
     getSpacesByUserId,
     addSpaceMember,
+    joinSpace,
     deleteSpaceMember,
-    promoteToAdmin
+    promoteToAdmin,
+    getInviteCode,
+    changeInviteCode
 };

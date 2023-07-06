@@ -1,32 +1,47 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {ApiCreateSpaceAndMember, ApiDeleteSpaceMember} from "../../../constants";
-import {isError} from "../../../utils";
+import {
+    ApiChangeInviteCode,
+    ApiCreateSpaceAndMember,
+    ApiDeleteSpaceMember,
+    ApiGetInviteCode, ApiJoinSpace
+} from "../../../constants";
+import {buildErrorMessage} from "../../../utils";
+
+
+function changeSpaceAndReload(spaceId) {
+    //await new Promise(r => setTimeout(r, 3000));
+    localStorage.setItem("spaceId", spaceId)
+    // We set local storage variable.
+    // Probably, the easiest way to update it in all the components is to reload the page.
+    // We assume that user does not switch spaces frequently.
+    window.location.reload()
+}
+
 
 function AddSpaceForm() {
     const [spaceName, setSpaceName] = useState("");
 
     const handleSpaceCreation = async event => {
         event.preventDefault();  // prevent reload
-        let response = await axios.request({
-            method: 'POST',
-            url: ApiCreateSpaceAndMember,
-            headers: {'content-type': 'application/json',},
-            data: {
-                spaceName: spaceName,
-                userId: localStorage.getItem("userId"),
-            },
-        })
-        //await new Promise(r => setTimeout(r, 3000));
+        let response;
+        try {
 
-        if (isError(response)) {
+            response = await axios.request({
+                method: 'POST',
+                url: ApiCreateSpaceAndMember,
+                headers: {'content-type': 'application/json',},
+                data: {
+                    spaceName: spaceName,
+                    userId: localStorage.getItem("userId"),
+                },
+            })
+        } catch (error) {
+            alert(buildErrorMessage(error));
             return;
         }
-        localStorage.setItem("spaceId", response.data._id)
-        // We set local storage variable.
-        // Probably, the easiest way to update it in all the components is to reload the page.
-        // We assume that user does not switch spaces frequently.
-        window.location.reload()
+
+        changeSpaceAndReload(response.data._id)
     }
 
 
@@ -46,24 +61,23 @@ function AddSpaceForm() {
 function LeaveSpaceButton() {
     const handleSpaceExit = async event => {
         event.preventDefault();  // prevent reload
-        let response = await axios.request({
-            method: 'DELETE',
-            url: ApiDeleteSpaceMember,
-            headers: {'content-type': 'application/json',},
-            data: {
-                spaceId: localStorage.getItem("spaceId"),
-                userId: localStorage.getItem("userId")
-            },
-        });
-
-        if (isError(response)) {
+        let response;
+        try {
+            response = await axios.request({
+                method: 'DELETE',
+                url: ApiDeleteSpaceMember,
+                headers: {'content-type': 'application/json',},
+                data: {
+                    spaceId: localStorage.getItem("spaceId"),
+                    userId: localStorage.getItem("userId")
+                },
+            });
+        } catch (error) {
+            alert(buildErrorMessage(error));
             return;
         }
-        localStorage.removeItem("spaceId")
-        // We set local storage variable.
-        // Probably, the easiest way to update it in all the components is to reload the page.
-        // We assume that user does not switch spaces frequently.
-        window.location.reload()
+
+        changeSpaceAndReload(response.data._id)
     }
 
     return (
@@ -72,21 +86,92 @@ function LeaveSpaceButton() {
 }
 
 function InviteCodeComponent() {
+    const [inviteCode, setInviteCode] = useState("");
+
+    useEffect(() => {
+        async function fetchInviteCode() {
+            let response;
+            try {
+                response = await axios.request({
+                    method: 'POST',
+                    url: ApiGetInviteCode,
+                    headers: {'content-type': 'application/json',},
+                    data: {
+                        spaceId: localStorage.getItem("spaceId"),
+                    },
+                });
+            } catch (error) {
+                alert(buildErrorMessage(error));
+                return;
+            }
+
+            setInviteCode(response.data.inviteCode)
+        }
+
+        fetchInviteCode();
+    }, []);
+
+
+    const handleCodeChange = async event => {
+        event.preventDefault();  // prevent reload
+        let response;
+        try {
+            response = await axios.request({
+                method: 'PUT',
+                url: ApiChangeInviteCode,
+                headers: {'content-type': 'application/json',},
+                data: {
+                    spaceId: localStorage.getItem("spaceId"),
+                },
+            });
+        } catch (error) {
+            alert(buildErrorMessage(error));
+            return;
+        }
+        setInviteCode(response.data.inviteCode)
+    }
+
     return (
         <>
-            <button type="button">Generate new invite code</button>
-            <p> Code for this space: VeRySeCrEtCoDe </p>
+            <button type="button" onClick={handleCodeChange}>
+                Generate new invite code
+            </button>
+            <p> Invite code for this space: {inviteCode} </p>
         </>
     )
 }
 
-function JoinNewSpace(){
+function JoinNewSpace() {
+    const [inviteCode, setInviteCode] = useState("");
+
+    const handleSpaceJoin = async event => {
+        event.preventDefault();  // prevent reload
+
+        let response;
+        try {
+            response = await axios.request({
+                method: 'POST',
+                url: ApiJoinSpace,
+                headers: {'content-type': 'application/json',},
+                data: {
+                    inviteCode: inviteCode,
+                    userId: localStorage.getItem("userId"),
+                },
+            })
+        } catch (error) {
+            alert(buildErrorMessage(error));
+            return;
+        }
+
+        changeSpaceAndReload(response.data._id)
+    }
+
     return (
-        <form>
+        <form onSubmit={handleSpaceJoin}>
             <input
                 type="text"
                 placeholder="Secret code"
-                onChange={(e) => (null)}
+                onChange={(e) => setInviteCode(e.target.value)}
             />
             <button>Join space</button>
         </form>
