@@ -23,8 +23,8 @@ const createSpaceAndAddUser = async (req, res) => {
     delete spaceData.userId
     const space = await spaceService.addSpace(spaceData)
 
-    const userId = req.body.userId;
-    const spaceUpdated = await spaceService.addSpaceMember(space._id, userId);
+    const spaceUpdated = await spaceService.addSpaceMember(
+        {spaceId: space._id, userId: req.body.userId});
 
     if (spaceUpdated == null || spaceUpdated.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(spaceUpdated);
@@ -42,9 +42,7 @@ const getSpacesByUserId = async (req, res) => {
 }
 
 const addSpaceMember = async (req, res) => {
-    const userId = req.body.userId;
-    const spaceId = req.body.spaceId;
-    const space = await spaceService.addSpaceMember(spaceId, userId);
+    const space = await spaceService.addSpaceMember(req.body);
 
     if (space == null || space.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(space);
@@ -53,9 +51,7 @@ const addSpaceMember = async (req, res) => {
 };
 
 const joinSpace = async (req, res) => {
-    const userId = req.body.userId;
-    const inviteCode = req.body.inviteCode;
-    const space = await spaceService.joinSpace(inviteCode, userId);
+    const space = await spaceService.joinSpace(req.body);
 
     if (space == null || space.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(space);
@@ -64,9 +60,7 @@ const joinSpace = async (req, res) => {
 };
 
 const deleteSpaceMember = async (req, res) => {
-    const userId = req.body.userId;
-    const spaceId = req.body.spaceId;
-    const space = await spaceService.deleteSpaceMember(spaceId, userId);
+    const space = await spaceService.deleteSpaceMember(req.body);
 
     if (space == null || space.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(space);
@@ -75,9 +69,7 @@ const deleteSpaceMember = async (req, res) => {
 }
 
 const promoteToAdmin = async (req, res) => {
-    const userId = req.body.userId;
-    const spaceId = req.body.spaceId;
-    const space = await spaceService.promoteToAdmin(spaceId, userId);
+    const space = await spaceService.promoteToAdmin(req.body);
 
     if (space == null || space.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(space);
@@ -86,7 +78,7 @@ const promoteToAdmin = async (req, res) => {
 }
 
 const getInviteCode = async (req, res) => {
-    const code = await spaceService.getInviteCode(req.body.spaceId);
+    const code = await spaceService.getInviteCode(req.body);
 
     if (code == null || code.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(code);
@@ -95,7 +87,7 @@ const getInviteCode = async (req, res) => {
 }
 
 const changeInviteCode = async (req, res) => {
-    const code = await spaceService.changeInviteCode(req.body.spaceId);
+    const code = await spaceService.changeInviteCode(req.body);
 
     if (code == null || code.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(code);

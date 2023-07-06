@@ -1,6 +1,6 @@
 const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
-const {randomInviteCode, assertKeysValid} = require("./utilsForServices");
+const {randomInviteCode, assertKeysValid, pick} = require("./utilsForServices");
 
 
 const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration'];
@@ -22,12 +22,17 @@ class SpaceService {
         return spaceModel.find({'spaceMembers.memberId': requestBody.userId}).select('_id')
     }
 
-    addSpace = async (spaceData) => {
-        spaceData.inviteCode = randomInviteCode()
-        return spaceModel.create(spaceData);
+    addSpace = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceName'], ['spaceMembers'])
+        requestBody.inviteCode = randomInviteCode()
+        let space = await spaceModel.create(requestBody);
+        return pick(space, returnableSpaceFields);
     };
 
-    addSpaceMember = async (spaceId, userId) => {
+    addSpaceMember = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId', 'userId'], [])
+        const {spaceId, userId} = requestBody
+
         // check user exist
         if (!(await userModel.exists({_id: userId}))) {
             return {error: {type: "USER_NOT_FOUND", message: `There is no user with id=${userId}`}};
@@ -48,30 +53,39 @@ class SpaceService {
         return spaceModel.findByIdAndUpdate(spaceId,
             {$push: {spaceMembers: {memberId: userId}}},
             {new: true}
-        )
+        ).select('spaceMembers');
     };
 
-    joinSpace = async (inviteCode, userId) => {
+    joinSpace = async (requestBody) => {
+        assertKeysValid(requestBody, ['inviteCode', 'userId'], [])
+        const {inviteCode, userId} = requestBody
+
         let spaceId = await spaceModel.findOne({inviteCode: inviteCode})
         if (spaceId === null) {
             return {error: {type: "INVALID_INVITE_CODE", message: `The code ${inviteCode} is invalid`}}
         }
-        return this.addSpaceMember(spaceId, userId)
+        return this.addSpaceMember({spaseId: spaceId, userId: userId})
     }
 
-    deleteSpaceMember = async (spaceId, userId) => {
+    deleteSpaceMember = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId', 'userId'], [])
+        const {spaceId, userId} = requestBody
+
         const space = await spaceModel.findByIdAndUpdate(spaceId, {
             $pull: {spaceMembers: {memberId: userId}}  // update 'spaceMembers' only if userId is not presented in it
-        }, {new: true})
+        }, {new: true}).select('spaceMembers')
         if (!space) {
             return {
                 error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}
             }
         }
-        return space.save();
+        return space;
     };
 
-    promoteToAdmin = async (spaceId, userId) => { //demoteFromAdmin
+    promoteToAdmin = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId', 'userId'], [])
+        const {spaceId, userId} = requestBody
+
         // check user exist
         if (!(await spaceModel.exists({_id: spaceId, spaceMembers: {"$in": [{memberId: userId}]}}))) {
             return {
@@ -84,19 +98,21 @@ class SpaceService {
         // https://www.mongodb.com/docs/manual/reference/operator/update/positional/
         let update = {$set: {'spaceMembers.$.isAdmin': true}}
 
-        return spaceModel.findOneAndUpdate(filter, update, {new: true})
+        return spaceModel.findOneAndUpdate(filter, update, {new: true}).select('spaceMembers');
     };
 
-    getInviteCode = async (spaceId) => {
-        return spaceModel.findById(spaceId).select("inviteCode");
+    getInviteCode = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId'], [])
+        return spaceModel.findById(requestBody.spaceId).select('inviteCode');
     }
 
-    changeInviteCode = async (spaceId) => {
+    changeInviteCode = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId'], [])
         const newInviteCode = randomInviteCode()
         return spaceModel.findByIdAndUpdate(
-            spaceId,
+            requestBody.spaceId,
             {inviteCode: newInviteCode},
-            {new: true}).select("inviteCode");
+            {new: true}).select('inviteCode');
     }
 }
 
