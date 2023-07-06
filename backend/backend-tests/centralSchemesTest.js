@@ -55,13 +55,13 @@ describe('User and Space schemes', () => {
             .send({userId:  initialUser._id, ...updatedUserFields})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                let reposeUser = res.body
-                for (let key in reposeUser) {
+                let responseUser = res.body
+                for (let key in responseUser) {
                     if (key in updatedUserFields) {  // check that all the fields of updatedUserFields are updated
-                        chai.expect(reposeUser[key], JSON.stringify(res.body)).to.be.eql(updatedUserFields[key]);
+                        chai.expect(responseUser[key], JSON.stringify(res.body)).to.be.eql(updatedUserFields[key]);
                     } else if (key in initialUser) {
                         // check that all the fields, which was not in updatedUserFields, are still the same
-                        chai.expect(reposeUser[key], JSON.stringify(res.body)).to.be.eql(initialUser[key])
+                        chai.expect(responseUser[key], JSON.stringify(res.body)).to.be.eql(initialUser[key])
                     }
                 }
                 done();

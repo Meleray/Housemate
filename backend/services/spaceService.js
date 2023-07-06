@@ -1,10 +1,14 @@
 const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
-const {randomInviteCode} = require("./utilsForServices");
+const {randomInviteCode, assertKeysValid} = require("./utilsForServices");
+
+
+const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration'];
 
 class SpaceService {
-    getSpaceById = async (spaceId) => {
-        const space = await spaceModel.findById(spaceId);
+    getSpaceById = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId'], [])
+        const space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
         if (!space) {
             return {
                 error: {type: "SPACE_NOT_FOUND", message: "There is no space for this id"},
