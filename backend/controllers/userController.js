@@ -3,8 +3,7 @@ const HttpStatus = require('http-status-codes');
 const userService = require("../services/userService");
 
 const getUserById = async (req, res) => {
-    const userId = req.body.userId;
-    const user = await userService.getUserById(userId);
+    const user = await userService.getUserById(req.body);
     if (user == null || user.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(user);
     }
@@ -25,8 +24,7 @@ const updateUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
-    const userId = req.body.userId;
-    const deletedUser = await userService.deleteUser(userId);
+    const deletedUser = await userService.deleteUser(req.body);
     if (deletedUser == null || deletedUser.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(deletedUser);
     }

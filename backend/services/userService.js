@@ -1,34 +1,41 @@
 const userModel = require("../database/models/user");
 const spaceModel = require("../database/models/space");
 const utilsForServices = require("./utilsForServices");
+const {assertKeysValid, pick} = require("./utilsForServices");
+
+
+const returnableUserFields = ['_id', 'userName', 'userEmail', 'userDescription', 'userPicture'];
 
 class UserService {
-    getUserById = async (userId) => {
-        const user = await userModel.findById(userId);
+
+    getUserById = async (requestBody) => {
+        assertKeysValid(requestBody, ['userId'], [])
+        const user = await userModel.findById(requestBody.userId)
+            .select(returnableUserFields);
         if (!user) {
-            return {error: {type: "USER_NOT_FOUND", message: `There is no user with id=${userId}`}};
+            return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${requestBody.userId}`}};
         }
         return user;
     };
 
-    addUser = async (userData) => {
-        return userModel.create(userData);
+    addUser = async (requestBody) => {
+        assertKeysValid(requestBody, ['userName', 'userEmail', 'userPassword'],
+            ['userDescription'])
+        let user = await userModel.create(requestBody);
+        return pick(user, returnableUserFields);
     };
 
 
-    updateUser = async (userData) => {
-        let updValues = structuredClone(userData)
-        delete updValues._id
-        let keysCheck = utilsForServices.areKeysValid(updValues,
-            ['userPassword', 'userDescription', 'userEmail', 'userName'])
-        if (keysCheck.errorMessage != null) {
-            return {error: {type: "FAILED_TO_UPDATE_USER", message: keysCheck.errorMessage}};
-        }
-
-        return userModel.findByIdAndUpdate(userData._id, {$set: updValues}, {new: true})
+    updateUser = async (requestBody) => {
+        assertKeysValid(requestBody, ['userId'],
+            ['userName', 'userEmail', 'userDescription', 'userPassword'])
+        const {userId, ...updData} = requestBody;
+        return userModel.findByIdAndUpdate(userId, {$set: updData}, {new: true}).select(returnableUserFields)
     }
 
-    deleteUser = async (userId) => {
+    deleteUser = async (requestBody) => {
+        assertKeysValid(requestBody, ['userId'], [])
+        const userId = requestBody.userId
         let spaces = await spaceModel.find({'spaceMembers.memberId': userId})  // TODO
 
         if (spaces.length > 0) {
@@ -39,7 +46,7 @@ class UserService {
                 }
             };
         }
-        let deletedUser = await userModel.findByIdAndRemove(userId);
+        let deletedUser = await userModel.findByIdAndRemove(userId).select(returnableUserFields);
         if (deletedUser == null) {
             return {
                 error: {type: "CAN_NOT_DELETE_USER", message: `A user with id=${userId} does not exist`}

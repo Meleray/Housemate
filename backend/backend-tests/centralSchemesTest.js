@@ -52,7 +52,7 @@ describe('User and Space schemes', () => {
     it('update user', (done) => {
         chai.request(server)
             .put('/api/update-user')
-            .send(updatedUserFields)
+            .send({userId:  initialUser._id, ...updatedUserFields})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 let reposeUser = res.body
