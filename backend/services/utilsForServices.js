@@ -8,7 +8,7 @@ function assertKeysValid(objectData, requiredKeys, optionalKeys) {
 
     requiredKeys.forEach((key) => {
         if (!Object.keys(objectData).includes(key)) {
-            throw new Error( `The object should contain '${key}'`);
+            throw new Error(`The object should contain '${key}'`);
         }
     })
 }

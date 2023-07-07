@@ -49,7 +49,7 @@ router.post("/find-chat-members", checkJWT, handleErrorAsync(chatController.getC
 router.post("/create-chat", checkJWT, handleErrorAsync(chatController.addChat));
 router.post("/create-chat-and-member", checkJWT, handleErrorAsync(chatController.createChatAndAddUser));
 router.put("/add-chat-member", checkJWT, handleErrorAsync(chatController.addChatMember));
-router.post("/find-chats-by-space-and-userid", checkJWT, handleErrorAsync(chatController.getChatsByUserId));
+router.post("/find-chats-by-space-and-userid", checkJWT, handleErrorAsync(chatController.getChatsBySpaceAndUserId));
 router.put("/update-chat", checkJWT, handleErrorAsync(chatController.updateChat));
 router.delete("/delete-chat-member", checkJWT, handleErrorAsync(chatController.deleteChatMember));
 

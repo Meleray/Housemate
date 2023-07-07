@@ -3,8 +3,7 @@ const HttpStatus = require('http-status-codes');
 const chatService = require("../services/chatService");
 
 const getChatById = async (req, res) => {
-    const chatId = req.body.chatId;
-    const chat = await chatService.getChatById(chatId);
+    const chat = await chatService.getChatById(req.body);
     if (chat == null || chat.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(chat);
     }
@@ -12,8 +11,7 @@ const getChatById = async (req, res) => {
 };
 
 const getChatMembers  = async (req, res) => {
-    const chatId = req.body.chatId;
-    const chatMembers = await chatService.getChatMembers(chatId);
+    const chatMembers = await chatService.getChatMembers(req.body);
     if (chatMembers == null || chatMembers.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(chatMembers);
     }
@@ -29,9 +27,7 @@ const addChat = async (req, res) => {
 };
 
 const addChatMember = async (req, res) => {
-    const userId = req.body.userId;
-    const chatId = req.body.chatId;
-    const chat = await chatService.addChatMember(chatId, userId);
+    const chat = await chatService.addChatMember(req.body);
 
     if (chat == null || chat.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(chat);
@@ -62,9 +58,7 @@ const updateChat = async (req, res) => {
 }
 
 const deleteChatMember = async (req, res) => {
-    const userId = req.body.userId;
-    const chatId = req.body.chatId;
-    const chat = await chatService.deleteChatMember(chatId, userId);
+    const chat = await chatService.deleteChatMember(req.body);
 
     if (chat == null || chat.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(chat);
@@ -73,9 +67,7 @@ const deleteChatMember = async (req, res) => {
 }
 
 const getChatsBySpaceAndUserId = async (req, res) => {
-    const userId = req.body.userId;
-    const spaceId = req.body.spaceId;
-    const chats = await chatService.getChatsBySpaceAndUserId(spaceId, userId);
+    const chats = await chatService.getChatsBySpaceAndUserId(req.body);
 
     if (chats == null || chats.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(chats);
@@ -91,5 +83,5 @@ module.exports = {
     createChatAndAddUser,
     deleteChatMember,
     updateChat,
-    getChatsByUserId: getChatsBySpaceAndUserId
+    getChatsBySpaceAndUserId
 };

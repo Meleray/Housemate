@@ -1,28 +1,42 @@
 const chatModel = require("../database/models/chat");
-const userModel = require("../database/models/user");
 const spaceModel = require("../database/models/space");
 const utilsForServices = require("./utilsForServices");
+const {assertKeysValid, pick} = require("./utilsForServices");
+
+
+const returnableChatFields = ['_id', 'chatName', 'spaceId', 'chatMembers'];
 
 class ChatService {
 
-    getChatById = async (chatId) => {
-        const chat = await chatModel.findById(chatId);
+    getChatById = async (requestBody) => {
+        assertKeysValid(requestBody, ['chatId'], [])
+
+        const chat = await chatModel.findById(requestBody.chatId).select(returnableChatFields);
         if (!chat) {
-            return {error: {type: "CHAT_NOT_FOUND", message: `There is no chat for id=${chatId}`}};
+            return {error: {type: "CHAT_NOT_FOUND", message: `There is no chat for id=${requestBody.chatId}`}};
         }
         return chat;
     };
 
-    getChatMembers = async (chatId) => {
-        return chatModel.findById(chatId).populate({path: 'chatMembers', select: ['userName', 'userPicture']})
+    getChatMembers = async (requestBody) => {
+        assertKeysValid(requestBody, ['chatId'], [])
+        return chatModel.findById(requestBody.chatId).populate(
+            {path: 'chatMembers', select: ['userName', 'userPicture', 'userEmail']})
             .select(['chatMembers', '-_id'])
     };
 
-    addChat = async (chat) => {
-        return chatModel.create(chat);
+    addChat = async (requestBody) => {
+        assertKeysValid(requestBody, ['chatName', 'spaceId'], ['chatMembers'])
+        if (!(await spaceModel.exists({_id: requestBody.spaceId}))){
+            return {error: {type: "FAILED_TO_ADD_CHAT", message: `There is no space with id=${requestBody.spaceId}`}};
+        }
+        const chat = await chatModel.create(requestBody);
+        return pick(chat, returnableChatFields);
     };
 
-    addChatMember = async (chatId, userId) => {
+    addChatMember = async (requestBody) => {
+        assertKeysValid(requestBody, ['chatId', 'userId'])
+        const {chatId, userId} = requestBody
         const chatExtracted = await chatModel.findById(chatId).populate({path: 'spaceId'})
 
         if (chatExtracted == null) {
@@ -40,38 +54,40 @@ class ChatService {
         return chatModel.findByIdAndUpdate(chatId,
             {$addToSet: {chatMembers: userId}}, // update 'spaceMembers' only if userId is not presented in it
             {new: true}
-        )
+        ).select(returnableChatFields)
     };
 
-    deleteChatMember = async (chatId, userId) => {
+    deleteChatMember = async (requestBody) => {
+        assertKeysValid(requestBody, ['chatId', 'userId'])
+        const {chatId, userId} = requestBody
+
         const chat = await chatModel.findByIdAndUpdate(chatId, {
             $pull: {chatMembers: userId}  // update 'chatMembers' only if userId is not presented in it
-        }, {new: true})
+        }, {new: true}).select(returnableChatFields)
         if (!chat) {
             return {
                 error: {type: "CHAT_NOT_FOUND", message: `There is no chat for id=${chatId}`}
             }
         }
-        return chat.save();
+        return chat;
     };
 
-    updateChat = async (chatData) => {
-        let updValues = structuredClone(chatData)
-        delete updValues._id
-        let keysCheck = utilsForServices.areKeysValid(updValues, ["chatName"])
-        if (keysCheck.errorMessage != null) {
-            return {error: {type: "FAILED_TO_UPDATE_CHAT", message: keysCheck.errorMessage}};
-        }
-        return chatModel.findByIdAndUpdate(chatData._id, updValues, {new: true})
+    updateChat = async (requestBody) => {
+        assertKeysValid(requestBody, ['chatId'], ['chatName'])
+        const {chatId, ...updData} = requestBody;
+        return chatModel.findByIdAndUpdate(chatId, updData, {new: true}).select(returnableChatFields);
     }
 
-    getChatsBySpaceAndUserId = async (spaceId, userId) => {
+    getChatsBySpaceAndUserId = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId', 'userId'], [])
+        const {spaceId, userId} = requestBody;
+
         return chatModel.find({
             $and: [
                 {spaceId: spaceId},
                 {chatMembers: {"$in": [userId]}}
             ]
-        })
+        }).select(returnableChatFields)
     }
 }
 

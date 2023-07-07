@@ -20,7 +20,7 @@ class UserService {
     addUser = async (requestBody) => {
         assertKeysValid(requestBody, ['userName', 'userEmail', 'userPassword'],
             ['userDescription'])
-        let user = await userModel.create(requestBody);
+        const user = await userModel.create(requestBody);
         return pick(user, returnableUserFields);
     };
 

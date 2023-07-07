@@ -30,7 +30,7 @@ describe('User and Space schemes', () => {
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
 
-                utilsForTests.compareObjects(res.body, initialUser, new Set(["_id", "userPassword"]))
+                utilsForTests.compareObjects(res.body, initialUser, ["_id", "userPassword", "userPicture"])
                 initialUser._id = res.body._id
                 done();
             });
