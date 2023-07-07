@@ -86,7 +86,7 @@ function LeaveSpaceButton() {
 }
 
 function InviteCodeComponent() {
-    const [inviteCode, setInviteCode] = useState("");
+    const [inviteCode, setInviteCode] = useState("not available");
 
     useEffect(() => {
         async function fetchInviteCode() {
@@ -108,7 +108,10 @@ function InviteCodeComponent() {
             setInviteCode(response.data.inviteCode)
         }
 
-        fetchInviteCode();
+        // TODO
+        if (localStorage.getItem("spaceId") !== null){
+            fetchInviteCode();
+        }
     }, []);
 
 

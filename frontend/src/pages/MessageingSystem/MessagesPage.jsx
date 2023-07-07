@@ -10,7 +10,7 @@ import Chat from "./Chat";
 const MessagesPage = () => {
 
     // how to set global variables https://stackoverflow.com/a/58214612/13221007
-    localStorage.setItem("userId", "64a70362bafdc40d95ce2079");  // TODO during the registration
+    localStorage.setItem("userId", "64a7463d18f9f7a80bfbd3df");  // TODO during the registration
 
     const [chosenChatId, setChosenChatId] = useState(null);
 

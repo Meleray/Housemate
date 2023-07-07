@@ -6,7 +6,7 @@ class UserService {
     getUserById = async (userId) => {
         const user = await userModel.findById(userId);
         if (!user) {
-            return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${userId}`}};
+            return {error: {type: "USER_NOT_FOUND", message: `There is no user with id=${userId}`}};
         }
         return user;
     };

@@ -68,7 +68,6 @@ describe('User and Space schemes', () => {
             });
     });
 
-
     it('get user', (done) => {
         chai.request(server)
             .post('/api/find-user')
@@ -133,6 +132,18 @@ describe('User and Space schemes', () => {
 
                 const expectedValue = [{memberId: initialUser._id, isAdmin: false}]
                 chai.expect(res.body.spaceMembers, JSON.stringify(res.body)).to.be.eql(expectedValue);
+                done();
+            });
+    });
+
+    it('find spaces by userid', (done) => {
+        chai.request(server)
+            .post('/api/find-spaces-by-userid')
+            .send({userId: initialUser._id})
+            .end((err, res) => {
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                chai.expect(res.body[0].spaceMembers, JSON.stringify(res.body)).to.be.eql(
+                    [{ memberId: initialUser._id, isAdmin: false } ]);
                 done();
             });
     });

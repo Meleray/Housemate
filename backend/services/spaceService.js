@@ -25,7 +25,7 @@ class SpaceService {
     addSpaceMember = async (spaceId, userId) => {
         // check user exist
         if (!(await userModel.exists({_id: userId}))) {
-            return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${userId}`}};
+            return {error: {type: "USER_NOT_FOUND", message: `There is no user with id=${userId}`}};
         }
         if (!(await spaceModel.exists({_id: spaceId}))) {
             return {error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}};
