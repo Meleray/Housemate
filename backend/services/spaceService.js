@@ -64,7 +64,7 @@ class SpaceService {
         if (spaceId === null) {
             return {error: {type: "INVALID_INVITE_CODE", message: `The code ${inviteCode} is invalid`}}
         }
-        return this.addSpaceMember({spaseId: spaceId, userId: userId})
+        return this.addSpaceMember({spaceId: spaceId, userId: userId})
     }
 
     deleteSpaceMember = async (requestBody) => {

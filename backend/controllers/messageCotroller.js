@@ -12,7 +12,7 @@ const addMessage = async (req, res) => {
 
 const getMessagesChunk = async (req, res) => {
     const messages = await messageService
-        .getMessagesChunk(req.body.chatId, req.body.getOlderThan);
+        .getMessagesChunk(req.body);
     if (messages == null || messages.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(messages);
     }

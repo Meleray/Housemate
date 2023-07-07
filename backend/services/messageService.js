@@ -2,38 +2,37 @@ const utilsForServices = require("./utilsForServices");
 
 const messageModel = require("../database/models/message");
 const chatModel = require("../database/models/chat");
+const {assertKeysValid} = require("./utilsForServices");
 
 
 class MessageService {
 
-    addMessage = async (messageData) => {
-        let keysCheck = utilsForServices.areKeysValid(messageData,
-            ["messageText", "chatId", "senderId", "isNotification"])
-        if (keysCheck.errorMessage != null) {
-            return {error: {type: "FAILED_TO_ADD_MESSAGE", message: keysCheck.errorMessage}};
-        }
+    addMessage = async (requestBody) => {
+        assertKeysValid(requestBody, ['messageText', 'chatId', 'senderId'], ['isNotification'])
 
-        let chat = await chatModel.findById(messageData.chatId)
+        let chat = await chatModel.findById(requestBody.chatId)
         if (chat == null) {
             return {
-                error: {type: "FAILED_TO_ADD_MESSAGE", message: `A chat with id=${messageData.chatId} does not exist`}
+                error: {type: "FAILED_TO_ADD_MESSAGE", message: `A chat with id=${requestBody.chatId} does not exist`}
             };
         }
-        if (!chat.chatMembers.includes(messageData.senderId)) {
+        if (!chat.chatMembers.includes(requestBody.senderId)) {
             return {
                 error: {
                     type: "FAILED_TO_ADD_MESSAGE",
-                    message: `The user ${messageData.senderId} is not a member of the chat ${messageData.chatId}`
+                    message: `The user ${requestBody.senderId} is not a member of the chat ${requestBody.chatId}`
                 }
             };
         }
 
-        return messageModel.create(messageData);
+        return messageModel.create(requestBody);
     };
 
-    getMessagesChunk = async (chatId, getOlderThan) => {
+    getMessagesChunk = async (requestBody) => {
         const chunkSize = 50;
 
+        assertKeysValid(requestBody, ['chatId'], ['getOlderThan'])
+        const {chatId, getOlderThan} = requestBody
         if (getOlderThan == null) {
             return messageModel.find({chatId: chatId}).sort({date: 'descending'}).limit(chunkSize).exec();
         } else {
