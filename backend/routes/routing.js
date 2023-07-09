@@ -69,8 +69,8 @@ router.post("/load-message-chunk", checkJWT, handleController(messageService.get
 
 
 // Task OPs
-router.post("/add-task", checkJWT, taskService.addTask);
-router.post("/find-task", checkJWT, taskService.getTaskById);
+router.post("/add-task", checkJWT, handleController(taskService.addTask));
+router.post("/find-task", checkJWT, handleController(taskService.getTaskById));
 
 
 router.use("/auth", authRouter)
