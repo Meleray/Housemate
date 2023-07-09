@@ -2,6 +2,7 @@ const chatModel = require("../database/models/chat");
 const spaceModel = require("../database/models/space");
 const utilsForServices = require("./utilsForServices");
 const {assertKeysValid, pick} = require("./utilsForServices");
+const HttpStatus = require("http-status-codes");
 
 
 const returnableChatFields = ['_id', 'chatName', 'spaceId', 'chatMembers'];
@@ -56,6 +57,14 @@ class ChatService {
             {new: true}
         ).select(returnableChatFields)
     };
+
+    createChatAndAddUser = async (requestBody) => {
+        // todo assert
+        const {userId, ...chatData} = requestBody
+
+        const chat = await this.addChat(chatData)
+        return  this.addChatMember(chat._id, userId);
+    }
 
     deleteChatMember = async (requestBody) => {
         assertKeysValid(requestBody, ['chatId', 'userId'])

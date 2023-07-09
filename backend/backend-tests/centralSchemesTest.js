@@ -52,7 +52,7 @@ describe('User and Space schemes', () => {
     it('update user', (done) => {
         chai.request(server)
             .put('/api/update-user')
-            .send({userId:  initialUser._id, ...updatedUserFields})
+            .send({userId: initialUser._id, ...updatedUserFields})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 let responseUser = res.body
@@ -142,8 +142,7 @@ describe('User and Space schemes', () => {
             .send({userId: initialUser._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body[0].spaceMembers, JSON.stringify(res.body)).to.be.eql(
-                    [{ memberId: initialUser._id, isAdmin: false } ]);
+                chai.expect(res.body, JSON.stringify(res.body)).to.be.eql([{_id: spaceId}]);
                 done();
             });
     });

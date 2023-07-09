@@ -1,6 +1,7 @@
 const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
 const {randomInviteCode, assertKeysValid, pick} = require("./utilsForServices");
+const HttpStatus = require("http-status-codes");
 
 
 const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration'];
@@ -55,6 +56,14 @@ class SpaceService {
             {new: true}
         ).select('spaceMembers');
     };
+
+    createSpaceAndAddUser = async (requestBody) => {
+        // todo assert
+        const {userId, ...spaceData} = requestBody
+        const space = await this.addSpace(spaceData)
+
+        return this.addSpaceMember({spaceId: space._id, userId: userId});
+    }
 
     joinSpace = async (requestBody) => {
         assertKeysValid(requestBody, ['inviteCode', 'userId'], [])
