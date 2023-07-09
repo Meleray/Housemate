@@ -1,24 +1,23 @@
-const HttpStatus = require('http-status-codes');
+const taskModel = require("../database/models/task");
+const spaceModel = require("../database/models/space");
 
-const taskService = require("../services/taskService");
+class TaskController {
+    getTaskById = async (requestBody) => {
+        const task = await taskModel.findById(requestBody.taskId);
+        if (!task) {
+            return {error: {type: "TASK_NOT_FOUND", message: `There is no task for id=${requestBody.taskId}`}};
+        }
+        return task;
+    };
 
-const getTaskById = async (req, res) => {
-    const taskId = req.body.taskId;
-    const task = await taskService.getTaskById(taskId);
-    if (task.error) {
-        return res.status(HttpStatus.BAD_REQUEST).json(task);
-    }
-    return res.status(HttpStatus.OK).json(task);
-};
+    addTask = async (requestBody) => {
+        try {
+            return await taskModel.create(requestBody);
+        } catch (err) {
+            return {error: {type: "FAILED_TO_ADD_TASK", message: err.message}};
+        }
+    };
 
-const addTask = async (req, res) => {
-    console.log(req.body);
-    const task = await taskService.addTask(req.body);
-    if (task.error) {
-        return res.status(HttpStatus.BAD_REQUEST).json(task);
-    }
-    return res.status(HttpStatus.OK).json(task);
-};
+}
 
-
-module.exports = {addTask, getTaskById};
+module.exports = new TaskController();

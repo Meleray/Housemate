@@ -63,8 +63,8 @@ describe('Chat system', () => {
             .send(chat)
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                utilsForTests.compareObjects(res.body, chat, ['_id', 'chatMembers'])
                 chat._id = res.body._id
-                utilsForTests.compareObjects(res.body, chat)
                 done();
             });
     });
@@ -72,6 +72,7 @@ describe('Chat system', () => {
     it('add chat to a non-exist space', (done) => {
         let fakeChat = structuredClone(chat);
         fakeChat.spaceId = utilsForTests.nonExistId;  // non-existed space
+        delete fakeChat._id
         chai.request(server)
             .post('/api/create-chat')
             .send(fakeChat)
@@ -164,11 +165,12 @@ describe('Chat system', () => {
             .send({chatId: chat._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                console.log(res.body)
+                console.log(res.body.chatMembers[0])
+                console.log(userMember1)
                 utilsForTests.compareObjects(res.body.chatMembers[0], userMember1,
-                    new Set(["usrPicture", "userPassword", "userEmail"]))
+                    ["userPicture", "userPassword"])
                 utilsForTests.compareObjects(res.body.chatMembers[1], userMember2,
-                    new Set(["usrPicture", "userPassword", "userEmail"]))
+                    ["userPicture", "userPassword"])
                 done();
             });
     });
@@ -177,7 +179,7 @@ describe('Chat system', () => {
         let newName = "The longest"
         chai.request(server)
             .put('/api/update-chat')
-            .send({_id: chat._id, chatName: newName})
+            .send({chatId: chat._id, chatName: newName})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body.chatName, JSON.stringify(res.body)).to.be.eql(newName);

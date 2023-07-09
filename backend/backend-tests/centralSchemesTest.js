@@ -30,7 +30,7 @@ describe('User and Space schemes', () => {
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
 
-                utilsForTests.compareObjects(res.body, initialUser, new Set(["_id", "userPassword"]))
+                utilsForTests.compareObjects(res.body, initialUser, ["_id", "userPassword", "userPicture"])
                 initialUser._id = res.body._id
                 done();
             });
@@ -52,16 +52,16 @@ describe('User and Space schemes', () => {
     it('update user', (done) => {
         chai.request(server)
             .put('/api/update-user')
-            .send(updatedUserFields)
+            .send({userId: initialUser._id, ...updatedUserFields})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                let reposeUser = res.body
-                for (let key in reposeUser) {
+                let responseUser = res.body
+                for (let key in responseUser) {
                     if (key in updatedUserFields) {  // check that all the fields of updatedUserFields are updated
-                        chai.expect(reposeUser[key], JSON.stringify(res.body)).to.be.eql(updatedUserFields[key]);
+                        chai.expect(responseUser[key], JSON.stringify(res.body)).to.be.eql(updatedUserFields[key]);
                     } else if (key in initialUser) {
                         // check that all the fields, which was not in updatedUserFields, are still the same
-                        chai.expect(reposeUser[key], JSON.stringify(res.body)).to.be.eql(initialUser[key])
+                        chai.expect(responseUser[key], JSON.stringify(res.body)).to.be.eql(initialUser[key])
                     }
                 }
                 done();
@@ -142,8 +142,7 @@ describe('User and Space schemes', () => {
             .send({userId: initialUser._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body[0].spaceMembers, JSON.stringify(res.body)).to.be.eql(
-                    [{ memberId: initialUser._id, isAdmin: false } ]);
+                chai.expect(res.body, JSON.stringify(res.body)).to.be.eql([{_id: spaceId}]);
                 done();
             });
     });
