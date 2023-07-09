@@ -48,7 +48,18 @@ const addSpaceMember = async (req, res) => {
     const spaceId = req.body.spaceId;
     const space = await spaceService.addSpaceMember(spaceId, userId);
 
-    if (spaceId == null || space.error) {
+    if (space == null || space.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(space);
+    }
+    return res.status(HttpStatus.OK).json(space)
+};
+
+const joinSpace = async (req, res) => {
+    const userId = req.body.userId;
+    const inviteCode = req.body.inviteCode;
+    const space = await spaceService.joinSpace(inviteCode, userId);
+
+    if (space == null || space.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(space);
     }
     return res.status(HttpStatus.OK).json(space)
@@ -59,17 +70,51 @@ const deleteSpaceMember = async (req, res) => {
     const spaceId = req.body.spaceId;
     const space = await spaceService.deleteSpaceMember(spaceId, userId);
 
-    if (spaceId == null || space.error) {
+    if (space == null || space.error) {
         return res.status(HttpStatus.BAD_REQUEST).json(space);
     }
     return res.status(HttpStatus.OK).json(space)
 }
+
+const promoteToAdmin = async (req, res) => {
+    const userId = req.body.userId;
+    const spaceId = req.body.spaceId;
+    const space = await spaceService.promoteToAdmin(spaceId, userId);
+
+    if (space == null || space.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(space);
+    }
+    return res.status(HttpStatus.OK).json(space)
+}
+
+const getInviteCode = async (req, res) => {
+    const code = await spaceService.getInviteCode(req.body.spaceId);
+
+    if (code == null || code.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(code);
+    }
+    return res.status(HttpStatus.OK).json(code)
+}
+
+const changeInviteCode = async (req, res) => {
+    const code = await spaceService.changeInviteCode(req.body.spaceId);
+
+    if (code == null || code.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(code);
+    }
+    return res.status(HttpStatus.OK).json(code)
+}
+
 
 module.exports = {
     getSpaceById,
     addSpace,
     createSpaceAndAddUser,
     getSpacesByUserId,
-    addUserToSpace: addSpaceMember,
-    deleteUserFromSpace: deleteSpaceMember
+    addSpaceMember,
+    joinSpace,
+    deleteSpaceMember,
+    promoteToAdmin,
+    getInviteCode,
+    changeInviteCode
 };

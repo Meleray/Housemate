@@ -1,11 +1,15 @@
 import React from "react";
 import PageTitle from "../Layout/PageTitle";
-import AddTask from "./AddTaskButton";
+import AddTask from "./AddTaskForm";
 import TaskFilter from "./TaskFilter";
 import { SLayout, SMain } from "../Layout/styles";
 import Sidebar from "../Sidebar/Sidebar";
 import "./TaskPage.css";
-import CheckboxList from "./TaskListContainer";
+import './TaskPage.css';
+import AddTaskForm from "./AddTaskForm";
+import TaskList from "./TaskList"
+import Task from "./Task"
+import TaskListContainer from "./TaskListContainer"
 
 const TaskPage = () => {
   return (
@@ -13,9 +17,9 @@ const TaskPage = () => {
       <Sidebar />
       <SMain>
         <PageTitle>Tasks</PageTitle>
-        <AddTask />
+        <AddTaskForm />
         <TaskFilter />
-        <CheckboxList />
+        <TaskListContainer />
       </SMain>
     </SLayout>
   );

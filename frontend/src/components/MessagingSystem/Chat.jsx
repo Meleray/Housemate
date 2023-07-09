@@ -3,6 +3,7 @@ import React, {useState, useEffect} from "react"
 import axios from "axios";
 import SendMessageForm from "./SendMessageForm";
 import AddMemberDropDown from "./AddMemberDropDown";
+import {ApiFindChatMembers, ApiLoadMessageChunk} from "../../constants";
 
 
 function Chat({chatId}) {
@@ -14,7 +15,7 @@ function Chat({chatId}) {
         // console.log(chatId)
         const result = await axios.request({
             method: 'POST',
-            url: 'http://localhost:5001/api/get-message-chunk',
+            url: ApiLoadMessageChunk,
             headers: {'content-type': 'application/json',},
             data: {chatId: chatId},
         });
@@ -34,7 +35,7 @@ function Chat({chatId}) {
         async function fetchChatMembers() {
             const result = await axios.request({
                 method: 'POST',
-                url: 'http://localhost:5001/api/find-chat-members',
+                url: ApiFindChatMembers,
                 headers: {'content-type': 'application/json',},
                 data: {chatId: chatId},
             });

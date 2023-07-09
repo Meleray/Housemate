@@ -18,7 +18,7 @@ app.use(cookieParser())
 
 function requestLoggerMiddleware(req, res, next) {
     const cyanColor = '\x1b[1;36m%s\x1b[0m'
-    const url = `http://localhost:${process.env.PORT}/${req.url}`
+    const url = `http://localhost:${process.env.PORT}${req.url}`
     const message = `curl ${url} -X ${req.method.toUpperCase()} -d '${JSON.stringify(req.body)}' -H "Content-Type: application/json"`
     console.log(cyanColor, message);
     next();

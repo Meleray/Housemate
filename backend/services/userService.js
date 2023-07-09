@@ -6,7 +6,7 @@ class UserService {
     getUserById = async (userId) => {
         const user = await userModel.findById(userId);
         if (!user) {
-            return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${userId}`}};
+            return {error: {type: "USER_NOT_FOUND", message: `There is no user with id=${userId}`}};
         }
         return user;
     };
@@ -29,7 +29,8 @@ class UserService {
     }
 
     deleteUser = async (userId) => {
-        let spaces = await spaceModel.find({spaceMembers: userId}).select("_id");
+        let spaces = await spaceModel.find({'spaceMembers.memberId': userId})  // TODO
+
         if (spaces.length > 0) {
             return {
                 error: {
@@ -41,7 +42,7 @@ class UserService {
         let deletedUser = await userModel.findByIdAndRemove(userId);
         if (deletedUser == null) {
             return {
-                error: {type: "CAN_NOT_DELETE_USER", message: `A user with id=${spaces} does not exist`}
+                error: {type: "CAN_NOT_DELETE_USER", message: `A user with id=${userId} does not exist`}
             };
         }
         return deletedUser

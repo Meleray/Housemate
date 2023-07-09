@@ -20,5 +20,30 @@ const addTask = async (req, res) => {
     return res.status(HttpStatus.OK).json(task);
 };
 
+const deleteTask = async (req, res) => {
+    const taskId = req.body.taskId;
+    const task = await taskService.deleteTask(taskId);
 
-module.exports = {addTask, getTaskById};
+    if (task == null || task.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(task);
+    }
+    return res.status(HttpStatus.OK).json(task)
+};
+
+const getTasksBySpaceAndUserId = async (req, res) => {
+    const spaceId = req.body.spaceId;
+    const tasks = await taskService.getTasksBySpaceAndUserId(spaceId);
+
+    if (tasks == null || tasks.error) {
+        return res.status(HttpStatus.BAD_REQUEST).json(tasks);
+    }
+    return res.status(HttpStatus.OK).json(tasks)
+}
+
+
+module.exports = {
+    addTask, 
+    getTaskById,
+    deleteTask,
+    getTasksByUserId: getTasksBySpaceAndUserId
+};

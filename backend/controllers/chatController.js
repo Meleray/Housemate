@@ -40,7 +40,7 @@ const addChatMember = async (req, res) => {
 };
 
 const createChatAndAddUser = async (req, res) => {
-    let chatData = structuredClone(req.body)
+    let chatData = structuredClone(req.body)                        // What is structuredClone
     delete chatData.userId
     const chat = await chatService.addChat(chatData)
 

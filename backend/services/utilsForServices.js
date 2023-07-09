@@ -7,4 +7,9 @@ function areKeysValid(objectData, validKeys) {
     return {}; // empty object
 }
 
-module.exports = {areKeysValid};
+const randomInviteCode = () => {
+    let n = (Math.random() * 0xfffff * 1000000).toString(36);
+    return n.slice(0, 6);
+}
+
+module.exports = {areKeysValid, randomInviteCode};

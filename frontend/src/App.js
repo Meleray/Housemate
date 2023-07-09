@@ -50,7 +50,7 @@ const App = () => {
             <Route exact path="/messages">
               <MessagesPage />
             </Route>
-            <Route exact path="/tasks">
+            <Route exact path="/task">
               <TaskPage />
             </Route>
             <Route exact path="/settings">

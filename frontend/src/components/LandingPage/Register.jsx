@@ -13,8 +13,7 @@ function RegisterPage({ history }) {
               {"userName": name, 
                "userEmail": email, 
                "userPassword": password, 
-               "userPicture": "#0000FF"
-               }) 
+               "userPicture": 2045}) // Server host, register is the route of the server
     history.push("/login");
   }
 

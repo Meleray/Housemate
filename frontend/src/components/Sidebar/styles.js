@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { btnReset, v } from "../Layout/styles/variables.js";
+
+import { btnReset, v } from "../Layout/styles/variables";
 
 export const SSidebar = styled.div`
     width: ${({ isOpen }) => (!isOpen ? `auto` : v.sidebarWidth)};

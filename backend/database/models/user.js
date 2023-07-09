@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
         default: () => utilsForModels.randomHexColorCode(),
         validate: {
             validator: function (value) {
-                let reg = /^#[0-9A-Fa-f]{6}$/; // Updated regular expression
+                let reg = /[\dabcdef]{6}/g;
                 return reg.test(value);
             },
             message: "Invalid hex color code"

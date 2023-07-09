@@ -28,7 +28,7 @@ class ChatService {
         if (chatExtracted == null) {
             return {error: {type: "FAILED_TO_ADD_CHAT_MEMBER", message: `There is no chat with id=${chatId}`}};
         }
-        let spaceMembers = chatExtracted.spaceId.spaceMembers;
+        let spaceMembers = chatExtracted.spaceId.spaceMembers.map(item => item.memberId.toString());
         if (!spaceMembers.includes(userId)) {
             return {
                 error: {

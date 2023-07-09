@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;  // for foreign keys
 
 const TaskSchema = new mongoose.Schema({
+    spaceId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Space',
+        required: true
+    },
     start_date: {
         type: String, // Date
         required: true

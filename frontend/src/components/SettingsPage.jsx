@@ -1,7 +1,7 @@
 import React from "react";
 import PageTitle from "./Layout/PageTitle";
-import { SLayout,SMain } from "./Layout/styles";
-import Sidebar from "./Sidebar/Sidebar";
+import { SLayout, SMain } from "./Layout/styles.js";
+import Sidebar from "./Sidebar/Sidebar.jsx";
 
 const SettingsPage = () => {
     return  (

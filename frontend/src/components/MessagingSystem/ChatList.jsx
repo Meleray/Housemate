@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react"
 
 import axios from "axios";
+import {ApiFindChatsBySpaceAndUserId} from "../../constants";
 
 
 function ChatList({onSelectChat}) {
@@ -10,19 +11,22 @@ function ChatList({onSelectChat}) {
 
     useEffect(() => {
         async function fetchData() {
-            const result = await axios.request({
+            const response = await axios.request({
                 method: 'POST',
-                url: 'http://localhost:5001/api/find-chats-by-space-and-userid',
+                url: ApiFindChatsBySpaceAndUserId,
                 headers: {'content-type': 'application/json',},
                 data: {
                     spaceId: localStorage.getItem("spaceId"),
                     userId: localStorage.getItem("userId")
                 },
             });
-            setChats(result.data)
+            // if (isError(response)){
+            //     return
+            // }
+            setChats(response.data)                 // After one finds the data in the database this is the new value stored in the variable chats
         }
 
-        fetchData();
+        fetchData();                // the fetch data is run
     }, []);
 
     const emptyMessage = (chats.length === 0 && <h1>No chats found</h1>)
@@ -30,13 +34,13 @@ function ChatList({onSelectChat}) {
     return (
         <div>
             {emptyMessage}
-            <ul className="list-group">
+            <ul className="list-group">                    
                 {chats.map((r, index) =>
                     <li className={selectedIndex === index ? "list-group-item active" : "active"}
                         key={r._id}
                         onClick={() => {
                             setSelectedIndex(index);
-                            onSelectChat(r._id); // call an external function
+                            onSelectChat(r._id); // call an external function; this is the declaration of the .id of the chats
                         }}
                     >
                         {r.chatName}
