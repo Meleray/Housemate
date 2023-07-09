@@ -1,7 +1,7 @@
 const taskModel = require("../database/models/task");
 const spaceModel = require("../database/models/space");
 
-class TaskService {
+class TaskController {
     getTaskById = async (requestBody) => {
         const task = await taskModel.findById(requestBody.taskId);
         if (!task) {
@@ -20,4 +20,4 @@ class TaskService {
 
 }
 
-module.exports = new TaskService();
+module.exports = new TaskController();

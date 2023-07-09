@@ -1,13 +1,13 @@
 const chatModel = require("../database/models/chat");
 const spaceModel = require("../database/models/space");
-const utilsForServices = require("./utilsForServices");
-const {assertKeysValid, pick} = require("./utilsForServices");
+const utilsForServices = require("./utilsForControllers");
+const {assertKeysValid, pick} = require("./utilsForControllers");
 const HttpStatus = require("http-status-codes");
 
 
 const returnableChatFields = ['_id', 'chatName', 'spaceId', 'chatMembers'];
 
-class ChatService {
+class ChatController {
 
     getChatById = async (requestBody) => {
         assertKeysValid(requestBody, ['chatId'], [])
@@ -100,4 +100,4 @@ class ChatService {
     }
 }
 
-module.exports = new ChatService();
+module.exports = new ChatController();

@@ -1,11 +1,11 @@
-const utilsForServices = require("./utilsForServices");
+const utilsForServices = require("./utilsForControllers");
 
 const messageModel = require("../database/models/message");
 const chatModel = require("../database/models/chat");
-const {assertKeysValid} = require("./utilsForServices");
+const {assertKeysValid} = require("./utilsForControllers");
 
 
-class MessageService {
+class MessageController {
 
     addMessage = async (requestBody) => {
         assertKeysValid(requestBody, ['messageText', 'chatId', 'senderId'], ['isNotification'])
@@ -43,4 +43,4 @@ class MessageService {
 
 }
 
-module.exports = new MessageService();
+module.exports = new MessageController();

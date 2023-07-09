@@ -3,11 +3,11 @@ const router = express.Router();
 const {checkJWT} = require("../middleware/checkAuth");
 const {encryptPassword} = require("../middleware/encryptPassword");
 
-const userService = require("../services/userService");
-const spaceService = require("../services/spaceService");
-const chatService = require("../services/chatService");
-const messageService = require("../services/messageService");
-const taskService = require("../services/taskService");
+const userService = require("../controllers/userController");
+const spaceService = require("../controllers/spaceController");
+const chatService = require("../controllers/chatController");
+const messageService = require("../controllers/messageController");
+const taskService = require("../controllers/taskController");
 
 const authRouter = require("./subsystems/authRouter");
 

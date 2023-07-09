@@ -1,12 +1,12 @@
 const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
-const {randomInviteCode, assertKeysValid, pick} = require("./utilsForServices");
+const {randomInviteCode, assertKeysValid, pick} = require("./utilsForControllers");
 const HttpStatus = require("http-status-codes");
 
 
 const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration'];
 
-class SpaceService {
+class SpaceController {
     getSpaceById = async (requestBody) => {
         assertKeysValid(requestBody, ['spaceId'], [])
         const space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
@@ -126,4 +126,4 @@ class SpaceService {
 }
 
 
-module.exports = new SpaceService();
+module.exports = new SpaceController();

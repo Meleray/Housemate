@@ -1,11 +1,11 @@
 const userModel = require("../database/models/user");
-const {assertKeysValid, pick} = require("./utilsForServices");
-const spaceService = require("./spaceService");
+const {assertKeysValid, pick} = require("./utilsForControllers");
+const spaceService = require("./spaceController");
 
 
 const returnableUserFields = ['_id', 'userName', 'userEmail', 'userDescription', 'userPicture'];
 
-class UserService {
+class UserController {
 
     getUserById = async (requestBody) => {
         assertKeysValid(requestBody, ['userId'], [])
@@ -56,4 +56,4 @@ class UserService {
 
 }
 
-module.exports = new UserService();
+module.exports = new UserController();
