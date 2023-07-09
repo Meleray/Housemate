@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {ApiFindSpacesByUserId} from "../../../constants";
+import {getSafe} from "../../../utils";
 
 function SpaceList() {
     const [spaces, setSpaces] = useState([]);
@@ -34,13 +35,13 @@ function SpaceList() {
             <ul className="list-group">
                 {spaces.map((r, index) =>
                     <li className={selectedIndex === index ? "list-group-item active" : "active"}
-                        key={r._id}
+                        key={getSafe(r, "_id")}
                         onClick={() => {
                             setSelectedIndex(index);
-                            onSelectSpace(r._id);
+                            onSelectSpace(getSafe(r, "_id"));
                         }}
                     >
-                        {r.spaceName}
+                        {getSafe(r, "spaceName")}
                     </li>
                 )}
             </ul>

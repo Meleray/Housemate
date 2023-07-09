@@ -17,11 +17,14 @@ describe('User and Space schemes', () => {
         userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
         // initialUser._id will be set further
     }
-    let updatedUserFields = {
+    const updatedUserFields = {
         userName: "Mikhail Looong",
         userDescription: "The longest human in the universe",
     }
-    let spaceId;
+    let space = {
+        spaceName: "A house with high ceilings",
+        // _id: will be filled later
+    }
 
     it('add user', (done) => {
         chai.request(server)
@@ -86,7 +89,7 @@ describe('User and Space schemes', () => {
             .send({spaceName: "A house with high ceilings"})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                spaceId = res.body._id
+                space._id = res.body._id
                 done();
             });
     });
@@ -95,10 +98,10 @@ describe('User and Space schemes', () => {
     it('get space', (done) => {
         chai.request(server)
             .post('/api/find-space')
-            .send({spaceId: spaceId})
+            .send({spaceId: space._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(spaceId);
+                chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(space._id);
                 done();
             });
     });
@@ -106,7 +109,7 @@ describe('User and Space schemes', () => {
     it('add a non-exist user to a space', (done) => {
         chai.request(server)
             .put('/api/create-space-member')
-            .send({userId: utilsForTests.nonExistId, spaceId: spaceId})  // fake userId
+            .send({userId: utilsForTests.nonExistId, spaceId: space._id})  // fake userId
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
                 done();
@@ -126,7 +129,7 @@ describe('User and Space schemes', () => {
     it('add a user to a space', (done) => {
         chai.request(server)
             .put('/api/create-space-member')
-            .send({userId: initialUser._id, spaceId: spaceId})
+            .send({userId: initialUser._id, spaceId: space._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
 
@@ -142,7 +145,8 @@ describe('User and Space schemes', () => {
             .send({userId: initialUser._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body, JSON.stringify(res.body)).to.be.eql([{_id: spaceId}]);
+                chai.expect(res.body, JSON.stringify(res.body)).to.be.eql(
+                    [{_id: space._id, spaceName: space.spaceName}]);
                 done();
             });
     });
@@ -161,7 +165,7 @@ describe('User and Space schemes', () => {
     it('delete user from space', (done) => {
         chai.request(server)
             .delete('/api/delete-space-member')
-            .send({userId: initialUser._id, spaceId: spaceId})
+            .send({userId: initialUser._id, spaceId: space._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body.spaceMembers, JSON.stringify(res.body)).to.be.eql([]);

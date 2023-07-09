@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {
     ApiChangeInviteCode,
-    ApiCreateSpaceAndMember,
+    ApiCreateSpace,
     ApiDeleteSpaceMember,
     ApiGetInviteCode, ApiJoinSpace
 } from "../../../constants";
@@ -29,11 +29,11 @@ function AddSpaceForm() {
 
             response = await axios.request({
                 method: 'POST',
-                url: ApiCreateSpaceAndMember,
+                url: ApiCreateSpace,
                 headers: {'content-type': 'application/json',},
                 data: {
                     spaceName: spaceName,
-                    userId: localStorage.getItem("userId"),
+                    spaceMembersIds: [localStorage.getItem("userId")],
                 },
             })
         } catch (error) {

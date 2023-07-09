@@ -1,7 +1,7 @@
 const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
 const {randomInviteCode, assertKeysValid, pick} = require("./utilsForControllers");
-const HttpStatus = require("http-status-codes");
+const {assertUserBelongs2Space} = require("./assert");
 
 
 const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration'];
@@ -20,13 +20,21 @@ class SpaceController {
 
     getSpacesByUserId = async (requestBody) => {
         assertKeysValid(requestBody, ['userId'], [])
-        return spaceModel.find({'spaceMembers.memberId': requestBody.userId}).select('_id')
+        return spaceModel.find({'spaceMembers.memberId': requestBody.userId}).select(['_id', 'spaceName'])
     }
 
     addSpace = async (requestBody) => {
-        assertKeysValid(requestBody, ['spaceName'], ['spaceMembers'])
-        requestBody.inviteCode = randomInviteCode()
-        let space = await spaceModel.create(requestBody);
+        assertKeysValid(requestBody, ['spaceName'], ['spaceMembersIds'])
+        let spaceData = {
+            spaceName: requestBody.spaceName,
+            inviteCode: randomInviteCode()
+        }
+
+        if (requestBody.hasOwnProperty('spaceMembersIds')) {
+            // promote the initial members to admins
+            spaceData.spaceMembers = requestBody.spaceMembersIds.map(m => ({memberId: m, isAdmin: true}))
+        }
+        const space = await spaceModel.create(spaceData);
         return pick(space, returnableSpaceFields);
     };
 
@@ -42,7 +50,7 @@ class SpaceController {
             return {error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}};
         }
         if ((await spaceModel.exists(
-            {$and: [{_id: spaceId}, {spaceMembers: {"$in": [{memberId: userId}]}}]}
+            {spaceId: spaceId, spaceMembers: {$elemMatch: {memberId: userId}}}
         ))) {
             return {
                 error: {
@@ -56,14 +64,6 @@ class SpaceController {
             {new: true}
         ).select('spaceMembers');
     };
-
-    createSpaceAndAddUser = async (requestBody) => {
-        // todo assert
-        const {userId, ...spaceData} = requestBody
-        const space = await this.addSpace(spaceData)
-
-        return this.addSpaceMember({spaceId: space._id, userId: userId});
-    }
 
     joinSpace = async (requestBody) => {
         assertKeysValid(requestBody, ['inviteCode', 'userId'], [])
@@ -95,14 +95,8 @@ class SpaceController {
         assertKeysValid(requestBody, ['spaceId', 'userId'], [])
         const {spaceId, userId} = requestBody
 
-        // check user exist
-        if (!(await spaceModel.exists({_id: spaceId, spaceMembers: {"$in": [{memberId: userId}]}}))) {
-            return {
-                error: {type: "FAILED_TO_UPGRADE_TO_ADMIN", message: `The user ${userId} is not a member of ${spaceId}`}
-            };
-        }
-
-        let filter = {_id: spaceId, spaceMembers: {memberId: userId}}
+        await assertUserBelongs2Space({userId: userId, spaceId: spaceId})
+        let filter = {_id: spaceId, spaceMembers: {$elemMatch: {memberId: userId}}}
         // '$' operator identifies an element in an array to update without explicitly specifying the position
         // https://www.mongodb.com/docs/manual/reference/operator/update/positional/
         let update = {$set: {'spaceMembers.$.isAdmin': true}}

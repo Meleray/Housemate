@@ -48,7 +48,6 @@ router.post("/find-spaces-by-userid", checkJWT, handleController(spaceService.ge
 router.put("/create-space-member", checkJWT, handleController(spaceService.addSpaceMember));
 router.post("/join-space", checkJWT, handleController(spaceService.joinSpace));
 router.delete("/delete-space-member", checkJWT, handleController(spaceService.deleteSpaceMember));
-router.post("/create-space-and-member", checkJWT, handleController(spaceService.createSpaceAndAddUser));
 router.put("/promote-to-admin", checkJWT, handleController(spaceService.promoteToAdmin));
 router.post("/get-invite-code", checkJWT, handleController(spaceService.getInviteCode));
 router.put("/change-invite-code", checkJWT, handleController(spaceService.changeInviteCode));
@@ -57,7 +56,6 @@ router.put("/change-invite-code", checkJWT, handleController(spaceService.change
 router.post("/find-chat", checkJWT, handleController(chatService.getChatById));
 router.post("/find-chat-members", checkJWT, handleController(chatService.getChatMembers));
 router.post("/create-chat", checkJWT, handleController(chatService.addChat));
-router.post("/create-chat-and-member", checkJWT, handleController(chatService.createChatAndAddUser));
 router.put("/add-chat-member", checkJWT, handleController(chatService.addChatMember));
 router.post("/find-chats-by-space-and-userid", checkJWT, handleController(chatService.getChatsBySpaceAndUserId));
 router.put("/update-chat", checkJWT, handleController(chatService.updateChat));

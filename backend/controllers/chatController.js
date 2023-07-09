@@ -1,8 +1,7 @@
 const chatModel = require("../database/models/chat");
 const spaceModel = require("../database/models/space");
-const utilsForServices = require("./utilsForControllers");
 const {assertKeysValid, pick} = require("./utilsForControllers");
-const HttpStatus = require("http-status-codes");
+const {assertUserBelongs2Space} = require("./assert");
 
 
 const returnableChatFields = ['_id', 'chatName', 'spaceId', 'chatMembers'];
@@ -28,7 +27,13 @@ class ChatController {
 
     addChat = async (requestBody) => {
         assertKeysValid(requestBody, ['chatName', 'spaceId'], ['chatMembers'])
-        if (!(await spaceModel.exists({_id: requestBody.spaceId}))){
+
+        if (requestBody.hasOwnProperty('chatMembers')) {
+            for (const userId of requestBody.chatMembers) {
+                await assertUserBelongs2Space({userId: userId, spaceId: requestBody.spaceId})
+            }
+        }
+        if (!(await spaceModel.exists({_id: requestBody.spaceId}))) {
             return {error: {type: "FAILED_TO_ADD_CHAT", message: `There is no space with id=${requestBody.spaceId}`}};
         }
         const chat = await chatModel.create(requestBody);
@@ -37,34 +42,19 @@ class ChatController {
 
     addChatMember = async (requestBody) => {
         assertKeysValid(requestBody, ['chatId', 'userId'])
-        const {chatId, userId} = requestBody
-        const chatExtracted = await chatModel.findById(chatId).populate({path: 'spaceId'})
 
-        if (chatExtracted == null) {
+        const {chatId, userId} = requestBody
+        const spaceId = await chatModel.findById(chatId).select('spaceId')
+        if (spaceId == null) {
             return {error: {type: "FAILED_TO_ADD_CHAT_MEMBER", message: `There is no chat with id=${chatId}`}};
         }
-        let spaceMembers = chatExtracted.spaceId.spaceMembers.map(item => item.memberId.toString());
-        if (!spaceMembers.includes(userId)) {
-            return {
-                error: {
-                    type: "FAILED_TO_ADD_CHAT_MEMBER",
-                    message: `The user id=${userId} is not a member of the chat's space ${chatExtracted.spaceId._id.toString()}`
-                }
-            };
-        }
+        await assertUserBelongs2Space({userId: userId, spaceId: spaceId})
+
         return chatModel.findByIdAndUpdate(chatId,
             {$addToSet: {chatMembers: userId}}, // update 'spaceMembers' only if userId is not presented in it
             {new: true}
         ).select(returnableChatFields)
     };
-
-    createChatAndAddUser = async (requestBody) => {
-        // todo assert
-        const {userId, ...chatData} = requestBody
-
-        const chat = await this.addChat(chatData)
-        return  this.addChatMember(chat._id, userId);
-    }
 
     deleteChatMember = async (requestBody) => {
         assertKeysValid(requestBody, ['chatId', 'userId'])

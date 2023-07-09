@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 
 import axios from "axios";
-import {ApiCreateChatAndMember, ApiCreateSpaceAndMember} from "../../constants";
+import {ApiCreateChat} from "../../constants";
 
 
 function AddChatForm() {
@@ -12,12 +12,12 @@ function AddChatForm() {
         event.target.reset();
         let response = await axios.request({
             method: 'POST',
-            url: ApiCreateChatAndMember,
+            url: ApiCreateChat,
             headers: {'content-type': 'application/json',},
             data: {
                 chatName: chatName,
                 spaceId: localStorage.getItem("spaceId"),
-                userId: localStorage.getItem("userId"),
+                chatMembers: [localStorage.getItem("userId")],
             },
         });
 

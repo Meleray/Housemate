@@ -165,8 +165,6 @@ describe('Chat system', () => {
             .send({chatId: chat._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                console.log(res.body.chatMembers[0])
-                console.log(userMember1)
                 utilsForTests.compareObjects(res.body.chatMembers[0], userMember1,
                     ["userPicture", "userPassword"])
                 utilsForTests.compareObjects(res.body.chatMembers[1], userMember2,
