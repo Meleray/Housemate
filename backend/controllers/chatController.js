@@ -2,6 +2,7 @@ const chatModel = require("../database/models/chat");
 const spaceModel = require("../database/models/space");
 const {assertKeysValid, pick} = require("./utilsForControllers");
 const {assertUserBelongs2Space} = require("./assert");
+const spaceController = require("./spaceController");
 
 
 const returnableChatFields = ['_id', 'chatName', 'spaceId', 'chatMembers'];
@@ -24,6 +25,19 @@ class ChatController {
             {path: 'chatMembers', select: ['userName', 'userPicture', 'userEmail']})
             .select(['chatMembers', '-_id'])
     };
+
+    getMembersAndNotMembers = async (requestBody) => {
+        assertKeysValid(requestBody, ['chatId'], [])
+
+        // I was trying to execute this request inside the database.
+        // I spent several hours trying to implement this with 'chatModel.aggregate([..])'. But I was desperate
+        const chat = await chatModel.findById(requestBody.chatId)
+        let spaceMembers = await spaceController.getSpaceMembers({spaceId: chat.spaceId})
+        for(const  member of spaceMembers){
+            member.isChatMember = chat.chatMembers.includes(member._id);
+        }
+        return spaceMembers
+    }
 
     addChat = async (requestBody) => {
         assertKeysValid(requestBody, ['chatName', 'spaceId'], ['chatMembers'])

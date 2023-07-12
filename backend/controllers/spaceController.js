@@ -2,6 +2,7 @@ const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
 const {randomInviteCode, assertKeysValid, pick} = require("./utilsForControllers");
 const {assertUserBelongs2Space} = require("./assert");
+const chatModel = require("../database/models/chat");
 
 
 const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration'];
@@ -17,6 +18,24 @@ class SpaceController {
         }
         return space;
     };
+
+    getSpaceMembers = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId'], [])
+        const spaceMembers = await spaceModel.findById(requestBody.spaceId).populate(
+            {path: 'spaceMembers.memberId', select: ['userName', 'userPicture', 'userEmail']})
+            .select(['spaceMembers', '-_id'])
+        let plainSpaceMembers = []
+        for (const member of spaceMembers.spaceMembers) {
+            plainSpaceMembers.push({
+                isAdmin: member.isAdmin,
+                _id: member.memberId._id,
+                userName: member.memberId.userName,
+                userPicture: member.memberId.userPicture,
+                userEmail: member.memberId.userEmail,
+            })
+        }
+        return plainSpaceMembers
+    }
 
     getSpacesByUserId = async (requestBody) => {
         assertKeysValid(requestBody, ['userId'], [])

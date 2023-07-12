@@ -80,22 +80,20 @@ describe('Message system', () => {
                 messageText: message,
                 chatId: chat._id,
                 senderId: userMember1._id,
-                isNotification: false
             }
             const resSendMessage = await chai.request(server).post('/api/send-message').send(messageData)
             chai.expect(resSendMessage, JSON.stringify(resSendMessage.body)).to.have.status(HttpStatus.OK);
-            utilsForTests.compareObjects(resSendMessage.body, messageData, ["_id", "date"])
+            utilsForTests.compareObjects(resSendMessage.body, messageData, ["_id", "date", "isNotification"])
         }
 
         const answerData = {
             messageText: messages.at(-1),
             chatId: chat._id,
             senderId: userMember2._id,
-            isNotification: false
         }
         const resSendAnswer = await chai.request(server).post('/api/send-message').send(answerData)
         chai.expect(resSendAnswer, JSON.stringify(resSendAnswer.body)).to.have.status(HttpStatus.OK);
-        utilsForTests.compareObjects(resSendAnswer.body, answerData, ["_id", "date"])
+        utilsForTests.compareObjects(resSendAnswer.body, answerData, ["_id", "date", "isNotification"])
     });
 
     it('read messages', async () => {

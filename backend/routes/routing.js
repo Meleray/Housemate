@@ -44,6 +44,7 @@ router.delete("/delete-user", checkJWT, handleController(userService.deleteUser)
 // Space OPs
 router.post("/find-space", checkJWT, handleController(spaceService.getSpaceById));
 router.post("/create-space", checkJWT, handleController(spaceService.addSpace));
+router.post("/find-space-members", checkJWT, handleController(spaceService.getSpaceMembers));
 router.post("/find-spaces-by-userid", checkJWT, handleController(spaceService.getSpacesByUserId));
 router.put("/create-space-member", checkJWT, handleController(spaceService.addSpaceMember));
 router.post("/join-space", checkJWT, handleController(spaceService.joinSpace));
@@ -55,6 +56,7 @@ router.put("/change-invite-code", checkJWT, handleController(spaceService.change
 // Chat Subsystem OPs
 router.post("/find-chat", checkJWT, handleController(chatService.getChatById));
 router.post("/find-chat-members", checkJWT, handleController(chatService.getChatMembers));
+router.post("/find-chat-members-and-notmembers", checkJWT, handleController(chatService.getMembersAndNotMembers));
 router.post("/create-chat", checkJWT, handleController(chatService.addChat));
 router.put("/add-chat-member", checkJWT, handleController(chatService.addChatMember));
 router.post("/find-chats-by-space-and-userid", checkJWT, handleController(chatService.getChatsBySpaceAndUserId));

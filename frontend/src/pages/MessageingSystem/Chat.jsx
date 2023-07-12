@@ -2,88 +2,106 @@ import React, {useState, useEffect} from "react"
 
 import axios from "axios";
 import SendMessageForm from "./SendMessageForm";
-import AddMemberDropDown from "./AddMemberDropDown";
-import {ApiFindChatMembers, ApiLoadMessageChunk} from "../../constants";
+import ChatMemberManager from "./ChatMemberManager";
+import {
+    ApiDeleteChatMember,
+    ApiLoadMessageChunk,
+    ChatUpdateTimeout
+} from "../../constants";
+import {buildErrorMessage, getSafe} from "../../utils";
 
 
-function Chat({chatId}) {
+function Chat({chatId, onChatsChanged}) {
     const [messages, setMessages] = useState([]);
-    const [chatMembers, setChatMembers] = useState([]);
 
-    async function fetchMessagesChunk() {
-        // TODO load old messages
-        // console.log(chatId)
+    async function loadMessages(selectParam) {
         const result = await axios.request({
             method: 'POST',
             url: ApiLoadMessageChunk,
             headers: {'content-type': 'application/json',},
-            data: {chatId: chatId},
-        });
-        setMessages(result.data)
-    }
+            data: {chatId: chatId, ...selectParam},
+        })
 
-    useEffect(() => {
-        fetchMessagesChunk();  // update chat immediately after switch
-        const interval = setInterval(() => {
-            fetchMessagesChunk();
-        }, 2000);  // rerender every N seconds
-        return () => clearInterval(interval);
-    }, [chatId]);
+        if (selectParam.hasOwnProperty("getOlderThan")) {
+            setMessages(messages => [...result.data, ...messages])
 
+        } else if (selectParam.hasOwnProperty("getNewerThan")) {
+            setMessages(messages => [...messages, ...result.data])
 
-    useEffect(() => {
-        async function fetchChatMembers() {
-            const result = await axios.request({
-                method: 'POST',
-                url: ApiFindChatMembers,
-                headers: {'content-type': 'application/json',},
-                data: {chatId: chatId},
-            });
-            setChatMembers(result.data.chatMembers)
+        } else {
+            setMessages(result.data)
         }
-
-        fetchChatMembers();
-    }, [chatId]);
-
-    function requestExitChat() {
-        axios.request({
-            method: 'DELETE',
-            url: 'http://localhost:5000/api/delete-chat-member',
-            headers: {'content-type': 'application/json',},
-            data: {
-                chatId: chatId,
-                userId: localStorage.getItem("userId")
-            },
-        });
     }
 
-    const emptyMessage = (messages.length === 0 && <h1>No messages in this chat</h1>)
+    const handleLoadOlderMessages = async event => {
+        event.preventDefault();  // prevent reload
+        if (messages.length === 0) {
+            await loadMessages({})
+        } else {
+            const oldestTimestamp = messages[0].date
+            await loadMessages({getOlderThan: oldestTimestamp})
+        }
+    }
+
+
+    useEffect(async () => {
+        await loadMessages({});
+    }, [chatId]);
+
+
+    async function loadNewerMessages() {
+        if (messages.length === 0) {
+            await loadMessages({})
+        } else {
+            const newestTimestamp = messages.at(-1).date
+            await loadMessages({getNewerThan: newestTimestamp})
+        }
+    }
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            void loadNewerMessages();
+        }, ChatUpdateTimeout);  // rerender every N seconds
+        return () => clearInterval(interval);
+    }, [chatId, messages]);
+
+
+    const handleLeaveChat = async event => {
+        event.preventDefault();  // prevent reload
+        try {
+            await axios.request({
+                method: 'DELETE',
+                url: ApiDeleteChatMember,
+                headers: {'content-type': 'application/json',},
+                data: {
+                    chatId: chatId,
+                    userId: localStorage.getItem("userId")
+                },
+            });
+        } catch (error) {
+            alert(buildErrorMessage(error));
+        }
+        onChatsChanged();
+    }
+
+
+    const emptyMessage = (messages == null && <h1>No messages in this chat</h1>)
 
     return (
         <div>
-            <div>
-                Chat members:
-                <ul>
-                    {chatMembers.map((r, index) =>
-                        <li key={r._id}>
-                            color={r.userPicture}, {r.userName}
-                        </li>
-                    )}
-                </ul>
-            </div>
-
-            <button type="button" onClick={requestExitChat}>Leave chat</button>
-            <AddMemberDropDown chatId={chatId}/>
+            <button type="button" onClick={handleLeaveChat}>Leave chat</button>
+            <ChatMemberManager chatId={chatId}/>
+            <button type="button" onClick={handleLoadOlderMessages}>Load more messages</button>
 
             {emptyMessage}
-
             <ul>
-                {messages.map((r, index) =>
-                    <li key={r._id}>
-                        {r.messageText}, {r.date}
+                {messages.map(r =>
+                    <li key={getSafe(r, "_id")}>
+                        {getSafe(r, "messageText")}, {getSafe(r, "date")}
                     </li>
                 )}
             </ul>
+
             <SendMessageForm chatId={chatId}/>
         </div>
     )

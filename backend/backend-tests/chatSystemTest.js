@@ -173,6 +173,18 @@ describe('Chat system', () => {
             });
     });
 
+    it('find-chat-members-and-notmember', (done) => {
+        let newName = "The longest"
+        chai.request(server)
+            .post('/api/find-chat-members-and-notmembers')
+            .send({chatId: chat._id})
+            .end((err, res) => {
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                chai.expect(res.body[0].isChatMember, JSON.stringify(res.body)).to.be.eql(true);
+                done();
+            });
+    });
+
     it('update chat', (done) => {
         let newName = "The longest"
         chai.request(server)

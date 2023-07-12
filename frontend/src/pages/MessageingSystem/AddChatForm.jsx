@@ -4,7 +4,7 @@ import axios from "axios";
 import {ApiCreateChat} from "../../constants";
 
 
-function AddChatForm() {
+function AddChatForm({onChatsChanged}) {
     const [chatName, setChatName] = useState("New chat");
 
     const handleAddChat = async event => {
@@ -20,11 +20,11 @@ function AddChatForm() {
                 chatMembers: [localStorage.getItem("userId")],
             },
         });
+        onChatsChanged();
 
         // if (isError(response)) {
         //     return;
         // }
-        // TODO update chat list
     }
 
     return (

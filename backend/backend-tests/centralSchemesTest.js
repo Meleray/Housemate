@@ -139,6 +139,18 @@ describe('User and Space schemes', () => {
             });
     });
 
+
+    it('find space members', (done) => {
+        chai.request(server)
+            .post('/api/find-space-members')
+            .send({spaceId: space._id})
+            .end((err, res) => {
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                chai.expect(res.body[0]._id, JSON.stringify(res.body)).to.be.eql(initialUser._id);
+                done();
+            });
+    });
+
     it('find spaces by userid', (done) => {
         chai.request(server)
             .post('/api/find-spaces-by-userid')

@@ -10,19 +10,31 @@ import Chat from "./Chat";
 const MessagesPage = () => {
 
     // how to set global variables https://stackoverflow.com/a/58214612/13221007
-    localStorage.setItem("userId", "64aae92f4df8d0bbfacc7333");  // TODO during the registration
+    localStorage.setItem("userId", "64aeb17d8d16877604f147d9");  // TODO during the registration
 
     const [chosenChatId, setChosenChatId] = useState(null);
+    const [chatsChangedSemaphore, setChatsChangedSemaphore] = useState(0);
+
+    function updateSemaphore() {
+        setChatsChangedSemaphore(chatsChangedSemaphore => (chatsChangedSemaphore + 1) % 2)
+        setChosenChatId(null)
+    }
+
 
     return (
         <SLayout>
             <Sidebar/>
             <SSidebar>
-                <ChatList onSelectChat={(chatId) => setChosenChatId(chatId)}/>
-                <AddChatForm/>
+                <ChatList
+                    onSelectChat={(chatId) => setChosenChatId(chatId)}
+                    chatsChangedSemaphore={chatsChangedSemaphore}/>
+                <AddChatForm onChatsChanged={() => updateSemaphore()}/>
             </SSidebar>
             <SMain>
-                {chosenChatId && <Chat chatId={chosenChatId}/>}
+                {chosenChatId &&
+                    <Chat
+                        chatId={chosenChatId}
+                        onChatsChanged={() => updateSemaphore()}/>}
             </SMain>
         </SLayout>
     );
