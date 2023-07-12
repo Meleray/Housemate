@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react"
 
+import moment from "moment";
 import axios from "axios";
 import SendMessageForm from "./SendMessageForm";
 import ChatMemberManager from "./ChatMemberManager";
@@ -85,7 +86,7 @@ function Chat({chatId, onChatsChanged}) {
     }
 
 
-    const emptyMessage = (messages == null && <h1>No messages in this chat</h1>)
+    const emptyMessage = (messages.length === 0 && <h1>No messages in this chat</h1>)
 
     return (
         <div>
@@ -97,7 +98,11 @@ function Chat({chatId, onChatsChanged}) {
             <ul>
                 {messages.map(r =>
                     <li key={getSafe(r, "_id")}>
-                        {getSafe(r, "messageText")}, {getSafe(r, "date")}
+                        time: {moment(getSafe(r, "date")).format("ss:mm:hh MM/DD/YYYY")}
+                        <br/>
+                        sender: {getSafe(r, "senderId").userName}
+                        <br/>
+                        text: {getSafe(r, "messageText")}
                     </li>
                 )}
             </ul>

@@ -57,14 +57,17 @@ class MessageController {
         let result;
         if (requestBody.hasOwnProperty("getOlderThan")) {
             result = await messageModel.find({chatId: requestBody.chatId, date: {$lt: requestBody.getOlderThan}})
+                .populate( {path: 'senderId', select: ['userName']})
                 .sort({date: 'descending'}).limit(chunkSize)
 
         } else if (requestBody.hasOwnProperty("getNewerThan")) {
             result = await messageModel.find({chatId: requestBody.chatId, date: {$gt: requestBody.getNewerThan}})
+                .populate( {path: 'senderId', select: ['userName']})
                 .sort({date: 'descending'})
 
         } else {
             result = await messageModel.find({chatId: requestBody.chatId})
+                .populate( {path: 'senderId', select: ['userName']})
                 .sort({date: 'descending'}).limit(chunkSize)
         }
         // because there is no easy vay to get LAST n items in mongodb))))
