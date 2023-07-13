@@ -1,6 +1,6 @@
 import React from "react";
-import BannerBackground from "../../assets/images/home-banner-background.png";
-import BannerImage from "../../assets/images/home-banner-image.png";
+import BannerBackground from "../../images/home-banner-background.png";
+import BannerImage from "../../images/home-banner-image.png";
 import Navbar from "./Navbar";
 import { FiArrowRight } from "react-icons/fi";
 import { Link } from "react-router-dom";

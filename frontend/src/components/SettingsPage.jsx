@@ -1,7 +1,8 @@
 import React from "react";
-import PageTitle from "../../components/Dashboard/PageTitle";
-import { SLayout, SMain } from "../../components/Dashboard/Layout/styles.js";
-import Sidebar from "../../components/Dashboard/Sidebar/Sidebar.jsx";
+import PageTitle from "./Layout/PageTitle";
+import { SLayout, SMain } from "./Layout/styles.js";
+import Sidebar from "./Sidebar/Sidebar.jsx";
+
 
 const SettingsPage = () => {
     return  (

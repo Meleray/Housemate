@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {ApiFindSpacesByUserId} from "../../../constants";
-import {getSafe} from "../../../utils";
+import {ApiFindSpacesByUserId} from "../../constants";
+import {getSafe} from "../../utils";
 
 function SpaceList() {
     const [spaces, setSpaces] = useState([]);

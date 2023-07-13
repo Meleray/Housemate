@@ -5,8 +5,8 @@ import {
     ApiCreateSpace,
     ApiDeleteSpaceMember,
     ApiGetInviteCode, ApiJoinSpace
-} from "../../../constants";
-import {buildErrorMessage} from "../../../utils";
+} from "../../constants";
+import {buildErrorMessage} from "../../utils";
 
 
 function changeSpaceAndReload(spaceId) {

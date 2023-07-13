@@ -9,7 +9,7 @@ import {
     SLogo,
     SSidebar
 } from "./styles";
-import { ReactComponent as LogoSVG } from "../../../assets/images/Housemate.svg";
+import { ReactComponent as LogoSVG } from "../../images/Housemate.svg";
 import { AiOutlineMessage, AiOutlineSetting } from "react-icons/ai";
 import { MdFormatListBulleted, MdLogout } from "react-icons/md";
 import { RiMoneyEuroBoxLine } from 'react-icons/ri';
@@ -59,9 +59,9 @@ const Sidebar = () => {
 
 const linksArray = [
     {
-        label: "To-Do", // label: "Home",
+        label: "Tasks", // label: "Home",
         icon: <MdFormatListBulleted />,
-        to: "/todo",
+        to: "/task",
         notification: 0,
     },
     {

@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
 
-import {SLayout, SMain} from "../../components/Dashboard/Layout/styles.js";
-import Sidebar from "../../components/Dashboard/Sidebar/Sidebar.jsx";
+import { SLayout, SMain } from '../Layout/styles.js';
+import Sidebar from '../Sidebar/Sidebar.jsx';
 import ChatList from "./ChatList";
 import AddChatForm from "./AddChatForm";
-import {SSidebar} from "../../components/Dashboard/Sidebar/styles";
+import { SSidebar } from '../Sidebar/styles.js';
 import Chat from "./Chat";
 
 const MessagesPage = () => {
 
     // how to set global variables https://stackoverflow.com/a/58214612/13221007
-    localStorage.setItem("userId", "64aeb17d8d16877604f147d9");  // TODO during the registration
+    localStorage.setItem("userId", "64afecf85395545a174c5803");  // TODO during the registration
 
     const [chosenChatId, setChosenChatId] = useState(null);
     const [chatsChangedSemaphore, setChatsChangedSemaphore] = useState(0);

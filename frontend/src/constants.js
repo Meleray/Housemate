@@ -18,5 +18,11 @@ export const ApiDeleteChatMember = `${serverAddress}/api/delete-chat-member`
 export const ApiSendMessage = `${serverAddress}/api/send-message`
 export const ApiLoadMessageChunk = `${serverAddress}/api/load-message-chunk`
 
+export const ApiAddTask = `${serverAddress}/api/add-task`
+export const ApiFindTasksBySpaceAndUserId = `${serverAddress}/api/find-tasks-by-space-and-userid`
+export const ApiDeleteTask = `${serverAddress}/api/delete-task`
+export const ApiEditTask = `${serverAddress}/api/edit-task`
+
+export const ApiFindUserById = `${serverAddress}/api/find-user`
 
 export const ChatUpdateTimeout = 1000  // in milliseconds

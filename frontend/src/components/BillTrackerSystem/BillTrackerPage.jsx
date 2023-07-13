@@ -1,7 +1,7 @@
 import React from "react";
-import PageTitle from "../../components/Dashboard/PageTitle";
-import { SLayout, SMain } from "../../components/Dashboard/Layout/styles.js";
-import Sidebar from "../../components/Dashboard/Sidebar/Sidebar";
+import PageTitle from "../Layout/PageTitle";
+import { SLayout, SMain } from "../Layout/styles.js";
+import Sidebar from "../Sidebar/Sidebar";
 
 const BillTrackerPage = () => {
     return  (
