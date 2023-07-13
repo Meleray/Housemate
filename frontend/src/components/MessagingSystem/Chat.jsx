@@ -76,7 +76,7 @@ function Chat({chatId, onChatsChanged}) {
                 headers: {'content-type': 'application/json',},
                 data: {
                     chatId: chatId,
-                    userId: localStorage.getItem("userId")
+                    userId: getSafe(localStorage, "userId")
                 },
             });
         } catch (error) {

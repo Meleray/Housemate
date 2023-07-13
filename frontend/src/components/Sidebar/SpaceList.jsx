@@ -14,7 +14,7 @@ function SpaceList() {
                 method: 'POST',
                 url: ApiFindSpacesByUserId,
                 headers: {'content-type': 'application/json',},
-                data: {userId: localStorage.getItem("userId")},
+                data: {userId: getSafe(localStorage, "userId")},
             });
             setSpaces(result.data)
         }

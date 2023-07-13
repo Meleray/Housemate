@@ -2,6 +2,7 @@ import React, {useState} from "react"
 
 import axios from "axios";
 import {ApiCreateChat} from "../../constants";
+import {getSafe} from "../../utils";
 
 
 function AddChatForm({onChatsChanged}) {
@@ -16,8 +17,8 @@ function AddChatForm({onChatsChanged}) {
             headers: {'content-type': 'application/json',},
             data: {
                 chatName: chatName,
-                spaceId: localStorage.getItem("spaceId"),
-                chatMembers: [localStorage.getItem("userId")],
+                spaceId: getSafe(localStorage, "spaceId"),
+                chatMembers: [getSafe(localStorage, "userId")],
             },
         });
         onChatsChanged();

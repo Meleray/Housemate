@@ -6,7 +6,7 @@ import {
     ApiDeleteSpaceMember,
     ApiGetInviteCode, ApiJoinSpace
 } from "../../constants";
-import {buildErrorMessage} from "../../utils";
+import {buildErrorMessage, getSafe} from "../../utils";
 
 
 function changeSpaceAndReload(spaceId) {
@@ -33,7 +33,7 @@ function AddSpaceForm() {
                 headers: {'content-type': 'application/json',},
                 data: {
                     spaceName: spaceName,
-                    spaceMembersIds: [localStorage.getItem("userId")],
+                    spaceMembersIds: [getSafe(localStorage, "userId")],
                 },
             })
         } catch (error) {
@@ -68,8 +68,8 @@ function LeaveSpaceButton() {
                 url: ApiDeleteSpaceMember,
                 headers: {'content-type': 'application/json',},
                 data: {
-                    spaceId: localStorage.getItem("spaceId"),
-                    userId: localStorage.getItem("userId")
+                    spaceId: getSafe(localStorage, "spaceId"),
+                    userId: getSafe(localStorage, "userId")
                 },
             });
         } catch (error) {
@@ -97,7 +97,7 @@ function InviteCodeComponent() {
                     url: ApiGetInviteCode,
                     headers: {'content-type': 'application/json',},
                     data: {
-                        spaceId: localStorage.getItem("spaceId"),
+                        spaceId: getSafe(localStorage, "spaceId"),
                     },
                 });
             } catch (error) {
@@ -109,8 +109,8 @@ function InviteCodeComponent() {
         }
 
         // TODO
-        if (localStorage.getItem("spaceId") !== null){
-            fetchInviteCode();
+        if (localStorage.hasOwnProperty("spaceId")){
+            void fetchInviteCode();
         }
     }, []);
 
@@ -124,7 +124,7 @@ function InviteCodeComponent() {
                 url: ApiChangeInviteCode,
                 headers: {'content-type': 'application/json',},
                 data: {
-                    spaceId: localStorage.getItem("spaceId"),
+                    spaceId: getSafe(localStorage, "spaceId"),
                 },
             });
         } catch (error) {
@@ -158,7 +158,7 @@ function JoinNewSpace() {
                 headers: {'content-type': 'application/json',},
                 data: {
                     inviteCode: inviteCode,
-                    userId: localStorage.getItem("userId"),
+                    userId: getSafe(localStorage, "userId"),
                 },
             })
         } catch (error) {

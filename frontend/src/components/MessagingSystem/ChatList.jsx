@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react"
 
-import axios from "axios";
+import axios, {get} from "axios";
 import {ApiFindChatsBySpaceAndUserId} from "../../constants";
 import {buildErrorMessage, getSafe} from "../../utils";
 
@@ -18,8 +18,8 @@ function ChatList({onSelectChat, chatsChangedSemaphore}) {
                     url: ApiFindChatsBySpaceAndUserId,
                     headers: {'content-type': 'application/json',},
                     data: {
-                        spaceId: localStorage.getItem("spaceId"),
-                        userId: localStorage.getItem("userId")
+                        spaceId: getSafe(localStorage, "spaceId"),
+                        userId: getSafe(localStorage, "userId")
                     },
                 });
                 setChats(response.data)

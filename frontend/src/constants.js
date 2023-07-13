@@ -1,4 +1,7 @@
 const serverAddress = 'http://localhost:5001'
+
+export const ApiCreateUser = `${serverAddress}/api/create-user`
+
 export const ApiFindSpace = `${serverAddress}/api/find-space`
 export const ApiFindSpacesByUserId = `${serverAddress}/api/find-spaces-by-userid`
 export const ApiCreateSpace = `${serverAddress}/api/create-space`

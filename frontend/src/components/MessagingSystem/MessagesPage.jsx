@@ -1,16 +1,17 @@
 import React, {useState} from 'react';
 
-import { SLayout, SMain } from '../Layout/styles.js';
+import {SLayout, SMain} from '../Layout/styles.js';
 import Sidebar from '../Sidebar/Sidebar.jsx';
 import ChatList from "./ChatList";
 import AddChatForm from "./AddChatForm";
-import { SSidebar } from '../Sidebar/styles.js';
+import {SSidebar} from '../Sidebar/styles.js';
 import Chat from "./Chat";
+import {getSafe} from "../../utils";
 
 const MessagesPage = () => {
 
     // how to set global variables https://stackoverflow.com/a/58214612/13221007
-    localStorage.setItem("userId", "64afecf85395545a174c5803");  // TODO during the registration
+    localStorage.setItem("userId", "64b02277a26705e568a4b991");  // TODO during the registration
 
     const [chosenChatId, setChosenChatId] = useState(null);
     const [chatsChangedSemaphore, setChatsChangedSemaphore] = useState(0);
@@ -20,10 +21,8 @@ const MessagesPage = () => {
         setChosenChatId(null)
     }
 
-
-    return (
-        <SLayout>
-            <Sidebar/>
+    const messagingSystemPart = (
+        <>
             <SSidebar>
                 <ChatList
                     onSelectChat={(chatId) => setChosenChatId(chatId)}
@@ -34,8 +33,17 @@ const MessagesPage = () => {
                 {chosenChatId &&
                     <Chat
                         chatId={chosenChatId}
-                        onChatsChanged={() => updateSemaphore()}/>}
+                        onChatsChanged={() => updateSemaphore()}/>
+                }
             </SMain>
+        </>
+    )
+
+
+    return (
+        <SLayout>
+            <Sidebar/>
+            {(localStorage.hasOwnProperty("spaceId") ) ? messagingSystemPart : "Create or join a space"}
         </SLayout>
     );
 };
