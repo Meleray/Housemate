@@ -15,10 +15,19 @@ import { MdFormatListBulleted, MdLogout } from "react-icons/md";
 import { RiMoneyEuroBoxLine } from 'react-icons/ri';
 import SpaceManagementComponent from "./SpaceManagementComponent";
 import SpaceList from "./SpaceList";
+import { router_auth, ApiLogout } from "../../constants";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const Sidebar = () => {
     const [sidebarOpen] = useState(true);
     const { pathname } = useLocation();
+    const history = useHistory();
+
+    function handleLogout () {
+        router_auth.post(ApiLogout, {}).then(response => {
+            history.push('/');
+        })
+    }
 
     return (
         <SSidebar isOpen={sidebarOpen}>
@@ -47,11 +56,18 @@ const Sidebar = () => {
             {secondaryLinksArray.map(({ icon, label, to }) => (
                 <SLinkContainer key={label} isActive={pathname === to}>
                     <SLink to={to} style={!sidebarOpen ? { width: `fit-content` } : {}}>
-                        <SLinkIcon>{icon}</SLinkIcon>
+                        <SLinkIcon>{icon}
+                        </SLinkIcon>
                         {sidebarOpen && <SLinkLabel>{label}</SLinkLabel>}
                     </SLink>
                 </SLinkContainer>
             ))}
+            <SLinkContainer key={"Logout"} isActive={pathname === "/"}>
+                <SLink to="#" onClick={handleLogout} style={!sidebarOpen ? { width: `fit-content` } : {}}>
+                    <SLinkIcon><MdLogout /></SLinkIcon>
+                    {sidebarOpen && <SLinkLabel>{"Logout"}</SLinkLabel>}
+                </SLink>
+            </SLinkContainer>
             <SDivider />
         </SSidebar>
     );
@@ -83,12 +99,7 @@ const secondaryLinksArray = [
         label: "Settings",
         icon: <AiOutlineSetting />,
         to: "/settings",
-    },
-    {
-        label: "Logout",
-        icon: <MdLogout />,
-        to: "/",
-    },
+    }
 ];
 
 export default Sidebar;
