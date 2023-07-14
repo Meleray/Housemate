@@ -72,6 +72,7 @@ router.post("/find-task", checkJWT ,handleController(taskService.getTaskById));
 router.post("/find-tasks-by-space-and-userid", checkJWT, handleController(taskService.getTasksBySpaceId));
 router.delete("/delete-task", checkJWT, handleController(taskService.deleteTask));
 router.put("/edit-task", checkJWT, handleController(taskService.editTask));
+router.put("/update-task-completion", checkJWT, handleController(taskService.updateTaskCompletion));
 
 // Auth OPs - I do not use handleController because I need access to res to pass cookie
 router.post("/auth/login", authService.login)

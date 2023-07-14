@@ -65,6 +65,7 @@ export default function AddTaskForm(onTasksChanged) {
           notification_time: "String",
           admin_approval: "String",
           spaceId: localStorage.getItem("spaceId"),
+          completion: false,
         },
       });
   
