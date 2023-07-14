@@ -15,7 +15,7 @@ export const ApiCreateUser = `create-user`
 
 export const ApiFindSpace = `find-space`
 export const ApiFindSpacesByUserId = `find-spaces-by-userid`
-export const ApiCreateSpace = `-space`
+export const ApiCreateSpace = `create-space`
 export const ApiDeleteSpaceMember = `delete-space-member`
 export const ApiJoinSpace = `join-space`
 
