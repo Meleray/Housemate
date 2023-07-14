@@ -1,7 +1,6 @@
 import React, {useState} from "react"
 
-import axios from "axios";
-import {ApiSendMessage} from "../../constants";
+import {ApiSendMessage, router_auth} from "../../constants";
 import {getSafe} from "../../utils";
 
 
@@ -11,7 +10,7 @@ function SendMessageForm({chatId}) {
     function fetchData(e) {
         e.preventDefault();
 
-        axios.request({
+        router_auth.request({
             method: 'POST',
             url: ApiSendMessage,
             headers: {'content-type': 'application/json',},

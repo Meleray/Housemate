@@ -14,10 +14,10 @@ const genToken = (res, userId) => {
 };
 
 const login = async (req, res) => {
-    const {email, password} = req.body;
+    const {userEmail, userPassword} = req.body;
     try {
-        const user = await userModel.findOne({ userEmail: email });
-        if (user && (await user.checkPassword(password))) {
+        const user = await userModel.findOne({ userEmail });
+        if (user && (await user.checkPassword(userPassword))) {
             genToken(res, user._id);
             res.status(200).json({
                 message: "Successful authentication"

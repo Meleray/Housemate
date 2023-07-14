@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from "react"
 
 import moment from "moment";
-import axios from "axios";
 import SendMessageForm from "./SendMessageForm";
 import ChatMemberManager from "./ChatMemberManager";
 import {
     ApiDeleteChatMember,
     ApiLoadMessageChunk,
-    ChatUpdateTimeout
+    ChatUpdateTimeout,
+    router_auth
 } from "../../constants";
 import {buildErrorMessage, getSafe} from "../../utils";
 
@@ -16,7 +16,7 @@ function Chat({chatId, onChatsChanged}) {
     const [messages, setMessages] = useState([]);
 
     async function loadMessages(selectParam) {
-        const result = await axios.request({
+        const result = await router_auth.request({
             method: 'POST',
             url: ApiLoadMessageChunk,
             headers: {'content-type': 'application/json',},
@@ -70,7 +70,7 @@ function Chat({chatId, onChatsChanged}) {
     const handleLeaveChat = async event => {
         event.preventDefault();  // prevent reload
         try {
-            await axios.request({
+            await router_auth.request({
                 method: 'DELETE',
                 url: ApiDeleteChatMember,
                 headers: {'content-type': 'application/json',},

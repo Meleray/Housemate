@@ -4,5 +4,5 @@ WORKDIR /app
 COPY package.json package-lock.json /app/
 RUN npm install
 COPY . /app/
-EXPOSE 5000
-CMD ["node", "index.js"]
+EXPOSE 3000
+CMD ["npm", "start"]

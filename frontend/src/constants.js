@@ -1,32 +1,49 @@
-const serverAddress = 'http://localhost:5001'
+import axios from "axios";
 
-export const ApiCreateUser = `${serverAddress}/api/create-user`
+const router_auth = axios.create({
+    withCredentials: true,
+    baseURL: "http://localhost:5001/api/"
+})
 
-export const ApiFindSpace = `${serverAddress}/api/find-space`
-export const ApiFindSpacesByUserId = `${serverAddress}/api/find-spaces-by-userid`
-export const ApiCreateSpace = `${serverAddress}/api/create-space`
-export const ApiDeleteSpaceMember = `${serverAddress}/api/delete-space-member`
-export const ApiJoinSpace = `${serverAddress}/api/join-space`
+const router_noauth = axios.create({
+    baseURL: "http://localhost:5001/api/"
+})
 
-export const ApiFindChatsBySpaceAndUserId = `${serverAddress}/api/find-chats-by-space-and-userid`
-export const ApiFindChatMembers = `${serverAddress}/api/find-chat-members`
-export const ApiFindChatMembersAndNotmembers = `${serverAddress}/api/find-chat-members-and-notmembers`
-export const ApiCreateChat = `${serverAddress}/api/create-chat`
-export const ApiAddChatMember = `${serverAddress}/api/add-chat-member`
-export const ApiGetInviteCode = `${serverAddress}/api/get-invite-code`
-export const ApiChangeInviteCode = `${serverAddress}/api/change-invite-code`
-export const ApiDeleteChatMember = `${serverAddress}/api/delete-chat-member`
+export {router_auth, router_noauth};
 
+export const ApiCreateUser = `create-user`
 
-export const ApiSendMessage = `${serverAddress}/api/send-message`
-export const ApiLoadMessageChunk = `${serverAddress}/api/load-message-chunk`
+export const ApiFindSpace = `find-space`
+export const ApiFindSpacesByUserId = `find-spaces-by-userid`
+export const ApiCreateSpace = `-space`
+export const ApiDeleteSpaceMember = `delete-space-member`
+export const ApiJoinSpace = `join-space`
 
-export const ApiAddTask = `${serverAddress}/api/add-task`
-export const ApiFindTasksBySpaceAndUserId = `${serverAddress}/api/find-tasks-by-space-and-userid`
-export const ApiDeleteTask = `${serverAddress}/api/delete-task`
-export const ApiEditTask = `${serverAddress}/api/edit-task`
-export const ApiUpdateTaskCompletion = `${serverAddress}/api/update-task-completion`
+export const ApiFindChatsBySpaceAndUserId = `find-chats-by-space-and-userid`
+export const ApiFindChatMembers = `find-chat-members`
+export const ApiFindChatMembersAndNotmembers = `find-chat-members-and-notmembers`
+export const ApiCreateChat = `create-chat`
+export const ApiAddChatMember = `add-chat-member`
+export const ApiGetInviteCode = `get-invite-code`
+export const ApiChangeInviteCode = `change-invite-code`
+export const ApiDeleteChatMember = `delete-chat-member`
+export const ApiAddTask = `add-task`
+export const ApiFindTasksBySpaceAndUserId = `find-tasks-by-space-and-userid`
+export const ApiDeleteTask = `delete-task`
+export const ApiEditTask = `edit-task`
+export const ApiUpdateTaskCompletion = `update-task-completion`
 
-export const ApiFindUserById = `${serverAddress}/api/find-user`
+export const ApiSendMessage = `send-message`
+export const ApiLoadMessageChunk = `load-message-chunk`
+
+export const ApiAddTask = `add-task`
+export const ApiFindTasksBySpaceAndUserId = `find-tasks-by-space-and-userid`
+export const ApiDeleteTask = `delete-task`
+export const ApiEditTask = `edit-task`
+
+export const ApiFindUserById = `find-user`
+
+export const ApiLogin = `/auth/login`
+export const ApiLogout = `/auth/logout`
 
 export const ChatUpdateTimeout = 1000  // in milliseconds

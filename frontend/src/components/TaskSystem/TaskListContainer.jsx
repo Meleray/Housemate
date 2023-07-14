@@ -8,8 +8,7 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import axios from "axios";
-import { ApiDeleteTask, ApiFindTasksBySpaceAndUserId } from "../../constants";
+import { ApiDeleteTask, ApiFindTasksBySpaceAndUserId, router_auth} from "../../constants";
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
@@ -43,7 +42,7 @@ export default function TaskListContainer() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.request({
+        const response = await router_auth.request({
           method: 'POST',
           url: ApiFindTasksBySpaceAndUserId,
           headers: { 'content-type': 'application/json' },
@@ -96,7 +95,7 @@ export default function TaskListContainer() {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.request({
+      await router_auth.request({
         method: 'DELETE',
         url: ApiDeleteTask,
         headers: {
@@ -124,7 +123,7 @@ export default function TaskListContainer() {
   
   const handleSubmitEditTask = async () => {
     try {
-      await axios.request({
+      await router_auth.request({
         method: 'PUT',
         url: ApiEditTask,
         headers: {
@@ -146,8 +145,8 @@ export default function TaskListContainer() {
       });
       // Form submission is complete, close the modal
       setOpenEditModal(false);
-  
-      const updatedTasks = await axios.request({
+      
+      const updatedTasks = await router_auth.request({
         method: 'POST',
         url: ApiFindTasksBySpaceAndUserId,
         headers: {'content-type': 'application/json'},

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {useEffect, useState} from "react";
-import axios from "axios";
-import {ApiAddChatMember, ApiFindChatMembers, ApiFindChatMembersAndNotmembers, ApiFindSpace} from "../../constants";
+import {ApiAddChatMember, ApiFindChatMembers, ApiFindChatMembersAndNotmembers, ApiFindSpace, router_auth} from "../../constants";
 import {getSafe} from "../../utils";
 
 function ChatMemberManager({chatId}) {
@@ -12,7 +11,7 @@ function ChatMemberManager({chatId}) {
 
     useEffect(() => {
         async function fetchChatMembers() {
-            const result = await axios.request({
+            const result = await router_auth.request({
                 method: 'POST',
                 url: ApiFindChatMembersAndNotmembers,
                 headers: {'content-type': 'application/json',},
@@ -25,7 +24,7 @@ function ChatMemberManager({chatId}) {
     }, [chatId, reloadSemaphore]);
 
     function requestAddMember(newMemberId) {
-        axios.request({
+        router_auth.request({
             method: 'PUT', url: ApiAddChatMember, headers: {'content-type': 'application/json',}, data: {
                 chatId: chatId, userId: newMemberId,
             },
