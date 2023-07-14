@@ -6,7 +6,7 @@ const genToken = (res, userId) => {
         userId 
     }, process.env.JWT_SECRET, {expiresIn: 43200});
   
-    res.cookie("jwtToken", token, {
+    res.cookie("HousemateCookie", token, {
       httpOnly: true,
       sameSite: "strict",
       maxAge: 43200,
@@ -31,8 +31,9 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-    res.cookie("jwt", "", {
+    res.cookie("HousemateCookie", "", {
         httpOnly: true,
+        sameSite: "strict",
         expires: new Date(0),
     });
     res.status(200).json({message: "Sucessful logout"})
