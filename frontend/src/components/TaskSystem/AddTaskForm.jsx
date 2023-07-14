@@ -4,12 +4,11 @@ import Button from '@material-ui/core/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import axios from 'axios';
 import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import TaskSelectUser from './TaskSelectUser';
 import TaskDateTimePicker from './TaskDatePicker';
-import { ApiDeleteTask, ApiFindTasksBySpaceAndUserId } from "../../constants";
+import { ApiDeleteTask, ApiFindTasksBySpaceAndUserId, router_auth} from "../../constants";
 import { ApiEditTask } from "../../constants";
 import { ApiAddTask } from '../../constants';
 
@@ -50,7 +49,7 @@ export default function AddTaskForm(onTasksChanged) {
     event.preventDefault();
   
     try {
-      const response = await axios.request({
+      const response = await router_auth.request({
         method: 'POST',
         url: ApiAddTask,
         headers: {

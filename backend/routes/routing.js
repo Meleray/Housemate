@@ -8,9 +8,7 @@ const spaceService = require("../controllers/spaceController");
 const chatService = require("../controllers/chatController");
 const messageService = require("../controllers/messageController");
 const taskService = require("../controllers/taskController");
-
-const authRouter = require("./subsystems/authRouter");
-
+const authService = require("../controllers/authController")
 const HttpStatus = require("http-status-codes");
 
 const handleController = func => async (req, res, next) => {
@@ -75,6 +73,8 @@ router.post("/find-tasks-by-space-and-userid", checkJWT, handleController(taskSe
 router.delete("/delete-task", checkJWT, handleController(taskService.deleteTask));
 router.put("/edit-task", checkJWT, handleController(taskService.editTask));
 
-router.use("/auth", authRouter)
+// Auth OPs - I do not use handleController because I need access to res to pass cookie
+router.post("/auth/login", authService.login)
+router.post("/auth/logout", authService.logout)
 
 module.exports = router
