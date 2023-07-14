@@ -27,7 +27,8 @@ const SpaceSchema = new mongoose.Schema({
 
     premiumExpiration: {
         type: Date,
-        default: () => Date.now()
+        // 30 days free trial
+        default: () => (new Date().setDate(new Date().getDate() + 30))
     },
 
     inviteCode: {
