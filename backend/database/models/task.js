@@ -33,6 +33,11 @@ const TaskSchema = new mongoose.Schema({
         type: String,// Boolean
         required: true
     },
+    completion: {
+        type: Boolean,// Boolean
+        default: false,
+        required: true
+    },
 });
 
 const Task = mongoose.model("Task", TaskSchema);

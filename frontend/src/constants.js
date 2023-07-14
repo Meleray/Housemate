@@ -25,6 +25,7 @@ export const ApiAddTask = `${serverAddress}/api/add-task`
 export const ApiFindTasksBySpaceAndUserId = `${serverAddress}/api/find-tasks-by-space-and-userid`
 export const ApiDeleteTask = `${serverAddress}/api/delete-task`
 export const ApiEditTask = `${serverAddress}/api/edit-task`
+export const ApiUpdateTaskCompletion = `${serverAddress}/api/update-task-completion`
 
 export const ApiFindUserById = `${serverAddress}/api/find-user`
 
