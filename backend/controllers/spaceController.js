@@ -2,7 +2,6 @@ const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
 const {randomInviteCode, assertKeysValid, pick} = require("./utilsForControllers");
 const {assertUserBelongs2Space} = require("./assert");
-const chatModel = require("../database/models/chat");
 
 
 const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration'];
@@ -73,7 +72,8 @@ class SpaceController {
         ))) {
             return {
                 error: {
-                    type: "FAILED_TO_ADD_MEMBER", message: `There user ${userId} is already a member of ${spaceId}`
+                    type: "FAILED_TO_ADD_MEMBER",
+                    message: `There user ${userId} is already a member of the space ${spaceId}`
                 }
             };
         }
@@ -88,11 +88,11 @@ class SpaceController {
         assertKeysValid(requestBody, ['inviteCode', 'userId'], [])
         const {inviteCode, userId} = requestBody
 
-        let spaceId = await spaceModel.findOne({inviteCode: inviteCode})
-        if (spaceId === null) {
+        let space = await spaceModel.findOne({inviteCode: inviteCode}).select("spaceId")
+        if (space === null) {
             return {error: {type: "INVALID_INVITE_CODE", message: `The code ${inviteCode} is invalid`}}
         }
-        return this.addSpaceMember({spaceId: spaceId, userId: userId})
+        return this.addSpaceMember({spaceId: space._id, userId: userId})
     }
 
     deleteSpaceMember = async (requestBody) => {

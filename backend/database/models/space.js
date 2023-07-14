@@ -25,7 +25,10 @@ const SpaceSchema = new mongoose.Schema({
         }
     ],
 
-    premiumExpiration: Date,
+    premiumExpiration: {
+        type: Date,
+        default: () => Date.now()
+    },
 
     inviteCode: {
         type: String,
