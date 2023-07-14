@@ -14,7 +14,7 @@ const checkJWT = async (req, res, next) => {
       if (error) {
         return res.status(401).send({ error: "Received Invalid JWT token" });
       }
-      req.user = payload.userId;
+      req.body.userId = payload.userId;
     });
     next();
   }
