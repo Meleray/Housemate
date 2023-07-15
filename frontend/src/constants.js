@@ -27,10 +27,6 @@ export const ApiAddChatMember = `add-chat-member`
 export const ApiGetInviteCode = `get-invite-code`
 export const ApiChangeInviteCode = `change-invite-code`
 export const ApiDeleteChatMember = `delete-chat-member`
-export const ApiAddTask = `add-task`
-export const ApiFindTasksBySpaceAndUserId = `find-tasks-by-space-and-userid`
-export const ApiDeleteTask = `delete-task`
-export const ApiEditTask = `edit-task`
 export const ApiUpdateTaskCompletion = `update-task-completion`
 
 export const ApiSendMessage = `send-message`

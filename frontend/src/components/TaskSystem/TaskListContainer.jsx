@@ -8,13 +8,12 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { ApiDeleteTask, ApiFindTasksBySpaceAndUserId, router_auth} from "../../constants";
+import { ApiDeleteTask, ApiFindTasksBySpaceAndUserId, ApiEditTask, ApiUpdateTaskCompletion, router_auth} from "../../constants";
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@material-ui/core/Button';
-import { ApiEditTask, ApiUpdateTaskCompletion } from "../../constants";
 
 
 export default function TaskListContainer() {
@@ -75,7 +74,7 @@ export default function TaskListContainer() {
       updatedTasks.splice(index, 1);
       updatedCompletedTasks.push(task);
       // Update completion status in the backend
-      await axios.put(ApiUpdateTaskCompletion, {
+      await router_auth.put(ApiUpdateTaskCompletion, {
         taskId: task._id,
         completion: true,
       });
@@ -83,7 +82,7 @@ export default function TaskListContainer() {
       updatedCompletedTasks.splice(completedIndex, 1);
       updatedTasks.push(task);
       // Update completion status in the backend
-      await axios.put(ApiUpdateTaskCompletion, {
+      await router_auth.put(ApiUpdateTaskCompletion, {
         taskId: task._id,
         completion: false,
       });
