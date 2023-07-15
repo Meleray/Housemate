@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import {ApiAddChatMember, ApiFindChatMembers, ApiFindChatMembersAndNotmembers, ApiFindSpace} from "../../constants";
 import {getSafe} from "../../utils";
+import Button from "@material-ui/core/Button";
 
 function ChatMemberManager({chatId}) {
     const [open, setOpen] = useState(false);
@@ -68,7 +69,8 @@ function ChatMemberManager({chatId}) {
             {members.map(r => chatMemberElement(r))}
         </ul>
 
-        <button onClick={handleOpen}>Add member</button>
+        <Button variant="contained" onClick={handleOpen}>Add member</Button>
+
         {open ? (<ul className="list-group">
             {members.map(r => chatNotMemberElement(r))}
         </ul>) : null}

@@ -10,6 +10,12 @@ import {
     ChatUpdateTimeout
 } from "../../constants";
 import {buildErrorMessage, getSafe} from "../../utils";
+import Button from "@material-ui/core/Button";
+import {SMinorDivider} from "../Sidebar/styles";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Typography from "@mui/material/Typography";
 
 
 function Chat({chatId, onChatsChanged}) {
@@ -85,27 +91,50 @@ function Chat({chatId, onChatsChanged}) {
         onChatsChanged();
     }
 
+    function getSenderName(message) {
+        if (message.hasOwnProperty('senderId')) {
+            if (message.senderId.hasOwnProperty('_id')
+                && (message.senderId._id === getSafe(localStorage, "userId"))) {
+                return "Me"
+            }
+            return getSafe(message, "senderId").userName
+        }
+        return "System"
+    }
 
     const emptyMessage = (messages.length === 0 && <h1>No messages in this chat</h1>)
 
     return (
         <div>
-            <button type="button" onClick={handleLeaveChat}>Leave chat</button>
+            <Button variant="contained" onClick={handleLeaveChat}>Leave chat</Button>
             <ChatMemberManager chatId={chatId}/>
-            <button type="button" onClick={handleLoadOlderMessages}>Load more messages</button>
+            <SMinorDivider/>
+            <Button variant="contained" onClick={handleLoadOlderMessages}>Load more messages</Button>
 
             {emptyMessage}
-            <ul>
-                {messages.map(r =>
-                    <li key={getSafe(r, "_id")}>
-                        time: {moment(getSafe(r, "date")).format("ss:mm:hh MM/DD/YYYY")}
-                        <br/>
-                        sender: {(r.hasOwnProperty("senderId")) ? getSafe(r, "senderId").userName : "none"}
-                        <br/>
-                        text: {getSafe(r, "messageText")}
-                    </li>
+
+            <List>
+                {messages.map((r) =>
+                    <ListItem disablePadding divider key={getSafe(r, "_id")}>
+                        <ListItemText>
+                            <Typography variant="subtitle1" sx={{display: 'inline'}} component="span" color="green">
+                                {(getSenderName(r))}
+                            </Typography>
+                            <br/>
+
+                            <Typography variant="caption" sx={{display: 'inline'}} component="span">
+                                at {moment(getSafe(r, "date")).format("ss:mm:hh MM/DD/YYYY")}
+                            </Typography>
+                            <br/>
+
+                            <Typography variant="body1" sx={{display: 'inline'}} component="span">
+                                {getSafe(r, "messageText")}
+                            </Typography>
+
+                        </ListItemText>
+                    </ListItem>
                 )}
-            </ul>
+            </List>
 
             <SendMessageForm chatId={chatId}/>
         </div>
