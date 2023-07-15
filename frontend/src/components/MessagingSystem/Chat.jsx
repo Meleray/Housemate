@@ -100,7 +100,7 @@ function Chat({chatId, onChatsChanged}) {
                     <li key={getSafe(r, "_id")}>
                         time: {moment(getSafe(r, "date")).format("ss:mm:hh MM/DD/YYYY")}
                         <br/>
-                        sender: {getSafe(r, "senderId").userName}
+                        sender: {(r.hasOwnProperty("senderId")) ? getSafe(r, "senderId").userName : "none"}
                         <br/>
                         text: {getSafe(r, "messageText")}
                     </li>

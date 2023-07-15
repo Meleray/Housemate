@@ -7,6 +7,9 @@ import {
     ApiGetInviteCode, ApiJoinSpace
 } from "../../constants";
 import {buildErrorMessage, getSafe} from "../../utils";
+import TextField from "@mui/material/TextField";
+import Button from "@material-ui/core/Button";
+import {SMinorDivider} from "./styles";
 
 
 function changeSpaceAndReload(spaceId) {
@@ -86,7 +89,7 @@ function LeaveSpaceButton() {
 }
 
 function InviteCodeComponent() {
-    const [inviteCode, setInviteCode] = useState("not available");
+    const [inviteCode, setInviteCode] = useState("Not available");
 
     useEffect(() => {
         async function fetchInviteCode() {
@@ -98,6 +101,7 @@ function InviteCodeComponent() {
                     headers: {'content-type': 'application/json',},
                     data: {
                         spaceId: getSafe(localStorage, "spaceId"),
+                        userId: getSafe(localStorage, "userId")
                     },
                 });
             } catch (error) {
@@ -108,8 +112,7 @@ function InviteCodeComponent() {
             setInviteCode(response.data.inviteCode)
         }
 
-        // TODO
-        if (localStorage.hasOwnProperty("spaceId")){
+        if (localStorage.hasOwnProperty("spaceId")) {
             void fetchInviteCode();
         }
     }, []);
@@ -125,6 +128,7 @@ function InviteCodeComponent() {
                 headers: {'content-type': 'application/json',},
                 data: {
                     spaceId: getSafe(localStorage, "spaceId"),
+                    userId: getSafe(localStorage, "userId")
                 },
             });
         } catch (error) {
@@ -136,10 +140,14 @@ function InviteCodeComponent() {
 
     return (
         <>
-            <button type="button" onClick={handleCodeChange}>
+            <p>
+                Invite code for the current space:
+                <br/>
+                {inviteCode}
+            </p>
+            <Button variant="contained" onClick={handleCodeChange}>
                 Generate new invite code
-            </button>
-            <p> Invite code for this space: {inviteCode} </p>
+            </Button>
         </>
     )
 }
@@ -171,12 +179,10 @@ function JoinNewSpace() {
 
     return (
         <form onSubmit={handleSpaceJoin}>
-            <input
-                type="text"
-                placeholder="Secret code"
-                onChange={(e) => setInviteCode(e.target.value)}
-            />
-            <button>Join space</button>
+            <TextField id="invite-code-field" label="Secret code" variant="outlined" sx={{marginRight: 1}}
+                       size="small"
+                       onChange={(e) => setInviteCode(e.target.value)}/>
+            <Button variant="contained">Join space</Button>
         </form>
     )
 }
@@ -185,7 +191,9 @@ function SpaceManagementComponent() {
     return (
         <>
             <JoinNewSpace/>
+            <SMinorDivider/>
             <InviteCodeComponent/>
+            <SMinorDivider/>
             <AddSpaceForm/>
             <LeaveSpaceButton/>
         </>

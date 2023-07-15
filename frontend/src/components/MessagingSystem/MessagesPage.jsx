@@ -43,7 +43,7 @@ const MessagesPage = () => {
     return (
         <SLayout>
             <Sidebar/>
-            {(localStorage.hasOwnProperty("spaceId") ) ? messagingSystemPart : "Create or join a space"}
+            {(localStorage.hasOwnProperty("spaceId") ) ? messagingSystemPart : "Create, join or select a space"}
         </SLayout>
     );
 };
