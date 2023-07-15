@@ -10,6 +10,7 @@ import {buildErrorMessage, getSafe} from "../../utils";
 import TextField from "@mui/material/TextField";
 import Button from "@material-ui/core/Button";
 import {SMinorDivider} from "./styles";
+import {inviteCodeField, newChatField, newSpaceField} from "../../componentsIds";
 
 
 function changeSpaceAndReload(spaceId) {
@@ -43,14 +44,14 @@ function AddSpaceForm() {
             alert(buildErrorMessage(error));
             return;
         }
-
+        document.getElementById(newSpaceField).value = "";
         changeSpaceAndReload(response.data._id)
     }
 
 
     return (
         <form>
-            <TextField id="invite-code-field" label="Space name" variant="outlined" sx={{marginRight: 1}}
+            <TextField id={newSpaceField} label="Space name" variant="outlined" sx={{marginRight: 1}}
                        size="small"
                        onChange={(e) => setSpaceName(e.target.value)}/>
             <Button variant="contained" onClick={handleSpaceCreation}>Create space</Button>
@@ -171,13 +172,13 @@ function JoinNewSpace() {
             alert(buildErrorMessage(error));
             return;
         }
-
+        document.getElementById(inviteCodeField).value = "";
         changeSpaceAndReload(response.data._id)
     }
 
     return (
         <form>
-            <TextField id="invite-code-field" label="Secret code" variant="outlined" sx={{marginRight: 1}}
+            <TextField id={inviteCodeField} label="Secret code" variant="outlined" sx={{marginRight: 1}}
                        size="small"
                        onChange={(e) => setInviteCode(e.target.value)}/>
             <Button variant="contained" onClick={handleSpaceJoin}>Join space</Button>

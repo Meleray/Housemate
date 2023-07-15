@@ -16,6 +16,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
+import Box from '@mui/material/Box';
 
 
 function Chat({chatId, onChatsChanged}) {
@@ -105,36 +106,51 @@ function Chat({chatId, onChatsChanged}) {
     const emptyMessage = (messages.length === 0 && <h1>No messages in this chat</h1>)
 
     return (
+        // <div style={{ display: 'flex', flexDirection: 'column'}}>
         <div>
             <Button variant="contained" onClick={handleLeaveChat}>Leave chat</Button>
             <ChatMemberManager chatId={chatId}/>
             <SMinorDivider/>
-            <Button variant="contained" onClick={handleLoadOlderMessages}>Load more messages</Button>
 
-            {emptyMessage}
 
-            <List>
-                {messages.map((r) =>
-                    <ListItem disablePadding divider key={getSafe(r, "_id")}>
-                        <ListItemText>
-                            <Typography variant="subtitle1" sx={{display: 'inline'}} component="span" color="green">
-                                {(getSenderName(r))}
-                            </Typography>
-                            <br/>
+            <Box
+                sx={{
+                    mb: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    height: '80vh',
+                    overflow: "hidden",
+                    overflowY: "scroll",
+                }}
+            >
 
-                            <Typography variant="caption" sx={{display: 'inline'}} component="span">
-                                at {moment(getSafe(r, "date")).format("ss:mm:hh MM/DD/YYYY")}
-                            </Typography>
-                            <br/>
+                <Button variant="contained" onClick={handleLoadOlderMessages}>Load more messages</Button>
 
-                            <Typography variant="body1" sx={{display: 'inline'}} component="span">
-                                {getSafe(r, "messageText")}
-                            </Typography>
+                {emptyMessage}
 
-                        </ListItemText>
-                    </ListItem>
-                )}
-            </List>
+                <List>
+                    {messages.map((r) =>
+                        <ListItem disablePadding divider key={getSafe(r, "_id")}>
+                            <ListItemText>
+                                <Typography variant="subtitle1" sx={{display: 'inline'}} component="span" color="green">
+                                    {(getSenderName(r))}
+                                </Typography>
+                                <br/>
+
+                                <Typography variant="caption" sx={{display: 'inline'}} component="span">
+                                    at {moment(getSafe(r, "date")).format("ss:mm:hh MM/DD/YYYY")}
+                                </Typography>
+                                <br/>
+
+                                <Typography variant="body1" sx={{display: 'inline'}} component="span">
+                                    {getSafe(r, "messageText")}
+                                </Typography>
+
+                            </ListItemText>
+                        </ListItem>
+                    )}
+                </List>
+            </Box>
 
             <SendMessageForm chatId={chatId}/>
         </div>
