@@ -20,7 +20,8 @@ const login = async (req, res) => {
         if (user && (await user.checkPassword(userPassword))) {
             genToken(res, user._id);
             res.status(200).json({
-                message: "Successful authentication"
+                message: "Successful authentication",
+                userId: user._id
             })
         } else {
             return res.status(401).json({error: {type: "INVALID_CREDENTIALS", message: "Invalid email or password"}});

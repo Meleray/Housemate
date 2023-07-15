@@ -14,6 +14,7 @@ function LoginPage({ history }) {
       "userEmail": userEmail, 
       "userPassword": userPassword 
     }, {withCredentials: true}).then(response => {
+      localStorage.setItem('userId', response.data.userId);
       history.push('/messages');
     }).catch(error => {
       if (error) {
