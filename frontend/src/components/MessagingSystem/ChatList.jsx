@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react"
 
-import axios, {get} from "axios";
-import {ApiFindChatsBySpaceAndUserId} from "../../constants";
+import {ApiFindChatsBySpaceAndUserId, router_auth} from "../../constants";
 import {buildErrorMessage, getSafe} from "../../utils";
 
 
@@ -13,7 +12,7 @@ function ChatList({onSelectChat, chatsChangedSemaphore}) {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await axios.request({
+                const response = await router_auth.request({
                     method: 'POST',
                     url: ApiFindChatsBySpaceAndUserId,
                     headers: {'content-type': 'application/json',},

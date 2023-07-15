@@ -1,7 +1,6 @@
 import React, {useState} from "react"
 
-import axios from "axios";
-import {ApiCreateChat} from "../../constants";
+import {ApiCreateChat, router_auth} from "../../constants";
 import {getSafe} from "../../utils";
 
 
@@ -11,7 +10,7 @@ function AddChatForm({onChatsChanged}) {
     const handleAddChat = async event => {
         event.preventDefault();  // prevent reload
         event.target.reset();
-        let response = await axios.request({
+        let response = await router_auth.request({
             method: 'POST',
             url: ApiCreateChat,
             headers: {'content-type': 'application/json',},

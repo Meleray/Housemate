@@ -30,6 +30,14 @@ services:
     depends_on:
       - database
 
+  client:
+    container_name: housemate_frontend
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+
 volumes:
   mongodbdata:
     driver: local

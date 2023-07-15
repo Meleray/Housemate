@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
-import axios from "axios";
-import {ApiFindSpacesByUserId} from "../../constants";
+import {ApiFindSpacesByUserId, router_auth} from "../../constants";
 import {getSafe} from "../../utils";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -14,7 +13,7 @@ function SpaceList() {
 
     useEffect(() => {
         async function fetchData() {
-            const result = await axios.request({
+            const result = await router_auth.request({
                 method: 'POST',
                 url: ApiFindSpacesByUserId,
                 headers: {'content-type': 'application/json',},

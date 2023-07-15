@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import axios from "axios";
 import {
     ApiChangeInviteCode,
     ApiCreateSpace,
     ApiDeleteSpaceMember,
-    ApiGetInviteCode, ApiJoinSpace
+    ApiGetInviteCode, ApiJoinSpace,
+    router_auth
 } from "../../constants";
 import {buildErrorMessage, getSafe} from "../../utils";
 import TextField from "@mui/material/TextField";
@@ -30,7 +30,7 @@ function AddSpaceForm() {
         let response;
         try {
 
-            response = await axios.request({
+            response = await router_auth.request({
                 method: 'POST',
                 url: ApiCreateSpace,
                 headers: {'content-type': 'application/json',},
@@ -66,7 +66,7 @@ function LeaveSpaceButton() {
         event.preventDefault();  // prevent reload
         let response;
         try {
-            response = await axios.request({
+            response = await router_auth.request({
                 method: 'DELETE',
                 url: ApiDeleteSpaceMember,
                 headers: {'content-type': 'application/json',},
@@ -95,7 +95,7 @@ function InviteCodeComponent() {
         async function fetchInviteCode() {
             let response;
             try {
-                response = await axios.request({
+                response = await router_auth.request({
                     method: 'POST',
                     url: ApiGetInviteCode,
                     headers: {'content-type': 'application/json',},
@@ -122,7 +122,7 @@ function InviteCodeComponent() {
         event.preventDefault();  // prevent reload
         let response;
         try {
-            response = await axios.request({
+            response = await router_auth.request({
                 method: 'PUT',
                 url: ApiChangeInviteCode,
                 headers: {'content-type': 'application/json',},
@@ -160,7 +160,7 @@ function JoinNewSpace() {
 
         let response;
         try {
-            response = await axios.request({
+            response = await router_auth.request({
                 method: 'POST',
                 url: ApiJoinSpace,
                 headers: {'content-type': 'application/json',},
