@@ -17,11 +17,14 @@ describe('User and Space schemes', () => {
         userEmail: `${utilsForTests.generateRandomStr()}@test.ru`
         // initialUser._id will be set further
     }
-    let updatedUserFields = {
+    const updatedUserFields = {
         userName: "Mikhail Looong",
         userDescription: "The longest human in the universe",
     }
-    let spaceId;
+    let space = {
+        spaceName: "A house with high ceilings",
+        // _id: will be filled later
+    }
 
     it('add user', (done) => {
         chai.request(server)
@@ -30,7 +33,7 @@ describe('User and Space schemes', () => {
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
 
-                utilsForTests.compareObjects(res.body, initialUser, new Set(["_id", "userPassword"]))
+                utilsForTests.compareObjects(res.body, initialUser, ["_id", "userPassword", "userPicture"])
                 initialUser._id = res.body._id
                 done();
             });
@@ -52,16 +55,16 @@ describe('User and Space schemes', () => {
     it('update user', (done) => {
         chai.request(server)
             .put('/api/update-user')
-            .send(updatedUserFields)
+            .send({userId: initialUser._id, ...updatedUserFields})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                let reposeUser = res.body
-                for (let key in reposeUser) {
+                let responseUser = res.body
+                for (let key in responseUser) {
                     if (key in updatedUserFields) {  // check that all the fields of updatedUserFields are updated
-                        chai.expect(reposeUser[key], JSON.stringify(res.body)).to.be.eql(updatedUserFields[key]);
+                        chai.expect(responseUser[key], JSON.stringify(res.body)).to.be.eql(updatedUserFields[key]);
                     } else if (key in initialUser) {
                         // check that all the fields, which was not in updatedUserFields, are still the same
-                        chai.expect(reposeUser[key], JSON.stringify(res.body)).to.be.eql(initialUser[key])
+                        chai.expect(responseUser[key], JSON.stringify(res.body)).to.be.eql(initialUser[key])
                     }
                 }
                 done();
@@ -86,7 +89,7 @@ describe('User and Space schemes', () => {
             .send({spaceName: "A house with high ceilings"})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                spaceId = res.body._id
+                space._id = res.body._id
                 done();
             });
     });
@@ -95,10 +98,10 @@ describe('User and Space schemes', () => {
     it('get space', (done) => {
         chai.request(server)
             .post('/api/find-space')
-            .send({spaceId: spaceId})
+            .send({spaceId: space._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(spaceId);
+                chai.expect(res.body._id, JSON.stringify(res.body)).to.be.eql(space._id);
                 done();
             });
     });
@@ -106,7 +109,7 @@ describe('User and Space schemes', () => {
     it('add a non-exist user to a space', (done) => {
         chai.request(server)
             .put('/api/create-space-member')
-            .send({userId: utilsForTests.nonExistId, spaceId: spaceId})  // fake userId
+            .send({userId: utilsForTests.nonExistId, spaceId: space._id})  // fake userId
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.BAD_REQUEST);
                 done();
@@ -126,12 +129,24 @@ describe('User and Space schemes', () => {
     it('add a user to a space', (done) => {
         chai.request(server)
             .put('/api/create-space-member')
-            .send({userId: initialUser._id, spaceId: spaceId})
+            .send({userId: initialUser._id, spaceId: space._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
 
                 const expectedValue = [{memberId: initialUser._id, isAdmin: false}]
                 chai.expect(res.body.spaceMembers, JSON.stringify(res.body)).to.be.eql(expectedValue);
+                done();
+            });
+    });
+
+
+    it('find space members', (done) => {
+        chai.request(server)
+            .post('/api/find-space-members')
+            .send({spaceId: space._id})
+            .end((err, res) => {
+                chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
+                chai.expect(res.body[0]._id, JSON.stringify(res.body)).to.be.eql(initialUser._id);
                 done();
             });
     });
@@ -142,8 +157,8 @@ describe('User and Space schemes', () => {
             .send({userId: initialUser._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body[0].spaceMembers, JSON.stringify(res.body)).to.be.eql(
-                    [{ memberId: initialUser._id, isAdmin: false } ]);
+                chai.expect(res.body, JSON.stringify(res.body)).to.be.eql(
+                    [{_id: space._id, spaceName: space.spaceName}]);
                 done();
             });
     });
@@ -162,7 +177,7 @@ describe('User and Space schemes', () => {
     it('delete user from space', (done) => {
         chai.request(server)
             .delete('/api/delete-space-member')
-            .send({userId: initialUser._id, spaceId: spaceId})
+            .send({userId: initialUser._id, spaceId: space._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body.spaceMembers, JSON.stringify(res.body)).to.be.eql([]);

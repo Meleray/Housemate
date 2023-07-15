@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react"
 
 import axios from "axios";
-import { ApiFindTasksBySpaceAndUserId } from "../../constants";
+import { ApiFindTasksBySpaceId } from "../../constants";
 
 
 function TaskList({onSelectTask}) {
@@ -13,7 +13,7 @@ function TaskList({onSelectTask}) {
         async function fetchData() {
             const response = await axios.request({
                 method: 'POST',
-                url: ApiFindTasksBySpaceAndUserId,
+                url: ApiFindTasksBySpaceId,
                 headers: {'content-type': 'application/json',},
                 data: {
                     spaceId: localStorage.getItem("spaceId")

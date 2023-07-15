@@ -1,49 +1,68 @@
-const HttpStatus = require('http-status-codes');
+const taskModel = require("../database/models/task");
+const {assertKeysValid, pick} = require("./utilsForControllers");
+const spaceController = require("./spaceController");
 
-const taskService = require("../services/taskService");
+const returnableTaskFields = ['_id', 'assigned_user', 'spaceId', 'taskName', 'start_date', 'end_date', 'complexity', 'repetition', 'body', 'notification_type', 'notification_time', 'admin_approval', 'completion'];
 
-const getTaskById = async (req, res) => {
-    const taskId = req.body.taskId;
-    const task = await taskService.getTaskById(taskId);
-    if (task.error) {
-        return res.status(HttpStatus.BAD_REQUEST).json(task);
+class TaskController {
+    getTaskById = async (requestBody) => {
+        assertKeysValid(requestBody, ['._id'], [])
+        const task = await taskModel.findById(requestBody.taskId)
+            .select(returnableTaskFields);
+        if (!task) {
+            return {error: {type: "TASK_NOT_FOUND", message: `There is no task for id=${requestBody.taskId}`}};
+        }
+        return task;
+    };
+
+    addTask = async (requestBody) => {
+        assertKeysValid(requestBody, ['assigned_user', 'spaceId', 'start_date', 
+            'end_date', 'complexity', 'repetition', 'body', 'notification_type', 
+            'notification_time', 'admin_approval', 'completion'])
+        const task = await taskModel.create(requestBody);
+        return pick(task, returnableTaskFields)
+    };
+
+    editTask = async (requestBody) => {
+        assertKeysValid(requestBody, ['assigned_user', 'start_date', 
+            'end_date', 'complexity', 'repetition', 'body', 'notification_type', 
+            'notification_time', 'admin_approval', 'spaceId', 'taskId', 'completion'])
+        let updValues = structuredClone(requestBody)
+        delete updValues._id
+        return taskModel.findByIdAndUpdate(requestBody.taskId, {$set: updValues}, {new: true})
     }
-    return res.status(HttpStatus.OK).json(task);
-};
 
-const addTask = async (req, res) => {
-    console.log(req.body);
-    const task = await taskService.addTask(req.body);
-    if (task.error) {
-        return res.status(HttpStatus.BAD_REQUEST).json(task);
+    updateTaskCompletion = async (requestBody) => {
+        assertKeysValid(requestBody, ['taskId', 'completion'])
+        let updValues = structuredClone(requestBody)
+        delete updValues._id
+        return taskModel.findByIdAndUpdate(requestBody.taskId, {$set: updValues}, {new: true})
     }
-    return res.status(HttpStatus.OK).json(task);
-};
 
-const deleteTask = async (req, res) => {
-    const taskId = req.body.taskId;
-    const task = await taskService.deleteTask(taskId);
+    deleteTask = async (requestBody) => {
+        assertKeysValid(requestBody, ['taskId'], [])
+        const taskId = requestBody.taskId
+        const task = await taskModel.findByIdAndDelete(taskId);
+      
+        if (!task) {
+          return {
+            error: { type: "TASK_NOT_FOUND", message: `There is no task for id=${"taskId"}` }
+          };
+        }
+      
+        return { success: true };
+      };
 
-    if (task == null || task.error) {
-        return res.status(HttpStatus.BAD_REQUEST).json(task);
+    getTasksBySpaceId = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId'], [])
+        const {spaceId} = requestBody;
+
+        return taskModel.find({
+            $and: [
+                {spaceId: spaceId},
+            ]
+        }).select(returnableTaskFields)
     }
-    return res.status(HttpStatus.OK).json(task)
-};
-
-const getTasksBySpaceAndUserId = async (req, res) => {
-    const spaceId = req.body.spaceId;
-    const tasks = await taskService.getTasksBySpaceAndUserId(spaceId);
-
-    if (tasks == null || tasks.error) {
-        return res.status(HttpStatus.BAD_REQUEST).json(tasks);
-    }
-    return res.status(HttpStatus.OK).json(tasks)
 }
 
-
-module.exports = {
-    addTask, 
-    getTaskById,
-    deleteTask,
-    getTasksByUserId: getTasksBySpaceAndUserId
-};
+module.exports = new TaskController();

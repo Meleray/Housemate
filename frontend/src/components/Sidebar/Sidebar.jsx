@@ -13,8 +13,8 @@ import { ReactComponent as LogoSVG } from "../../images/Housemate.svg";
 import { AiOutlineMessage, AiOutlineSetting } from "react-icons/ai";
 import { MdFormatListBulleted, MdLogout } from "react-icons/md";
 import { RiMoneyEuroBoxLine } from 'react-icons/ri';
-import SpaceList from "./SpaceList";
 import SpaceManagementComponent from "./SpaceManagementComponent";
+import SpaceList from "./SpaceList";
 
 const Sidebar = () => {
     const [sidebarOpen] = useState(true);
@@ -59,7 +59,7 @@ const Sidebar = () => {
 
 const linksArray = [
     {
-        label: "To-Do", // label: "Home",
+        label: "Tasks", // label: "Home",
         icon: <MdFormatListBulleted />,
         to: "/task",
         notification: 0,

@@ -1,6 +1,7 @@
 import { Link, withRouter } from "react-router-dom";
 import axios from 'axios';
 import { useState} from "react";
+import {ApiCreateUser} from "../../constants";
 
 function RegisterPage({ history }) {
   const [name, setName] = useState()
@@ -9,11 +10,10 @@ function RegisterPage({ history }) {
 
   function handleFormSubmit(event) {
     event.preventDefault();
-    axios.post('http://localhost:5001/api/add-user',
+    axios.post(ApiCreateUser,
               {"userName": name, 
                "userEmail": email, 
-               "userPassword": password, 
-               "userPicture": 2045}) // Server host, register is the route of the server
+               "userPassword": password}) // Server host, register is the route of the server
     history.push("/login");
   }
 

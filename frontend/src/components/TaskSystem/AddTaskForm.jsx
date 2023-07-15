@@ -9,7 +9,8 @@ import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import TaskSelectUser from './TaskSelectUser';
 import TaskDateTimePicker from './TaskDatePicker';
-
+import { ApiDeleteTask, ApiFindTasksBySpaceId } from "../../constants";
+import { ApiEditTask } from "../../constants";
 import { ApiAddTask } from '../../constants';
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +34,7 @@ const style = {
   p: 4,
 };
 
-export default function AddTaskForm() {
+export default function AddTaskForm(onTasksChanged) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -41,7 +42,10 @@ export default function AddTaskForm() {
 
   const [taskName, setTaskName] = useState("");
   const [dateTime, setDateTime] = useState();
+  const [assignedUser, setAssignedUser] = useState();
   const [completionStatus, setCompletionStatus] = useState();
+
+  const [tasks, setTasks] = useState([]);
 
   const handleAddTask = async (event) => {
     event.preventDefault();
@@ -54,7 +58,8 @@ export default function AddTaskForm() {
           'content-type': 'application/json',
         },
         data: {
-          start_date: "String",
+          assigned_user: assignedUser,
+          start_date: dateTime,
           end_date: "String",
           complexity: "String",
           repetition: "String",
@@ -63,11 +68,13 @@ export default function AddTaskForm() {
           notification_time: "String",
           admin_approval: "String",
           spaceId: localStorage.getItem("spaceId"),
+          completion: false,
         },
       });
   
       // Form submission is complete, close the modal
       handleClose();
+
     } catch (error) {
       // Handle error, if any
       console.error(error);
@@ -103,11 +110,11 @@ export default function AddTaskForm() {
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 Responsible User
-                <TaskSelectUser />
+                <TaskSelectUser setAssignedUser={setAssignedUser} />
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 Date and Time
-                <TaskDateTimePicker />
+                <TaskDateTimePicker setDateTime={setDateTime} />
               </Typography>
               <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
                 <Button type="submit" >Add Task</Button>

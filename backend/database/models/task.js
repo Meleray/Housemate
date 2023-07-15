@@ -1,14 +1,15 @@
 const mongoose = require("mongoose");
+const utilsForModels = require("./utilsForModels");
 const Schema = mongoose.Schema;  // for foreign keys
 
 const TaskSchema = new mongoose.Schema({
-    spaceId: {
+    assigned_user: {
         type: Schema.Types.ObjectId,
-        ref: 'Space',
-        required: true
+        ref: 'AssignedUser',
+        required: true,
     },
     start_date: {
-        type: String, // Date
+        type: Date, // Date
         required: true
     },
     end_date: {
@@ -37,6 +38,11 @@ const TaskSchema = new mongoose.Schema({
     },
     admin_approval: {
         type: String,// Boolean
+        required: true
+    },
+    completion: {
+        type: Boolean,// Boolean
+        default: false,
         required: true
     },
 });

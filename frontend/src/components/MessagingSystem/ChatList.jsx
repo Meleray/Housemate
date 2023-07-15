@@ -1,49 +1,52 @@
 import React, {useState, useEffect} from "react"
 
-import axios from "axios";
+import axios, {get} from "axios";
 import {ApiFindChatsBySpaceAndUserId} from "../../constants";
+import {buildErrorMessage, getSafe} from "../../utils";
 
 
-function ChatList({onSelectChat}) {
+function ChatList({onSelectChat, chatsChangedSemaphore}) {
     const [chats, setChats] = useState([]);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [selectedId, setSelectedId] = useState(null);
 
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.request({
-                method: 'POST',
-                url: ApiFindChatsBySpaceAndUserId,
-                headers: {'content-type': 'application/json',},
-                data: {
-                    spaceId: localStorage.getItem("spaceId"),
-                    userId: localStorage.getItem("userId")
-                },
-            });
-            // if (isError(response)){
-            //     return
-            // }
-            setChats(response.data)                 // After one finds the data in the database this is the new value stored in the variable chats
+            try {
+                const response = await axios.request({
+                    method: 'POST',
+                    url: ApiFindChatsBySpaceAndUserId,
+                    headers: {'content-type': 'application/json',},
+                    data: {
+                        spaceId: getSafe(localStorage, "spaceId"),
+                        userId: getSafe(localStorage, "userId")
+                    },
+                });
+                setChats(response.data)
+            } catch (error) {
+                alert(buildErrorMessage(error));
+            }
         }
 
-        fetchData();                // the fetch data is run
-    }, []);
+        setSelectedId(null);
+        void fetchData();
+    }, [chatsChangedSemaphore]);
 
-    const emptyMessage = (chats.length === 0 && <h1>No chats found</h1>)
+    const emptyMessage = (chats.length === 0 && <h1>There are no chats in this space</h1>)
 
     return (
         <div>
             {emptyMessage}
-            <ul className="list-group">                    
-                {chats.map((r, index) =>
-                    <li className={selectedIndex === index ? "list-group-item active" : "active"}
-                        key={r._id}
+            <ul className="list-group">
+                {chats.map(r =>
+                    <li className={selectedId === getSafe(r, "_id") ? "list-group-item active" : "active"}
+                        key={getSafe(r, "_id")}
                         onClick={() => {
-                            setSelectedIndex(index);
-                            onSelectChat(r._id); // call an external function; this is the declaration of the .id of the chats
+                            setSelectedId(getSafe(r, "_id"));
+                            onSelectChat(getSafe(r, "_id")); // call an external function
                         }}
                     >
-                        {r.chatName}
+                        {getSafe(r, "chatName")}
                     </li>
                 )}
             </ul>

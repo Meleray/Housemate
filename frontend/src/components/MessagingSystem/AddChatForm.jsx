@@ -1,10 +1,11 @@
 import React, {useState} from "react"
 
 import axios from "axios";
-import {ApiCreateChatAndMember, ApiCreateSpaceAndMember} from "../../constants";
+import {ApiCreateChat} from "../../constants";
+import {getSafe} from "../../utils";
 
 
-function AddChatForm() {
+function AddChatForm({onChatsChanged}) {
     const [chatName, setChatName] = useState("New chat");
 
     const handleAddChat = async event => {
@@ -12,19 +13,19 @@ function AddChatForm() {
         event.target.reset();
         let response = await axios.request({
             method: 'POST',
-            url: ApiCreateChatAndMember,                                //The api call for creating chat and member
+            url: ApiCreateChat,
             headers: {'content-type': 'application/json',},
             data: {
                 chatName: chatName,
-                spaceId: localStorage.getItem("spaceId"),
-                userId: localStorage.getItem("userId"),
+                spaceId: getSafe(localStorage, "spaceId"),
+                chatMembers: [getSafe(localStorage, "userId")],
             },
         });
+        onChatsChanged();
 
         // if (isError(response)) {
         //     return;
         // }
-        // TODO update chat list
     }
 
     return (

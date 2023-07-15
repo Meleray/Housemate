@@ -76,21 +76,24 @@ describe('Message system', () => {
 
     it('send messages', async () => {
         for (const message of messages.slice(0, -1)) {
-            let messageData = {
+            const messageData = {
                 messageText: message,
                 chatId: chat._id,
                 senderId: userMember1._id,
-                isNotification: false
             }
             const resSendMessage = await chai.request(server).post('/api/send-message').send(messageData)
             chai.expect(resSendMessage, JSON.stringify(resSendMessage.body)).to.have.status(HttpStatus.OK);
-            utilsForTests.compareObjects(resSendMessage.body, messageData, new Set(["_id", "date"]))
+            utilsForTests.compareObjects(resSendMessage.body, messageData, ["_id", "date", "isNotification"])
         }
 
-        const resSendAnswer = await chai.request(server).post('/api/send-message').send(
-            {messageText: messages.at(-1), chatId: chat._id, senderId: userMember2._id})
+        const answerData = {
+            messageText: messages.at(-1),
+            chatId: chat._id,
+            senderId: userMember2._id,
+        }
+        const resSendAnswer = await chai.request(server).post('/api/send-message').send(answerData)
         chai.expect(resSendAnswer, JSON.stringify(resSendAnswer.body)).to.have.status(HttpStatus.OK);
-        utilsForTests.compareObjects(resSendAnswer.body, resSendAnswer, new Set(["_id", "date"]))
+        utilsForTests.compareObjects(resSendAnswer.body, answerData, ["_id", "date", "isNotification"])
     });
 
     it('read messages', async () => {

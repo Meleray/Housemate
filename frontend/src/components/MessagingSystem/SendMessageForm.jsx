@@ -2,6 +2,7 @@ import React, {useState} from "react"
 
 import axios from "axios";
 import {ApiSendMessage} from "../../constants";
+import {getSafe} from "../../utils";
 
 
 function SendMessageForm({chatId}) {
@@ -15,7 +16,7 @@ function SendMessageForm({chatId}) {
             url: ApiSendMessage,
             headers: {'content-type': 'application/json',},
             data: {
-                senderId: localStorage.getItem("userId"),
+                senderId: getSafe(localStorage, "userId"),
                 chatId: chatId,
                 messageText: messageText
             },
