@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const utilsForModels = require("./utilsForModels");
 const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;  // for foreign keys
 

@@ -98,6 +98,7 @@ function InviteCodeComponent() {
                     headers: {'content-type': 'application/json',},
                     data: {
                         spaceId: getSafe(localStorage, "spaceId"),
+                        userId: getSafe(localStorage, "userId")
                     },
                 });
             } catch (error) {
@@ -108,7 +109,6 @@ function InviteCodeComponent() {
             setInviteCode(response.data.inviteCode)
         }
 
-        // TODO
         if (localStorage.hasOwnProperty("spaceId")){
             void fetchInviteCode();
         }
@@ -125,6 +125,7 @@ function InviteCodeComponent() {
                 headers: {'content-type': 'application/json',},
                 data: {
                     spaceId: getSafe(localStorage, "spaceId"),
+                    userId: getSafe(localStorage, "userId")
                 },
             });
         } catch (error) {
