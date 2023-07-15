@@ -25,9 +25,10 @@ function SpaceList() {
         void fetchData();
     }, []);
 
-    function onSelectSpace(spaceId) {
-        localStorage.setItem("spaceId", spaceId);
-        window.location.reload(false);
+    function onSelectSpace(space) {
+        localStorage.setItem("spaceId", getSafe(space, '_id'));
+        localStorage.setItem("isPremium", getSafe(space, 'isPremium'));
+        window.location.reload()
     }
 
     const emptyMessage = (spaces.length === 0 && <h1>No spaces found</h1>)
@@ -40,8 +41,9 @@ function SpaceList() {
                 {spaces.map((r) =>
                     <ListItem disablePadding key={getSafe(r, "_id")}>
                         <ListItemButton
-                            selected={localStorage.hasOwnProperty('spaceId') && (getSafe(localStorage, 'spaceId') === r._id)}
-                            onClick={() => onSelectSpace(getSafe(r, "_id"))}
+                            selected={localStorage.hasOwnProperty('spaceId')
+                                && (getSafe(localStorage, 'spaceId') === r._id)}
+                            onClick={() => onSelectSpace(r)}
                         >
                             <ListItemText primary={getSafe(r, "spaceName")}/>
                         </ListItemButton>

@@ -13,9 +13,11 @@ import {SMinorDivider} from "./styles";
 import {inviteCodeField, newChatField, newSpaceField} from "../../componentsIds";
 
 
-function changeSpaceAndReload(spaceId) {
+function changeSpaceAndReload(space) {
+    console.log(`changeSpaceAndReload: ${JSON.stringify(localStorage, null, 4)}`)
     //await new Promise(r => setTimeout(r, 3000));
-    localStorage.setItem("spaceId", spaceId)
+    localStorage.setItem("spaceId", getSafe(space, '_id'))
+    localStorage.setItem("isPremium", getSafe(space, 'isPremium'))
     // We set local storage variable.
     // Probably, the easiest way to update it in all the components is to reload the page.
     // We assume that user does not switch spaces frequently.
@@ -45,7 +47,7 @@ function AddSpaceForm() {
             return;
         }
         document.getElementById(newSpaceField).value = "";
-        changeSpaceAndReload(response.data._id)
+        changeSpaceAndReload(response.data)
     }
 
 
@@ -79,7 +81,9 @@ function LeaveSpaceButton() {
             return;
         }
 
-        changeSpaceAndReload(response.data._id)
+        localStorage.removeItem('isPremium')
+        localStorage.removeItem('spaceId')
+        window.location.reload()
     }
 
     return (
@@ -173,7 +177,7 @@ function JoinNewSpace() {
             return;
         }
         document.getElementById(inviteCodeField).value = "";
-        changeSpaceAndReload(response.data._id)
+        changeSpaceAndReload(response.data)
     }
 
     return (

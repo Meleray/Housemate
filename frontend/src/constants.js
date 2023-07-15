@@ -18,6 +18,7 @@ export const ApiFindSpacesByUserId = `find-spaces-by-userid`
 export const ApiCreateSpace = `create-space`
 export const ApiDeleteSpaceMember = `delete-space-member`
 export const ApiJoinSpace = `join-space`
+export const ApiFindSpaceById = `find-space`
 
 export const ApiFindChatsBySpaceAndUserId = `find-chats-by-space-and-userid`
 export const ApiFindChatMembers = `find-chat-members`

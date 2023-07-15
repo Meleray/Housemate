@@ -1,27 +1,39 @@
 const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
-const {randomInviteCode, assertKeysValid, pick} = require("./utilsForControllers");
+const {
+    randomInviteCode,
+    assertKeysValid,
+    pick
+} = require("./utilsForControllers");
 const {assertUserBelongs2Space, isUserAdmin, isSpacePremium} = require("./assert");
 
 
-const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration'];
+const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration', 'isPremium'];
 
 class SpaceController {
     getSpaceById = async (requestBody) => {
         assertKeysValid(requestBody, ['spaceId'], [])
-        const space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
+        let space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
         if (!space) {
             return {
                 error: {type: "SPACE_NOT_FOUND", message: "There is no space for this id"},
             };
         }
+        // https://stackoverflow.com/a/30510902/13221007
+        // I don't know why, but this astonishing db returns objects
+        // which can not be changed without such a workaround
+        space = JSON.parse(JSON.stringify(space));
+        // map both values to UNIX time is the simples way to compute the time
+        space.isPremium = Date.parse(space.premiumExpiration) > Date.now()
         return space;
     };
 
     getSpaceMembers = async (requestBody) => {
         assertKeysValid(requestBody, ['spaceId'], [])
-        const spaceMembers = await spaceModel.findById(requestBody.spaceId).populate(
-            {path: 'spaceMembers.memberId', select: ['userName', 'userPicture', 'userEmail']})
+        const spaceMembers = await spaceModel.findById(requestBody.spaceId).populate({
+            path: 'spaceMembers.memberId',
+            select: ['userName', 'userPicture', 'userEmail']
+        })
             .select(['spaceMembers', '-_id'])
         let plainSpaceMembers = []
         for (const member of spaceMembers.spaceMembers) {
@@ -38,21 +50,29 @@ class SpaceController {
 
     getSpacesByUserId = async (requestBody) => {
         assertKeysValid(requestBody, ['userId'], [])
-        return spaceModel.find({'spaceMembers.memberId': requestBody.userId}).select(['_id', 'spaceName'])
+        let spaces = await spaceModel.find({'spaceMembers.memberId': requestBody.userId})
+            .select(['_id', 'spaceName', 'premiumExpiration'])
+        //spaces = spaces.map(obj => ({...obj, premiumExpiration > Date.now()}))
+        spaces = JSON.parse(JSON.stringify(spaces));
+        spaces.forEach(function (element) {
+            element.isPremium = Date.parse(element.premiumExpiration) > Date.now()
+        });
+        return spaces
     }
 
     addSpace = async (requestBody) => {
         assertKeysValid(requestBody, ['spaceName'], ['spaceMembersIds'])
         let spaceData = {
-            spaceName: requestBody.spaceName,
-            inviteCode: randomInviteCode()
+            spaceName: requestBody.spaceName, inviteCode: randomInviteCode()
         }
 
         if (requestBody.hasOwnProperty('spaceMembersIds')) {
             // promote the initial members to admins
             spaceData.spaceMembers = requestBody.spaceMembersIds.map(m => ({memberId: m, isAdmin: true}))
         }
-        const space = await spaceModel.create(spaceData);
+        let space = await spaceModel.create(spaceData);
+        space = JSON.parse(JSON.stringify(space));
+        space.isPremium = Date.parse(space.premiumExpiration) > Date.now()
         return pick(space, returnableSpaceFields);
     };
 
@@ -67,16 +87,16 @@ class SpaceController {
         if (!(await spaceModel.exists({_id: spaceId}))) {
             return {error: `There is no space for id=${spaceId}`};
         }
-        if ((await spaceModel.exists(
-            {spaceId: spaceId, spaceMembers: {$elemMatch: {memberId: userId}}}
-        ))) {
+        if ((await spaceModel.exists({spaceId: spaceId, spaceMembers: {$elemMatch: {memberId: userId}}}))) {
             return {error: `There user ${userId} is already a member of the space ${spaceId}`};
         }
 
-        return spaceModel.findByIdAndUpdate(spaceId,
-            {$push: {spaceMembers: {memberId: userId}}},
-            {new: true}
-        ).select('spaceMembers');
+        let space = await spaceModel.findByIdAndUpdate(
+            spaceId, {$push: {spaceMembers: {memberId: userId}}}, {new: true}
+        );
+        space = JSON.parse(JSON.stringify(space));
+        space.isPremium = Date.parse(space.premiumExpiration) > Date.now()
+        return space
     };
 
     joinSpace = async (requestBody) => {
@@ -94,7 +114,7 @@ class SpaceController {
         assertKeysValid(requestBody, ['spaceId', 'userId'], [])
         const {spaceId, userId} = requestBody
 
-        const space = await spaceModel.findByIdAndUpdate(spaceId, {
+        let space = await spaceModel.findByIdAndUpdate(spaceId, {
             $pull: {spaceMembers: {memberId: userId}}  // update 'spaceMembers' only if userId is not presented in it
         }, {new: true}).select('spaceMembers')
         if (!space) {
@@ -102,6 +122,8 @@ class SpaceController {
                 error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}
             }
         }
+        space = JSON.parse(JSON.stringify(space));
+        space.isPremium = Date.parse(space.premiumExpiration) > Date.now()
         return space;
     };
 
