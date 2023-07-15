@@ -24,10 +24,10 @@ const login = async (req, res) => {
                 userId: user._id
             })
         } else {
-            return res.status(401).json({error: {type: "INVALID_CREDENTIALS", message: "Invalid email or password"}});
+            return res.status(401).json({error: "Invalid email or password"});
         }
     } catch(error) {
-        return res.status(500).json({error: {type: "SERVER_ERROR", message: error.message}});
+        return res.status(500).json({error: error.message});
     } 
 }
 

@@ -26,13 +26,15 @@ const MessagesPage = () => {
                     chatsChangedSemaphore={chatsChangedSemaphore}/>
                 <AddChatForm onChatsChanged={() => updateSemaphore()}/>
             </SSidebar>
-            <SMain>
-                {chosenChatId &&
-                    <Chat
-                        chatId={chosenChatId}
-                        onChatsChanged={() => updateSemaphore()}/>
-                }
-            </SMain>
+            <div style={{marginLeft: '10px'}}>
+                <SMain>
+                    {chosenChatId &&
+                        <Chat
+                            chatId={chosenChatId}
+                            onChatsChanged={() => updateSemaphore()}/>
+                    }
+                </SMain>
+            </div>
         </>
     )
 
@@ -40,7 +42,7 @@ const MessagesPage = () => {
     return (
         <SLayout>
             <Sidebar/>
-            {(localStorage.hasOwnProperty("spaceId") ) ? messagingSystemPart : "Create, join or select a space"}
+            {(localStorage.hasOwnProperty("spaceId")) ? messagingSystemPart : "Create, join or select a space"}
         </SLayout>
     );
 };

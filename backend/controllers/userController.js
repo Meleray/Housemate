@@ -12,7 +12,7 @@ class UserController {
         const user = await userModel.findById(requestBody.userId)
             .select(returnableUserFields);
         if (!user) {
-            return {error: {type: "USER_NOT_FOUND", message: `There is no user for id=${requestBody.userId}`}};
+            return {error: `There is no user for id=${requestBody.userId}`};
         }
         return user;
     };

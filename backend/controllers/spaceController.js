@@ -62,20 +62,15 @@ class SpaceController {
 
         // check user exist
         if (!(await userModel.exists({_id: userId}))) {
-            return {error: {type: "USER_NOT_FOUND", message: `There is no user with id=${userId}`}};
+            return {error: `There is no user with id=${userId}`};
         }
         if (!(await spaceModel.exists({_id: spaceId}))) {
-            return {error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}};
+            return {error: `There is no space for id=${spaceId}`};
         }
         if ((await spaceModel.exists(
             {spaceId: spaceId, spaceMembers: {$elemMatch: {memberId: userId}}}
         ))) {
-            return {
-                error: {
-                    type: "FAILED_TO_ADD_MEMBER",
-                    message: `There user ${userId} is already a member of the space ${spaceId}`
-                }
-            };
+            return {error: `There user ${userId} is already a member of the space ${spaceId}`};
         }
 
         return spaceModel.findByIdAndUpdate(spaceId,
@@ -90,7 +85,7 @@ class SpaceController {
 
         let space = await spaceModel.findOne({inviteCode: inviteCode}).select("spaceId")
         if (space === null) {
-            return {error: {type: "INVALID_INVITE_CODE", message: `The code ${inviteCode} is invalid`}}
+            return {error: `The code ${inviteCode} is invalid`}
         }
         return this.addSpaceMember({spaceId: space._id, userId: userId})
     }
