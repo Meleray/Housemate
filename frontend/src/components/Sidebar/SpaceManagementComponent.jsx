@@ -49,13 +49,11 @@ function AddSpaceForm() {
 
 
     return (
-        <form onSubmit={handleSpaceCreation}>
-            <input
-                type="text"
-                placeholder="Space name"
-                onChange={(e) => setSpaceName(e.target.value)}
-            />
-            <button>Create new space</button>
+        <form>
+            <TextField id="invite-code-field" label="Space name" variant="outlined" sx={{marginRight: 1}}
+                       size="small"
+                       onChange={(e) => setSpaceName(e.target.value)}/>
+            <Button variant="contained" onClick={handleSpaceCreation}>Create space</Button>
         </form>
     )
 }
@@ -84,7 +82,7 @@ function LeaveSpaceButton() {
     }
 
     return (
-        <button type="button" onClick={handleSpaceExit}>Leave current space</button>
+        <Button variant="contained" onClick={handleSpaceExit}>Leave current space</Button>
     )
 }
 
@@ -178,11 +176,11 @@ function JoinNewSpace() {
     }
 
     return (
-        <form onSubmit={handleSpaceJoin}>
+        <form>
             <TextField id="invite-code-field" label="Secret code" variant="outlined" sx={{marginRight: 1}}
                        size="small"
                        onChange={(e) => setInviteCode(e.target.value)}/>
-            <Button variant="contained">Join space</Button>
+            <Button variant="contained" onClick={handleSpaceJoin}>Join space</Button>
         </form>
     )
 }
@@ -195,6 +193,7 @@ function SpaceManagementComponent() {
             <InviteCodeComponent/>
             <SMinorDivider/>
             <AddSpaceForm/>
+            <SMinorDivider/>
             <LeaveSpaceButton/>
         </>
     )

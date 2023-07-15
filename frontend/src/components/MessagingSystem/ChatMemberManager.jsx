@@ -2,6 +2,7 @@ import * as React from 'react';
 import {useEffect, useState} from "react";
 import {ApiAddChatMember, ApiFindChatMembers, ApiFindChatMembersAndNotmembers, ApiFindSpace, router_auth} from "../../constants";
 import {getSafe} from "../../utils";
+import Button from "@material-ui/core/Button";
 
 function ChatMemberManager({chatId}) {
     const [open, setOpen] = useState(false);
@@ -67,7 +68,8 @@ function ChatMemberManager({chatId}) {
             {members.map(r => chatMemberElement(r))}
         </ul>
 
-        <button onClick={handleOpen}>Add member</button>
+        <Button variant="contained" onClick={handleOpen}>Add member</Button>
+
         {open ? (<ul className="list-group">
             {members.map(r => chatNotMemberElement(r))}
         </ul>) : null}
