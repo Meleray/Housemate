@@ -7,6 +7,9 @@ import {
     ApiGetInviteCode, ApiJoinSpace
 } from "../../constants";
 import {buildErrorMessage, getSafe} from "../../utils";
+import TextField from "@mui/material/TextField";
+import Button from "@material-ui/core/Button";
+import {SMinorDivider} from "./styles";
 
 
 function changeSpaceAndReload(spaceId) {
@@ -172,12 +175,10 @@ function JoinNewSpace() {
 
     return (
         <form onSubmit={handleSpaceJoin}>
-            <input
-                type="text"
-                placeholder="Secret code"
-                onChange={(e) => setInviteCode(e.target.value)}
-            />
-            <button>Join space</button>
+            <TextField id="invite-code-field" label="Secret code"  variant="outlined" sx={{ marginRight:1}}
+                       size="small"
+                       onChange={(e) => setInviteCode(e.target.value)}/>
+            <Button variant="contained">Join space</Button>
         </form>
     )
 }
@@ -186,6 +187,7 @@ function SpaceManagementComponent() {
     return (
         <>
             <JoinNewSpace/>
+            <SMinorDivider/>
             <InviteCodeComponent/>
             <AddSpaceForm/>
             <LeaveSpaceButton/>
