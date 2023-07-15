@@ -129,7 +129,7 @@ class SpaceController {
         // In premium version, only admin can see the invite code
         if (await isSpacePremium({spaceId: requestBody.spaceId})) {
             if (!(await isUserAdmin({userId: requestBody.userId, spaceId: requestBody.spaceId}))) {
-                return {'inviteCode': 'Ask the invite code the space admin'}
+                return {'inviteCode': 'Ask the space admin for the invite code '}
             }
         }
         return spaceModel.findById(requestBody.spaceId).select('inviteCode');

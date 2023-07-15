@@ -89,7 +89,7 @@ function LeaveSpaceButton() {
 }
 
 function InviteCodeComponent() {
-    const [inviteCode, setInviteCode] = useState("not available");
+    const [inviteCode, setInviteCode] = useState("Not available");
 
     useEffect(() => {
         async function fetchInviteCode() {
@@ -112,7 +112,7 @@ function InviteCodeComponent() {
             setInviteCode(response.data.inviteCode)
         }
 
-        if (localStorage.hasOwnProperty("spaceId")){
+        if (localStorage.hasOwnProperty("spaceId")) {
             void fetchInviteCode();
         }
     }, []);
@@ -140,10 +140,14 @@ function InviteCodeComponent() {
 
     return (
         <>
-            <button type="button" onClick={handleCodeChange}>
+            <p>
+                Invite code for the current space:
+                <br/>
+                {inviteCode}
+            </p>
+            <Button variant="contained" onClick={handleCodeChange}>
                 Generate new invite code
-            </button>
-            <p> Invite code for this space: {inviteCode} </p>
+            </Button>
         </>
     )
 }
@@ -175,7 +179,7 @@ function JoinNewSpace() {
 
     return (
         <form onSubmit={handleSpaceJoin}>
-            <TextField id="invite-code-field" label="Secret code"  variant="outlined" sx={{ marginRight:1}}
+            <TextField id="invite-code-field" label="Secret code" variant="outlined" sx={{marginRight: 1}}
                        size="small"
                        onChange={(e) => setInviteCode(e.target.value)}/>
             <Button variant="contained">Join space</Button>
@@ -189,6 +193,7 @@ function SpaceManagementComponent() {
             <JoinNewSpace/>
             <SMinorDivider/>
             <InviteCodeComponent/>
+            <SMinorDivider/>
             <AddSpaceForm/>
             <LeaveSpaceButton/>
         </>
