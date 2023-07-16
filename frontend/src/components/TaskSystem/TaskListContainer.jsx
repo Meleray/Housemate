@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import React, { useState, useEffect } from "react";
+>>>>>>> origin/master
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -7,13 +11,18 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+<<<<<<< HEAD
 import axios from "axios";
 import { ApiDeleteTask, ApiFindTasksBySpaceId, ApiEditTask, ApiUpdateTaskCompletion, ApiFindUserById, ApiAddTask } from "../../constants";
+=======
+import { ApiDeleteTask, ApiFindTasksBySpaceAndUserId, ApiEditTask, ApiUpdateTaskCompletion, router_auth} from "../../constants";
+>>>>>>> origin/master
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@material-ui/core/Button';
+<<<<<<< HEAD
 import TaskSelectUser from './TaskSelectUser';
 import TaskDateTimePicker from './TaskDatePicker';
 import InfoIcon from '@mui/icons-material/Info';
@@ -29,11 +38,15 @@ const useStylesAddTask = makeStyles((theme) => ({
     textAlign: 'center',
   },
 }));
+=======
+
+>>>>>>> origin/master
 
 export default function TaskListContainer() {
   const [tasks, setTasks] = useState([]);
   const [taskSelectedIndex, setTaskSelectedIndex] = useState(-1);
   const [openEditModal, setOpenEditModal] = useState(false);
+<<<<<<< HEAD
   const [openShowTaskDetailsModal, setOpenShowTaskDetailsModal] = useState(false);
   const [checked, setChecked] = useState([]);
   const [editTaskId, setEditTaskId] = useState('');
@@ -56,6 +69,13 @@ export default function TaskListContainer() {
   const [taskName, setTaskName] = useState('');
   const [dateTime, setDateTime] = useState();
   const [assignedUser, setAssignedUser] = useState();
+=======
+  const [checked, setChecked] = useState([]);
+  const [editTaskId, setEditTaskId] = useState('');
+  const [editTaskName, setEditTaskName] = useState('');
+  const [completedTasks, setCompletedTasks] = useState([]);
+
+>>>>>>> origin/master
 
   const style = {
     position: 'absolute',
@@ -72,6 +92,7 @@ export default function TaskListContainer() {
   useEffect(() => {
     async function fetchData() {
       try {
+<<<<<<< HEAD
         const response = await axios.request({
           method: 'POST',
           url: ApiFindTasksBySpaceId,
@@ -89,10 +110,28 @@ export default function TaskListContainer() {
         setFilteredTasks(incompleteTasks);
         setCompletedTasks(completedTasks);
         setFilteredCompletedTasks(completedTasks);
+=======
+        const response = await router_auth.request({
+          method: 'POST',
+          url: ApiFindTasksBySpaceAndUserId,
+          headers: { 'content-type': 'application/json' },
+          data: {
+            spaceId: localStorage.getItem("spaceId")
+          },
+        });
+  
+        const allTasks = response.data;
+        const incompleteTasks = allTasks.filter(task => !task.completion);
+        const completedTasks = allTasks.filter(task => task.completion);
+  
+        setTasks(incompleteTasks);
+        setCompletedTasks(completedTasks);
+>>>>>>> origin/master
       } catch (error) {
         console.error(error);
       }
     }
+<<<<<<< HEAD
 
     fetchData();
   }, []);
@@ -162,6 +201,12 @@ export default function TaskListContainer() {
   }, [assignedUser, dateTime, taskName, selectedUser, handleClose]);
   
   
+=======
+  
+    fetchData();
+  }, []);
+
+>>>>>>> origin/master
   const handleToggle = (task) => async () => {
     const updatedTasks = [...tasks];
     const updatedCompletedTasks = [...completedTasks];
@@ -172,7 +217,11 @@ export default function TaskListContainer() {
       updatedTasks.splice(index, 1);
       updatedCompletedTasks.push(task);
       // Update completion status in the backend
+<<<<<<< HEAD
       await axios.put(ApiUpdateTaskCompletion, {
+=======
+      await router_auth.put(ApiUpdateTaskCompletion, {
+>>>>>>> origin/master
         taskId: task._id,
         completion: true,
       });
@@ -180,12 +229,17 @@ export default function TaskListContainer() {
       updatedCompletedTasks.splice(completedIndex, 1);
       updatedTasks.push(task);
       // Update completion status in the backend
+<<<<<<< HEAD
       await axios.put(ApiUpdateTaskCompletion, {
+=======
+      await router_auth.put(ApiUpdateTaskCompletion, {
+>>>>>>> origin/master
         taskId: task._id,
         completion: false,
       });
     }
   
+<<<<<<< HEAD
     const filteredUpdatedTasks = updatedTasks.filter(
       (task) => task.assigned_user === selectedUser || selectedUser === "off"
     );
@@ -201,6 +255,15 @@ export default function TaskListContainer() {
   const handleDeleteTask = useCallback(async (taskId) => {
     try {
       await axios.request({
+=======
+    setTasks(updatedTasks);
+    setCompletedTasks(updatedCompletedTasks);
+  };  
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await router_auth.request({
+>>>>>>> origin/master
         method: 'DELETE',
         url: ApiDeleteTask,
         headers: {
@@ -210,6 +273,7 @@ export default function TaskListContainer() {
           taskId: taskId,
         },
       });
+<<<<<<< HEAD
 
       setFilteredTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
@@ -220,10 +284,21 @@ export default function TaskListContainer() {
       console.error(error);
     }
   }, [tasks]);
+=======
+  
+      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+      setCompletedTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+>>>>>>> origin/master
 
   const handleEditTask = (task) => {
     setEditTaskId(task._id);
     setEditTaskName(task.body);
+<<<<<<< HEAD
     setEditAssignedUser(task.assigned_user);
     setOpenEditModal(true);
     setEditDateTime(task.start_date);
@@ -234,12 +309,22 @@ export default function TaskListContainer() {
 
     try {
       await axios.request({
+=======
+    setOpenEditModal(true);
+  };
+
+  
+  const handleSubmitEditTask = async () => {
+    try {
+      await router_auth.request({
+>>>>>>> origin/master
         method: 'PUT',
         url: ApiEditTask,
         headers: {
           'content-type': 'application/json',
         },
         data: {
+<<<<<<< HEAD
           assigned_user: editAssignedUser,
           start_date: editDateTime,
           end_date: 'String',
@@ -250,10 +335,22 @@ export default function TaskListContainer() {
           notification_time: 'String',
           admin_approval: 'String',
           spaceId: localStorage.getItem('spaceId'),
+=======
+          start_date: "String",
+          end_date: "String",
+          complexity: "String",
+          repetition: "String",
+          body: editTaskName,
+          notification_type: "String",
+          notification_time: "String",
+          admin_approval: "String",
+          spaceId: localStorage.getItem("spaceId"),
+>>>>>>> origin/master
           taskId: editTaskId,
           completion: tasks.find((task) => task._id === editTaskId)?.completion || false,
         },
       });
+<<<<<<< HEAD
 
       // Form submission is complete, close the modal
       setOpenEditModal(false);
@@ -298,11 +395,28 @@ export default function TaskListContainer() {
 
       const user = response.data;
       setAssignedUserName(user.userName);
+=======
+      // Form submission is complete, close the modal
+      setOpenEditModal(false);
+      
+      const updatedTasks = await router_auth.request({
+        method: 'POST',
+        url: ApiFindTasksBySpaceAndUserId,
+        headers: {'content-type': 'application/json'},
+        data: {
+          spaceId: localStorage.getItem("spaceId"),
+        },
+      });
+      
+      // Update the tasks state in AddTaskForm component with the new tasks
+      setTasks(updatedTasks.data);
+>>>>>>> origin/master
     } catch (error) {
       console.error(error);
     }
   };
 
+<<<<<<< HEAD
   const handleChangeTaskFilter = (event) => {
     const selectedUserId = event.target.value;
     setSelectedUser(selectedUserId);
@@ -455,6 +569,53 @@ export default function TaskListContainer() {
             )}
           </Box>
         </Modal>
+=======
+  return (
+    <div>
+      <List
+        sx={{
+          position: 'absolute',
+          top: '27%',
+          left: '40%',
+          width: '100%',
+          maxWidth: 550,
+          bgcolor: 'background.paper',
+        }}
+      >
+        <Typography variant="h6" component="h2">
+          To-Do
+        </Typography>
+        {tasks.map((value) => {
+          const labelId = `checkbox-list-label-${value.body}`;
+
+          return (
+            <div key={value._id}>
+              <ListItem disablePadding>
+                <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      checked={checked.indexOf(value) !== -1}
+                      tabIndex={-1}
+                      disableRipple
+                      inputProps={{ 'aria-labelledby': labelId }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText id={labelId} primary={`${value.body}`} />
+                </ListItemButton>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <IconButton edge="end" aria-label="comments" onClick={() => handleEditTask(value)}>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteTask(value._id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              </ListItem>
+            </div>
+          );
+        })}
+>>>>>>> origin/master
         <Modal
           open={openEditModal}
           onClose={() => setOpenEditModal(false)}
@@ -478,6 +639,7 @@ export default function TaskListContainer() {
                     />
                   </div>
                 </Typography>
+<<<<<<< HEAD
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                   <div>
                     <p>Responsible User</p>
@@ -490,10 +652,15 @@ export default function TaskListContainer() {
                 </Typography>
                 <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
                   <Button type="submit">Save Changes</Button>
+=======
+                <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
+                  <Button type="submit" >Save Changes</Button>
+>>>>>>> origin/master
                   <Button onClick={() => setOpenEditModal(false)}>Cancel</Button>
                 </div>
               </div>
             </form>
+<<<<<<< HEAD
           </Box>
         </Modal>
       </div>
@@ -512,6 +679,26 @@ export default function TaskListContainer() {
           Completed
         </Typography>
         {filteredCompletedTasks.map((value) => {
+=======
+            
+          </Box>
+        </Modal>
+      </List>
+      <List
+        sx={{
+          position: 'absolute',
+          top: '67%',
+          left: '40%',
+          width: '100%',
+          maxWidth: 550,
+          bgcolor: 'background.paper',
+        }}
+      >
+        <Typography variant="h6" component="h2">
+          Completed
+        </Typography>
+        {completedTasks.map((value) => {
+>>>>>>> origin/master
           const labelId = `checkbox-list-label-${value.body}`;
 
           return (
@@ -534,6 +721,7 @@ export default function TaskListContainer() {
                   />
                 </ListItemButton>
                 <div style={{ display: 'flex', gap: '8px' }}>
+<<<<<<< HEAD
                     <IconButton edge="end" aria-label="details" onClick={() => handleShowTaskDetails(value)}>
                           <InfoIcon />
                         </IconButton>
@@ -548,6 +736,51 @@ export default function TaskListContainer() {
             </div>
           );
         })}
+=======
+                  <IconButton edge="end" aria-label="comments" onClick={() => handleEditTask(value)}>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteTask(value._id)}>
+                    <DeleteIcon />
+                  </IconButton>
+              </div>
+            </ListItem>
+          </div>
+        );
+        })}
+        <Modal
+          open={openEditModal}
+          onClose={() => setOpenEditModal(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Task Description
+            </Typography>
+            <form onSubmit={handleSubmitEditTask}>
+              <div>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  <div>
+                    <p>Task Name</p>
+                    <TextField
+                      fullWidth
+                      id="taskName"
+                      value={editTaskName}
+                      onChange={(event) => setEditTaskName(event.target.value)}
+                    />
+                  </div>
+                </Typography>
+                <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
+                  <Button type="submit" >Save Changes</Button>
+                  <Button onClick={() => setOpenEditModal(false)}>Cancel</Button>
+                </div>
+              </div>
+            </form>
+            
+          </Box>
+        </Modal>
+>>>>>>> origin/master
       </List>
     </div>
   );
