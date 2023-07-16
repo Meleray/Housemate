@@ -8,7 +8,8 @@ const spaceService = require("../controllers/spaceController");
 const chatService = require("../controllers/chatController");
 const messageService = require("../controllers/messageController");
 const taskService = require("../controllers/taskController");
-const authService = require("../controllers/authController")
+const authService = require("../controllers/authController");
+const billTrackerService = require("../controllers/paymentController");
 const HttpStatus = require("http-status-codes");
 
 const handleController = func => async (req, res, next) => {
@@ -24,6 +25,8 @@ const handleController = func => async (req, res, next) => {
     try {
         controllerResult = await func(req.body);
     } catch (error) {
+        console.log(error.stack);
+        console.log(error);
         next(error);
     }
 
@@ -73,6 +76,12 @@ router.post("/find-tasks-by-space-and-userid", checkJWT, handleController(taskSe
 router.delete("/delete-task", checkJWT, handleController(taskService.deleteTask));
 router.put("/edit-task", checkJWT, handleController(taskService.editTask));
 router.put("/update-task-completion", checkJWT, handleController(taskService.updateTaskCompletion));
+
+// Bill Tracker OPs
+router.post("/add-bill", checkJWT, handleController(billTrackerService.addBill));
+router.post("/get-tracker-mainpage-info", checkJWT, handleController(billTrackerService.getBillingMainPageInfo));
+router.post("/get-tranaction-list", checkJWT, handleController(billTrackerService.getTransactions));
+router.post("/confirm-payment", checkJWT, handleController(billTrackerService.confirmTransaction));
 
 // Auth OPs - I do not use handleController because I need access to res to pass cookie
 router.post("/auth/login", authService.login)

@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 const genToken = (res, userId) => {
     const token = jwt.sign({ 
         userId 
-    }, process.env.JWT_SECRET, {expiresIn: 43200});
+    }, process.env.JWT_SECRET, {expiresIn: 24 * 60 * 60 * 1000});
   
     res.cookie("HousemateCookie", token, {
       httpOnly: true,
       sameSite: "strict",
-      maxAge: 43200,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 };
 
@@ -22,7 +22,7 @@ const login = async (req, res) => {
             res.status(200).json({
                 message: "Successful authentication",
                 userId: user._id
-            })
+            });
         } else {
             return res.status(401).json({error: "Invalid email or password"});
         }

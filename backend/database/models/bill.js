@@ -2,22 +2,48 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema; 
 
 const BillSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        maxlen: 100,
+        required: true,
+    },
     body: {
         type: String,
-        maxlen: 1000
+        maxlen: 500,
+        default: ""
+    },
+    spaceId: {
+        type: Schema.Types.ObjectId,
+        ref: "Space",
+        required: true,
+        index: true,
     },
     date: {
         type: Date,
+        required: true,
+        index: true,
+        default: () => Date.now()
     },
-    space: {
+    reporterId: {
         type: Schema.Types.ObjectId,
-        ref: "Space",
+        ref: "User",
+        required: true,
+        index: true,
     },
-    
+    totalSum: {
+        type: Number,
+        required: true,
+        validate: {
+            validator: function (value) {
+                return value >= 0;
+            },
+            message: "Negative bill sum"
+        }
+    }
 });
 
-UserSchema.set('versionKey', false);
+BillSchema.set('versionKey', false);
 
 
 const Bill = mongoose.model("Bill", BillSchema);
-module.exports = {BillSchema};
+module.exports = Bill;
