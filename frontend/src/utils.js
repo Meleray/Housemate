@@ -1,11 +1,17 @@
 export function buildErrorMessage(error) {
-    const errorMessage = {
-        message: error.message,
-        method: error.response.config.method,
-        url: error.response.config.url,
-        data: error.response.config.data
+    let errorMessage;
+    if (error.response.data.error !== undefined){
+        errorMessage = JSON.stringify(error.response.data.error, null, 4);
     }
-    return JSON.stringify(errorMessage, null, 4);
+    else {
+        errorMessage = {
+            message: error.message,
+            method: error.response.config.method,
+            url: error.response.config.url,
+        }
+        errorMessage = JSON.stringify(errorMessage, null, 4);
+    }
+    return errorMessage
 }
 
 export function getSafe(obj, propertyName) {

@@ -10,9 +10,6 @@ import {getSafe} from "../../utils";
 
 const MessagesPage = () => {
 
-    // how to set global variables https://stackoverflow.com/a/58214612/13221007
-    localStorage.setItem("userId", "64b3f82ac0adffa1fa3fa128");  // TODO during the registration
-
     const [chosenChatId, setChosenChatId] = useState(null);
     const [chatsChangedSemaphore, setChatsChangedSemaphore] = useState(0);
 
@@ -29,13 +26,15 @@ const MessagesPage = () => {
                     chatsChangedSemaphore={chatsChangedSemaphore}/>
                 <AddChatForm onChatsChanged={() => updateSemaphore()}/>
             </SSidebar>
-            <SMain>
-                {chosenChatId &&
-                    <Chat
-                        chatId={chosenChatId}
-                        onChatsChanged={() => updateSemaphore()}/>
-                }
-            </SMain>
+            <div style={{marginLeft: '10px'}}>
+                <SMain>
+                    {chosenChatId &&
+                        <Chat
+                            chatId={chosenChatId}
+                            onChatsChanged={() => updateSemaphore()}/>
+                    }
+                </SMain>
+            </div>
         </>
     )
 
@@ -43,7 +42,7 @@ const MessagesPage = () => {
     return (
         <SLayout>
             <Sidebar/>
-            {(localStorage.hasOwnProperty("spaceId") ) ? messagingSystemPart : "Create or join a space"}
+            {(localStorage.hasOwnProperty("spaceId")) ? messagingSystemPart : "Create, join or select a space"}
         </SLayout>
     );
 };

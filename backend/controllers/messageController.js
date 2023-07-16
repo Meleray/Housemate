@@ -50,25 +50,37 @@ class MessageController {
         return messageModel.create({messageText: requestBody.messageText, chatId: chatId, isNotification: true});
     }
 
+    async isChatPremium(chatId) {
+        const space = await chatModel.findById(chatId).select('spaceId')
+            .populate({path: 'spaceId', select: 'premiumExpiration'})
+        return space.spaceId.premiumExpiration > Date.now();
+    }
+
     getMessagesChunk = async (requestBody) => {
-        const chunkSize = 3;  // TODO make the chunk bigger
+        const chunkSize = 4;  // TODO make the chunk bigger
+        const freeTierTimeDelta = new Date().setMonth(new Date().getMonth() - 3)  // 3 months ago
 
         assertKeysValid(requestBody, ['chatId'], ['getOlderThan', 'getNewerThan'])
-        let result;
+
+        let filter = {chatId: requestBody.chatId}
         if (requestBody.hasOwnProperty("getOlderThan")) {
-            result = await messageModel.find({chatId: requestBody.chatId, date: {$lt: requestBody.getOlderThan}})
-                .populate( {path: 'senderId', select: ['userName']})
-                .sort({date: 'descending'}).limit(chunkSize)
-
+            filter.date = {$lt: requestBody.getOlderThan}
         } else if (requestBody.hasOwnProperty("getNewerThan")) {
-            result = await messageModel.find({chatId: requestBody.chatId, date: {$gt: requestBody.getNewerThan}})
-                .populate( {path: 'senderId', select: ['userName']})
-                .sort({date: 'descending'})
+            filter.date = {$gt: requestBody.getNewerThan}
+        }
+        let result = await messageModel.find(filter).populate({path: 'senderId', select: ['userName']})
+            .sort({date: 'descending'}).limit(chunkSize)
 
-        } else {
-            result = await messageModel.find({chatId: requestBody.chatId})
-                .populate( {path: 'senderId', select: ['userName']})
-                .sort({date: 'descending'}).limit(chunkSize)
+        const isPremium = await this.isChatPremium(requestBody.chatId)
+        if ((!isPremium) && (result.length > 0) && (result.at(-1).date < freeTierTimeDelta)) {
+            result = result.filter(message => message.date > freeTierTimeDelta)
+            result.push({
+                _id: null,
+                messageText: "Get premium in order to load all the messages",
+                chatId: requestBody.chatId,
+                date: freeTierTimeDelta,
+                isNotification: false
+            })
         }
         // because there is no easy vay to get LAST n items in mongodb))))
         return result.reverse()

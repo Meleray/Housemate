@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const utilsForModels = require("./utilsForModels");
 const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;  // for foreign keys
 
@@ -25,7 +24,11 @@ const SpaceSchema = new mongoose.Schema({
         }
     ],
 
-    premiumExpiration: Date,
+    premiumExpiration: {
+        type: Date,
+        // 30 days free trial
+        default: () => (new Date().setDate(new Date().getDate() + 30))
+    },
 
     inviteCode: {
         type: String,

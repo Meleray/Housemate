@@ -6,7 +6,7 @@ const genToken = (res, userId) => {
         userId 
     }, process.env.JWT_SECRET, {expiresIn: 43200});
   
-    res.cookie("jwtToken", token, {
+    res.cookie("HousemateCookie", token, {
       httpOnly: true,
       sameSite: "strict",
       maxAge: 43200,
@@ -14,25 +14,27 @@ const genToken = (res, userId) => {
 };
 
 const login = async (req, res) => {
-    const {email, password} = req.body;
+    const {userEmail, userPassword} = req.body;
     try {
-        const user = await userModel.findOne({ userEmail: email });
-        if (user && (await user.checkPassword(password))) {
+        const user = await userModel.findOne({ userEmail });
+        if (user && (await user.checkPassword(userPassword))) {
             genToken(res, user._id);
             res.status(200).json({
-                message: "Successful authentication"
+                message: "Successful authentication",
+                userId: user._id
             })
         } else {
-            return res.status(401).json({error: {type: "INVALID_CREDENTIALS", message: "Invalid email or password"}});
+            return res.status(401).json({error: "Invalid email or password"});
         }
     } catch(error) {
-        return res.status(500).json({error: {type: "SERVER_ERROR", message: error.message}});
+        return res.status(500).json({error: error.message});
     } 
 }
 
 const logout = async (req, res) => {
-    res.cookie("jwt", "", {
+    res.cookie("HousemateCookie", "", {
         httpOnly: true,
+        sameSite: "strict",
         expires: new Date(0),
     });
     res.status(200).json({message: "Sucessful logout"})
