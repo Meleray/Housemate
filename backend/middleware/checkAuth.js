@@ -4,7 +4,7 @@ const checkJWT = async (req, res, next) => {
   if (process.env.VERTICAL == 'test') {
     next();
   } else {
-    const token = req.cookies.jwtToken;
+    const token = req.cookies.HousemateCookie;
     if (!token) {
       return res
         .status(403)
@@ -14,7 +14,7 @@ const checkJWT = async (req, res, next) => {
       if (error) {
         return res.status(401).send({ error: "Received Invalid JWT token" });
       }
-      req.user = payload.userId;
+      req.body.userId = payload.userId;
     });
     next();
   }
