@@ -69,7 +69,7 @@ router.post("/load-message-chunk", checkJWT, handleController(messageService.get
 // Task OPs
 router.post("/add-task", checkJWT ,handleController(taskService.addTask));
 router.post("/find-task", checkJWT ,handleController(taskService.getTaskById));
-router.post("/find-tasks-by-spaceid", checkJWT, handleController(taskService.getTasksBySpaceId));
+router.post("/find-tasks-by-space-and-userid", checkJWT, handleController(taskService.getTasksBySpaceId));
 router.delete("/delete-task", checkJWT, handleController(taskService.deleteTask));
 router.put("/edit-task", checkJWT, handleController(taskService.editTask));
 router.put("/update-task-completion", checkJWT, handleController(taskService.updateTaskCompletion));

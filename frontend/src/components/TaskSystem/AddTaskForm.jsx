@@ -4,16 +4,15 @@ import Button from '@material-ui/core/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import axios from 'axios';
 import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import TaskSelectUser from './TaskSelectUser';
 import TaskDateTimePicker from './TaskDatePicker';
-import { ApiDeleteTask, ApiFindTasksBySpaceId } from "../../constants";
+import { ApiDeleteTask, ApiFindTasksBySpaceAndUserId, router_auth} from "../../constants";
 import { ApiEditTask } from "../../constants";
 import { ApiAddTask } from '../../constants';
 
-const useStylesAddTask = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
     top: '20%',
@@ -35,14 +34,13 @@ const style = {
 };
 
 export default function AddTaskForm(onTasksChanged) {
-  const classes = useStylesAddTask();
+  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const [taskName, setTaskName] = useState("");
   const [dateTime, setDateTime] = useState();
-  const [assignedUser, setAssignedUser] = useState();
   const [completionStatus, setCompletionStatus] = useState();
 
   const [tasks, setTasks] = useState([]);
@@ -51,15 +49,14 @@ export default function AddTaskForm(onTasksChanged) {
     event.preventDefault();
   
     try {
-      const response = await axios.request({
+      const response = await router_auth.request({
         method: 'POST',
         url: ApiAddTask,
         headers: {
           'content-type': 'application/json',
         },
         data: {
-          assigned_user: assignedUser,
-          start_date: dateTime,
+          start_date: "String",
           end_date: "String",
           complexity: "String",
           repetition: "String",
@@ -110,11 +107,11 @@ export default function AddTaskForm(onTasksChanged) {
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 Responsible User
-                <TaskSelectUser setAssignedUser={setAssignedUser} />
+                <TaskSelectUser />
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 Date and Time
-                <TaskDateTimePicker setDateTime={setDateTime} />
+                <TaskDateTimePicker />
               </Typography>
               <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
                 <Button type="submit" >Add Task</Button>

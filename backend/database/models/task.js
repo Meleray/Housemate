@@ -1,15 +1,8 @@
 const mongoose = require("mongoose");
-const utilsForModels = require("./utilsForModels");
-const Schema = mongoose.Schema;  // for foreign keys
 
 const TaskSchema = new mongoose.Schema({
-    assigned_user: {
-        type: Schema.Types.ObjectId,
-        ref: 'AssignedUser',
-        required: true,
-    },
     start_date: {
-        type: Date, // Date
+        type: String, // Date
         required: true
     },
     end_date: {

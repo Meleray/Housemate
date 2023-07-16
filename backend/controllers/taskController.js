@@ -2,7 +2,7 @@ const taskModel = require("../database/models/task");
 const {assertKeysValid, pick} = require("./utilsForControllers");
 const spaceController = require("./spaceController");
 
-const returnableTaskFields = ['_id', 'assigned_user', 'spaceId', 'taskName', 'start_date', 'end_date', 'complexity', 'repetition', 'body', 'notification_type', 'notification_time', 'admin_approval', 'completion'];
+const returnableTaskFields = ['_id', 'spaceId', 'taskName', 'start_date', 'end_date', 'complexity', 'repetition', 'body', 'notification_type', 'notification_time', 'admin_approval', 'completion'];
 
 class TaskController {
     getTaskById = async (requestBody) => {
@@ -15,9 +15,8 @@ class TaskController {
         return task;
     };
 
-
     addTask = async (requestBody) => {
-        assertKeysValid(requestBody, ['assigned_user', 'spaceId', 'start_date', 
+        assertKeysValid(requestBody, ['spaceId', 'start_date', 
             'end_date', 'complexity', 'repetition', 'body', 'notification_type', 
             'notification_time', 'admin_approval', 'completion'])
         const task = await taskModel.create(requestBody);
@@ -25,7 +24,7 @@ class TaskController {
     };
 
     editTask = async (requestBody) => {
-        assertKeysValid(requestBody, ['assigned_user', 'start_date', 
+        assertKeysValid(requestBody, ['start_date', 
             'end_date', 'complexity', 'repetition', 'body', 'notification_type', 
             'notification_time', 'admin_approval', 'spaceId', 'taskId', 'completion'])
         let updValues = structuredClone(requestBody)
