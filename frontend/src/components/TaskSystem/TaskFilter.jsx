@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     position: 'absolute',
-    top: '18%',
+    top: '15%',
     right: '14%',
     minWidth: 100,
     height: 100,
@@ -22,10 +22,8 @@ const useStyles = makeStyles((theme) => ({
 export default function TaskFilter({ onChange, selectedUser }) {
   const classes = useStyles();
   const [responsibleUserFilter, setResponsibleUserFilter] = React.useState('');
-  const [memberListUserFilter, setMemberListUserFilter] = useState([
-    { memberId: 'all', userName: 'All Users' },
-  ]);
-
+  const [memberListUserFilter, setMemberListUserFilter] = useState([{ memberId: 'allUsers', userName: 'All Users' }]);
+  
   useEffect(() => {
     async function fetchData() {
       const result = await axios.request({
@@ -54,7 +52,8 @@ export default function TaskFilter({ onChange, selectedUser }) {
 
       // Wait for all member promises to resolve
       const memberDataTaskFilter = await Promise.all(memberPromisesTaskFilter);
-      setMemberListUserFilter(memberDataTaskFilter);
+      const allUserOption = { memberId: 'off', userName: 'All User' };
+      setMemberListUserFilter([allUserOption, ...memberDataTaskFilter]);
       console.log("Member data:", memberDataTaskFilter);
     }
 

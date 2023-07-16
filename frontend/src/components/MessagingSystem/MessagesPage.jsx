@@ -11,7 +11,7 @@ import {getSafe} from "../../utils";
 const MessagesPage = () => {
 
     // how to set global variables https://stackoverflow.com/a/58214612/13221007
-    localStorage.setItem("userId", "64b02277a26705e568a4b991");  // TODO during the registration
+    localStorage.setItem("userId", "64b2f227528b9a0b3e1903a3");  // TODO during the registration
 
     const [chosenChatId, setChosenChatId] = useState(null);
     const [chatsChangedSemaphore, setChatsChangedSemaphore] = useState(0);

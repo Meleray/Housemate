@@ -10,10 +10,11 @@ class TaskController {
         const task = await taskModel.findById(requestBody.taskId)
             .select(returnableTaskFields);
         if (!task) {
-            return {error: {type: "TASK_NOT_FOUND", message: `There is no task for id=${requestBody.taskId}`}};
+            return {error: `There is no task for id=${requestBody.taskId}`};
         }
         return task;
     };
+
 
     addTask = async (requestBody) => {
         assertKeysValid(requestBody, ['assigned_user', 'spaceId', 'start_date', 

@@ -13,7 +13,7 @@ import { ApiDeleteTask, ApiFindTasksBySpaceId } from "../../constants";
 import { ApiEditTask } from "../../constants";
 import { ApiAddTask } from '../../constants';
 
-const useStyles = makeStyles((theme) => ({
+const useStylesAddTask = makeStyles((theme) => ({
   root: {
     position: 'absolute',
     top: '20%',
@@ -35,7 +35,7 @@ const style = {
 };
 
 export default function AddTaskForm(onTasksChanged) {
-  const classes = useStyles();
+  const classes = useStylesAddTask();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
