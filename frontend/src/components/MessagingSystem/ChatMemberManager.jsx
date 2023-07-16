@@ -1,10 +1,8 @@
 import * as React from 'react';
 import {useEffect, useState} from "react";
-import {
-    ApiAddChatMember, ApiFindChatMembersAndNotmembers, router_auth
-} from "../../constants";
+import axios from "axios";
+import {ApiAddChatMember, ApiFindChatMembers, ApiFindChatMembersAndNotmembers, ApiFindSpace} from "../../constants";
 import {getSafe} from "../../utils";
-import Button from "@material-ui/core/Button";
 
 function ChatMemberManager({chatId}) {
     const [open, setOpen] = useState(false);
@@ -14,7 +12,7 @@ function ChatMemberManager({chatId}) {
 
     useEffect(() => {
         async function fetchChatMembers() {
-            const result = await router_auth.request({
+            const result = await axios.request({
                 method: 'POST',
                 url: ApiFindChatMembersAndNotmembers,
                 headers: {'content-type': 'application/json',},
@@ -27,7 +25,7 @@ function ChatMemberManager({chatId}) {
     }, [chatId, reloadSemaphore]);
 
     function requestAddMember(newMemberId) {
-        router_auth.request({
+        axios.request({
             method: 'PUT', url: ApiAddChatMember, headers: {'content-type': 'application/json',}, data: {
                 chatId: chatId, userId: newMemberId,
             },
@@ -42,7 +40,7 @@ function ChatMemberManager({chatId}) {
     const chatMemberElement = (member) => {
         if (member.isChatMember) {
             return (<li key={getSafe(member, "_id")}>
-                {getSafe(member, "userName")}, color={getSafe(member, "userPicture")}
+                color={getSafe(member, "userPicture")}, {getSafe(member, "userName")}
             </li>)
         }
     }
@@ -50,7 +48,8 @@ function ChatMemberManager({chatId}) {
 
     const chatNotMemberElement = (member) => {
         if (!member.isChatMember) {
-            return (<li key={getSafe(member, "_id")}
+            return (<li className={getSafe(member, "_id") === selectedId ? "list-group-item active" : "active"}
+                        key={getSafe(member, "_id")}
                         onClick={() => {
                             requestAddMember(getSafe(member, "_id"));
                             // setSelectedId(getSafe(member, "_id"));  // TODO remove?
@@ -58,23 +57,22 @@ function ChatMemberManager({chatId}) {
                             setReloadSemaphore(newValue)
                         }}
             >
-                {getSafe(member, "userName")}
+                {getSafe(member, "_id")}
             </li>)
         }
     }
 
-    return (
-        <div>
-            <br/>
-            <Button variant="contained" onClick={handleOpen}>Chat members</Button>
+    return (<div>
+        Chat members:
+        <ul>
+            {members.map(r => chatMemberElement(r))}
+        </ul>
 
-            {open ? (<>
-                <ul> {members.map(r => chatMemberElement(r))} </ul>
-                You can add the following people to the chat:
-                <ul> {members.map(r => chatNotMemberElement(r))} </ul>
-            </>) : null}
-        </div>
-    );
+        <button onClick={handleOpen}>Add member</button>
+        {open ? (<ul className="list-group">
+            {members.map(r => chatNotMemberElement(r))}
+        </ul>) : null}
+    </div>);
 }
 
 export default ChatMemberManager;

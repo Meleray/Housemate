@@ -1,19 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {ApiFindSpacesByUserId, router_auth} from "../../constants";
+import axios from "axios";
+import {ApiFindSpacesByUserId} from "../../constants";
 import {getSafe} from "../../utils";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-
 
 function SpaceList() {
     const [spaces, setSpaces] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
 
     useEffect(() => {
         async function fetchData() {
-            const result = await router_auth.request({
+            const result = await axios.request({
                 method: 'POST',
                 url: ApiFindSpacesByUserId,
                 headers: {'content-type': 'application/json',},
@@ -22,10 +19,10 @@ function SpaceList() {
             setSpaces(result.data)
         }
 
-        void fetchData();
+        fetchData();
     }, []);
 
-    function onSelectSpace(spaceId) {
+    function onSelectSpace(spaceId){
         localStorage.setItem("spaceId", spaceId);
         window.location.reload(false);
     }
@@ -35,20 +32,19 @@ function SpaceList() {
     return (
         <div>
             {emptyMessage}
-
-            <List>
-                {spaces.map((r) =>
-                    <ListItem disablePadding key={getSafe(r, "_id")}>
-                        <ListItemButton
-                            selected={localStorage.hasOwnProperty('spaceId') && (getSafe(localStorage, 'spaceId') === r._id)}
-                            onClick={() => onSelectSpace(getSafe(r, "_id"))}
-                        >
-                            <ListItemText primary={getSafe(r, "spaceName")}/>
-                        </ListItemButton>
-                    </ListItem>
+            <ul className="list-group">
+                {spaces.map((r, index) =>
+                    <li className={selectedIndex === index ? "list-group-item active" : "active"}
+                        key={getSafe(r, "_id")}
+                        onClick={() => {
+                            setSelectedIndex(index);
+                            onSelectSpace(getSafe(r, "_id"));
+                        }}
+                    >
+                        {getSafe(r, "spaceName")}
+                    </li>
                 )}
-            </List>
-
+            </ul>
         </div>
     )
 }

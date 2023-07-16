@@ -78,13 +78,6 @@ export const SDivider = styled.div`
     margin: ${v.lgSpacing} 0;
 `;
 
-export const SMinorDivider = styled.div`
-  height: 1px;
-  width: 50%;
-  background: ${({theme}) => theme.bg3};
-  margin: 8px auto;  // 1st arg: OY, 2nd arg OX
-`;
-
 export const SLinkContainer = styled.div`
     background: ${({ theme, isActive }) => (!isActive ? `transparent` : theme.bg3)};
     border-radius: ${v.borderRadius};
