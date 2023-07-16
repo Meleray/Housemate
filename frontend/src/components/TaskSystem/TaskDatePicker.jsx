@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TaskDateTimePicker() {
+export default function TaskDateTimePicker({ setDateTime }) {
   const classes = useStyles();
   const currentDate = new Date().toISOString().slice(0, 16); // Get the current date and time in the format "YYYY-MM-DDTHH:mm"
 
@@ -28,7 +28,8 @@ export default function TaskDateTimePicker() {
           shrink: true,
         }}
         inputProps={{
-          min: currentDate, // Set the minimum allowed date to the current date and time
+          min: currentDate,
+          onChange: (event) => setDateTime(event.target.value), // Update the selected date and time
         }}
       />
     </form>
