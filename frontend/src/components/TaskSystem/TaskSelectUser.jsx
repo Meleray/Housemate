@@ -5,19 +5,22 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useState, useEffect } from 'react';
-import { ApiFindSpace, ApiFindUserById, router_auth } from "../../constants";
+import axios from 'axios';
+import { ApiFindSpace, ApiFindUserById } from "../../constants";
 
-export default function TaskSelectUser() {
+export default function TaskSelectUser({ setAssignedUser }) {
   const [responsibleUser, setResponsibleUser] = React.useState('');
   const [memberList, setMemberList] = useState([]);
 
   const handleChange = (event) => {
-    setResponsibleUser(event.target.value);
+    const selectedUserId = event.target.value;
+    setResponsibleUser(selectedUserId);
+    setAssignedUser(selectedUserId);
   };
 
   useEffect(() => {
     async function fetchData() {
-      const result = await router_auth.request({
+      const result = await axios.request({
         method: 'POST',
         url: ApiFindSpace,
         headers: { 'content-type': 'application/json' },
@@ -28,7 +31,7 @@ export default function TaskSelectUser() {
 
       // Fetch user information for each member
       const memberPromises = members.map(async (member) => {
-        const userResult = await router_auth.request({
+        const userResult = await axios.request({
           method: 'POST',
           url: ApiFindUserById,
           headers: { 'content-type': 'application/json' },

@@ -1,11 +1,8 @@
 import React, {useState, useEffect} from "react"
 
-import {ApiFindChatsBySpaceAndUserId, router_auth} from "../../constants";
+import axios, {get} from "axios";
+import {ApiFindChatsBySpaceAndUserId} from "../../constants";
 import {buildErrorMessage, getSafe} from "../../utils";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
 
 
 function ChatList({onSelectChat, chatsChangedSemaphore}) {
@@ -16,7 +13,7 @@ function ChatList({onSelectChat, chatsChangedSemaphore}) {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await router_auth.request({
+                const response = await axios.request({
                     method: 'POST',
                     url: ApiFindChatsBySpaceAndUserId,
                     headers: {'content-type': 'application/json',},
@@ -40,21 +37,19 @@ function ChatList({onSelectChat, chatsChangedSemaphore}) {
     return (
         <div>
             {emptyMessage}
-            <List>
-                {chats.map((r) =>
-                    <ListItem disablePadding key={getSafe(r, "_id")}>
-                        <ListItemButton
-                            selected={selectedId === getSafe(r, "_id") }
-                            onClick={() => {
-                                setSelectedId(getSafe(r, "_id"));
-                                onSelectChat(getSafe(r, "_id")); // call an external function
-                            }}
-                        >
-                            <ListItemText primary={getSafe(r, "chatName")}/>
-                        </ListItemButton>
-                    </ListItem>
+            <ul className="list-group">
+                {chats.map(r =>
+                    <li className={selectedId === getSafe(r, "_id") ? "list-group-item active" : "active"}
+                        key={getSafe(r, "_id")}
+                        onClick={() => {
+                            setSelectedId(getSafe(r, "_id"));
+                            onSelectChat(getSafe(r, "_id")); // call an external function
+                        }}
+                    >
+                        {getSafe(r, "chatName")}
+                    </li>
                 )}
-            </List>
+            </ul>
         </div>
     )
 }

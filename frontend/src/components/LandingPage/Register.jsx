@@ -1,6 +1,7 @@
 import { Link, withRouter } from "react-router-dom";
+import axios from 'axios';
 import { useState} from "react";
-import {router_noauth, ApiCreateUser} from "../../constants";
+import {ApiCreateUser} from "../../constants";
 
 function RegisterPage({ history }) {
   const [name, setName] = useState()
@@ -9,12 +10,12 @@ function RegisterPage({ history }) {
 
   function handleFormSubmit(event) {
     event.preventDefault();
-    router_noauth.post(ApiCreateUser,
+    axios.post(ApiCreateUser,
               {"userName": name, 
                "userEmail": email, 
                "userPassword": password}) // Server host, register is the route of the server
     history.push("/login");
-  }  
+  }
 
   return (
     <div className="mt-4 grow flex items-center justify-around">

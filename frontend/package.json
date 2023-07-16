@@ -1,8 +1,7 @@
 {
-    "name": "frontend",
-    "version": "1.0.0",
+    "name": "2-sidebar-react",
+    "version": "0.1.0",
     "private": true,
-    "author": "Team 30: Mikhail Konov, Maria Cherepnina, Elsa Fernanda, Andrian Naibaho",
     "dependencies": {
         "@emotion/react": "^11.11.0",
         "@emotion/styled": "^11.11.0",

@@ -14,7 +14,7 @@ class ChatController {
 
         const chat = await chatModel.findById(requestBody.chatId).select(returnableChatFields);
         if (!chat) {
-            return {error: `There is no chat for id=${requestBody.chatId}`}
+            return {error: {type: "CHAT_NOT_FOUND", message: `There is no chat for id=${requestBody.chatId}`}};
         }
         return chat;
     };
@@ -48,7 +48,7 @@ class ChatController {
             }
         }
         if (!(await spaceModel.exists({_id: requestBody.spaceId}))) {
-            return {error: `There is no space with id=${requestBody.spaceId}`};
+            return {error: {type: "FAILED_TO_ADD_CHAT", message: `There is no space with id=${requestBody.spaceId}`}};
         }
         const chat = await chatModel.create(requestBody);
         return pick(chat, returnableChatFields);
@@ -60,7 +60,7 @@ class ChatController {
         const {chatId, userId} = requestBody
         const spaceId = await chatModel.findById(chatId).select('spaceId')
         if (spaceId == null) {
-            return {error: `There is no chat with id=${chatId}`};
+            return {error: {type: "FAILED_TO_ADD_CHAT_MEMBER", message: `There is no chat with id=${chatId}`}};
         }
         await assertUserBelongs2Space({userId: userId, spaceId: spaceId})
 

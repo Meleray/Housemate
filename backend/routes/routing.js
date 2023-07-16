@@ -8,7 +8,9 @@ const spaceService = require("../controllers/spaceController");
 const chatService = require("../controllers/chatController");
 const messageService = require("../controllers/messageController");
 const taskService = require("../controllers/taskController");
-const authService = require("../controllers/authController")
+
+const authRouter = require("./subsystems/authRouter");
+
 const HttpStatus = require("http-status-codes");
 
 const handleController = func => async (req, res, next) => {
@@ -69,13 +71,11 @@ router.post("/load-message-chunk", checkJWT, handleController(messageService.get
 // Task OPs
 router.post("/add-task", checkJWT ,handleController(taskService.addTask));
 router.post("/find-task", checkJWT ,handleController(taskService.getTaskById));
-router.post("/find-tasks-by-space-and-userid", checkJWT, handleController(taskService.getTasksBySpaceId));
+router.post("/find-tasks-by-spaceid", checkJWT, handleController(taskService.getTasksBySpaceId));
 router.delete("/delete-task", checkJWT, handleController(taskService.deleteTask));
 router.put("/edit-task", checkJWT, handleController(taskService.editTask));
 router.put("/update-task-completion", checkJWT, handleController(taskService.updateTaskCompletion));
 
-// Auth OPs - I do not use handleController because I need access to res to pass cookie
-router.post("/auth/login", authService.login)
-router.post("/auth/logout", authService.logout)
+router.use("/auth", authRouter)
 
 module.exports = router
