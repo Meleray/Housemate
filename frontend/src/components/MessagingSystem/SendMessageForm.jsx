@@ -1,41 +1,36 @@
 import React, {useState} from "react"
 
-import {ApiSendMessage, router_auth} from "../../constants";
-import {buildErrorMessage, getSafe} from "../../utils";
-import Button from "@material-ui/core/Button";
-import TextField from "@mui/material/TextField";
-import {newMessageField} from "../../componentsIds";
+import axios from "axios";
+import {ApiSendMessage} from "../../constants";
+import {getSafe} from "../../utils";
 
 
 function SendMessageForm({chatId}) {
     const [messageText, setMessageText] = useState(null);
-    const handleSendMessage = async (event) => {
-        event.preventDefault();  // prevent reload
-        try {
-            await router_auth.request({
-                method: 'POST',
-                url: ApiSendMessage,
-                headers: {'content-type': 'application/json',},
-                data: {
-                    senderId: getSafe(localStorage, "userId"),
-                    chatId: chatId,
-                    messageText: messageText
-                },
-            })
-        } catch (error) {
-            alert(buildErrorMessage(error));
-            return;
-        }
-        document.getElementById(newMessageField).value = "";
-        setMessageText("")
+
+    function fetchData(e) {
+        e.preventDefault();
+
+        axios.request({
+            method: 'POST',
+            url: ApiSendMessage,
+            headers: {'content-type': 'application/json',},
+            data: {
+                senderId: getSafe(localStorage, "userId"),
+                chatId: chatId,
+                messageText: messageText
+            },
+        }).then(e.target.reset());
     }
 
     return (
-        <form>
-            <TextField id={newMessageField} label="Message" variant="outlined" sx={{marginRight: 1}}
-                       size="small"
-                       onChange={(e) => setMessageText(e.target.value)}/>
-            <Button variant="contained" onClick={handleSendMessage}>Send message</Button>
+        <form onSubmit={e => fetchData(e)}>
+            <input
+                type="text"
+                placeholder="Text"
+                onChange={(e) => setMessageText(e.target.value)}
+            />
+            <button>Send message</button>
         </form>
     )
 }

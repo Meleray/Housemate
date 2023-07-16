@@ -1,11 +1,7 @@
 import React, {useState, useEffect} from "react"
 
-<<<<<<< HEAD
 import axios from "axios";
 import { ApiFindTasksBySpaceId } from "../../constants";
-=======
-import { ApiFindTasksBySpaceAndUserId, router_auth} from "../../constants";
->>>>>>> origin/master
 
 
 function TaskList({onSelectTask}) {
@@ -15,15 +11,9 @@ function TaskList({onSelectTask}) {
 
     useEffect(() => {
         async function fetchData() {
-<<<<<<< HEAD
             const response = await axios.request({
                 method: 'POST',
                 url: ApiFindTasksBySpaceId,
-=======
-            const response = await router_auth.request({
-                method: 'POST',
-                url: ApiFindTasksBySpaceAndUserId,
->>>>>>> origin/master
                 headers: {'content-type': 'application/json',},
                 data: {
                     spaceId: localStorage.getItem("spaceId")

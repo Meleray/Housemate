@@ -1,36 +1,24 @@
-<<<<<<< HEAD
 import * as React from 'react';
-=======
-import React from 'react';
->>>>>>> origin/master
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
-<<<<<<< HEAD
 import { ApiFindSpace, ApiFindUserById } from "../../constants";
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-=======
->>>>>>> origin/master
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
     position: 'absolute',
-<<<<<<< HEAD
     top: '15%',
-=======
-    top: '18%',
->>>>>>> origin/master
     right: '14%',
     minWidth: 100,
     height: 100,
   },
 }));
 
-<<<<<<< HEAD
 export default function TaskFilter({ onChange, selectedUser }) {
   const classes = useStyles();
   const [responsibleUserFilter, setResponsibleUserFilter] = React.useState('');
@@ -71,22 +59,12 @@ export default function TaskFilter({ onChange, selectedUser }) {
 
     fetchData();
   }, []);
-=======
-const TaskFilter = () => {
-  const classes = useStyles();
-  const [age, setAge] = React.useState('');
-
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
->>>>>>> origin/master
 
   return (
     <div>
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Filter</InputLabel>
         <Select
-<<<<<<< HEAD
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={selectedUser}
@@ -98,27 +76,8 @@ const TaskFilter = () => {
               {memberTaskFilter.userName}
             </MenuItem>
           ))}
-=======
-          labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
-          value={age}
-          onChange={handleChange}
-          label="Age"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Completed</MenuItem>
-          <MenuItem value={20}>Incomplete</MenuItem>
->>>>>>> origin/master
         </Select>
       </FormControl>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
-
-export default TaskFilter;
->>>>>>> origin/master

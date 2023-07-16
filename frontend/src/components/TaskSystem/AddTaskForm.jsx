@@ -4,27 +4,16 @@ import Button from '@material-ui/core/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-<<<<<<< HEAD
 import axios from 'axios';
-=======
->>>>>>> origin/master
 import { useState } from "react";
 import TextField from '@mui/material/TextField';
 import TaskSelectUser from './TaskSelectUser';
 import TaskDateTimePicker from './TaskDatePicker';
-<<<<<<< HEAD
 import { ApiDeleteTask, ApiFindTasksBySpaceId } from "../../constants";
 import { ApiEditTask } from "../../constants";
 import { ApiAddTask } from '../../constants';
 
 const useStylesAddTask = makeStyles((theme) => ({
-=======
-import { ApiDeleteTask, ApiFindTasksBySpaceAndUserId, router_auth} from "../../constants";
-import { ApiEditTask } from "../../constants";
-import { ApiAddTask } from '../../constants';
-
-const useStyles = makeStyles((theme) => ({
->>>>>>> origin/master
   root: {
     position: 'absolute',
     top: '20%',
@@ -46,21 +35,14 @@ const style = {
 };
 
 export default function AddTaskForm(onTasksChanged) {
-<<<<<<< HEAD
   const classes = useStylesAddTask();
-=======
-  const classes = useStyles();
->>>>>>> origin/master
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const [taskName, setTaskName] = useState("");
   const [dateTime, setDateTime] = useState();
-<<<<<<< HEAD
   const [assignedUser, setAssignedUser] = useState();
-=======
->>>>>>> origin/master
   const [completionStatus, setCompletionStatus] = useState();
 
   const [tasks, setTasks] = useState([]);
@@ -69,23 +51,15 @@ export default function AddTaskForm(onTasksChanged) {
     event.preventDefault();
   
     try {
-<<<<<<< HEAD
       const response = await axios.request({
-=======
-      const response = await router_auth.request({
->>>>>>> origin/master
         method: 'POST',
         url: ApiAddTask,
         headers: {
           'content-type': 'application/json',
         },
         data: {
-<<<<<<< HEAD
           assigned_user: assignedUser,
           start_date: dateTime,
-=======
-          start_date: "String",
->>>>>>> origin/master
           end_date: "String",
           complexity: "String",
           repetition: "String",
@@ -136,19 +110,11 @@ export default function AddTaskForm(onTasksChanged) {
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 Responsible User
-<<<<<<< HEAD
                 <TaskSelectUser setAssignedUser={setAssignedUser} />
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 Date and Time
                 <TaskDateTimePicker setDateTime={setDateTime} />
-=======
-                <TaskSelectUser />
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Date and Time
-                <TaskDateTimePicker />
->>>>>>> origin/master
               </Typography>
               <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
                 <Button type="submit" >Add Task</Button>
