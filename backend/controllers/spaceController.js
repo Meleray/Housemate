@@ -1,8 +1,7 @@
 const spaceModel = require("../database/models/space");
 const userModel = require("../database/models/user");
 const {randomInviteCode, assertKeysValid, pick} = require("./utilsForControllers");
-const {assertUserBelongs2Space} = require("./assert");
-const chatModel = require("../database/models/chat");
+const {assertUserBelongs2Space, isUserAdmin, isSpacePremium} = require("./assert");
 
 
 const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpiration'];
@@ -63,19 +62,15 @@ class SpaceController {
 
         // check user exist
         if (!(await userModel.exists({_id: userId}))) {
-            return {error: {type: "USER_NOT_FOUND", message: `There is no user with id=${userId}`}};
+            return {error: `There is no user with id=${userId}`};
         }
         if (!(await spaceModel.exists({_id: spaceId}))) {
-            return {error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}};
+            return {error: `There is no space for id=${spaceId}`};
         }
         if ((await spaceModel.exists(
             {spaceId: spaceId, spaceMembers: {$elemMatch: {memberId: userId}}}
         ))) {
-            return {
-                error: {
-                    type: "FAILED_TO_ADD_MEMBER", message: `There user ${userId} is already a member of ${spaceId}`
-                }
-            };
+            return {error: `There user ${userId} is already a member of the space ${spaceId}`};
         }
 
         return spaceModel.findByIdAndUpdate(spaceId,
@@ -88,11 +83,11 @@ class SpaceController {
         assertKeysValid(requestBody, ['inviteCode', 'userId'], [])
         const {inviteCode, userId} = requestBody
 
-        let spaceId = await spaceModel.findOne({inviteCode: inviteCode})
-        if (spaceId === null) {
-            return {error: {type: "INVALID_INVITE_CODE", message: `The code ${inviteCode} is invalid`}}
+        let space = await spaceModel.findOne({inviteCode: inviteCode}).select("spaceId")
+        if (space === null) {
+            return {error: `The code ${inviteCode} is invalid`}
         }
-        return this.addSpaceMember({spaceId: spaceId, userId: userId})
+        return this.addSpaceMember({spaceId: space._id, userId: userId})
     }
 
     deleteSpaceMember = async (requestBody) => {
@@ -124,12 +119,28 @@ class SpaceController {
     };
 
     getInviteCode = async (requestBody) => {
-        assertKeysValid(requestBody, ['spaceId'], [])
+        assertKeysValid(requestBody, ['userId', 'spaceId'], [])
+
+        // In premium version, only admin can see the invite code
+        if (await isSpacePremium({spaceId: requestBody.spaceId})) {
+            if (!(await isUserAdmin({userId: requestBody.userId, spaceId: requestBody.spaceId}))) {
+                return {'inviteCode': 'Ask the space admin for the invite code '}
+            }
+        }
         return spaceModel.findById(requestBody.spaceId).select('inviteCode');
     }
 
     changeInviteCode = async (requestBody) => {
-        assertKeysValid(requestBody, ['spaceId'], [])
+        assertKeysValid(requestBody, ['userId', 'spaceId'], [])
+
+        // only admin can change the invite code
+        if (!(await isUserAdmin({userId: requestBody.userId, spaceId: requestBody.spaceId}))) {
+            return {
+                error: {
+                    type: "FAILED_TO_CHANGE_INVITE_CODE", message: `Only the space admin can change the invite code`
+                }
+            };
+        }
         const newInviteCode = randomInviteCode()
         return spaceModel.findByIdAndUpdate(
             requestBody.spaceId,

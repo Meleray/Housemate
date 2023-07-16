@@ -1,41 +1,43 @@
 import React, {useState} from "react"
 
-import axios from "axios";
-import {ApiCreateChat} from "../../constants";
-import {getSafe} from "../../utils";
+import {ApiCreateChat, router_auth} from "../../constants";
+import {buildErrorMessage, getSafe} from "../../utils";
+import TextField from "@mui/material/TextField";
+import Button from "@material-ui/core/Button";
+import {newChatField} from "../../componentsIds";
 
 
 function AddChatForm({onChatsChanged}) {
-    const [chatName, setChatName] = useState("New chat");
+    const [chatName, setChatName] = useState("");
 
-    const handleAddChat = async event => {
+    const handleAddChat = async (event) => {
         event.preventDefault();  // prevent reload
-        event.target.reset();
-        let response = await axios.request({
-            method: 'POST',
-            url: ApiCreateChat,
-            headers: {'content-type': 'application/json',},
-            data: {
-                chatName: chatName,
-                spaceId: getSafe(localStorage, "spaceId"),
-                chatMembers: [getSafe(localStorage, "userId")],
-            },
-        });
+        try {
+            await router_auth.request({
+                method: 'POST',
+                url: ApiCreateChat,
+                headers: {'content-type': 'application/json',},
+                data: {
+                    chatName: chatName,
+                    spaceId: getSafe(localStorage, "spaceId"),
+                    chatMembers: [getSafe(localStorage, "userId")],
+                },
+            });
+        } catch (error) {
+            alert(buildErrorMessage(error));
+            return;
+        }
+        document.getElementById(newChatField).value = "";
+        setChatName("")
         onChatsChanged();
-
-        // if (isError(response)) {
-        //     return;
-        // }
     }
 
     return (
-        <form onSubmit={handleAddChat}>
-            <input
-                type="text"
-                placeholder="Chat name"
-                onChange={(e) => setChatName(e.target.value)}
-            />
-            <button>Create new chat</button>
+        <form>
+            <TextField id={newChatField} label="Chat name" variant="outlined" sx={{marginRight: 1}}
+                       size="small"
+                       onChange={(e) => setChatName(e.target.value)}/>
+            <Button variant="contained" onClick={handleAddChat}>Create chat</Button>
         </form>
     )
 }

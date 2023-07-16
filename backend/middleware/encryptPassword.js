@@ -7,7 +7,7 @@ function encryptPassword(req, res, next) {
         try {
             req.body.userPassword = bcrypt.hashSync(req.body.userPassword, saltRounds);
         } catch(error) {
-            return res.status(500).json({error: {type: "SERVER_ERROR", message: "Encryption error"}})
+            return res.status(500).json({error: "Encryption error"})
         }
     }
     next();

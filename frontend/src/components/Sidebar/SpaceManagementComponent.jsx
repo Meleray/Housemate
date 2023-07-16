@@ -1,12 +1,16 @@
 import React, {useEffect, useState} from "react";
-import axios from "axios";
 import {
     ApiChangeInviteCode,
     ApiCreateSpace,
     ApiDeleteSpaceMember,
-    ApiGetInviteCode, ApiJoinSpace
+    ApiGetInviteCode, ApiJoinSpace,
+    router_auth
 } from "../../constants";
 import {buildErrorMessage, getSafe} from "../../utils";
+import TextField from "@mui/material/TextField";
+import Button from "@material-ui/core/Button";
+import {SMinorDivider} from "./styles";
+import {inviteCodeField, newChatField, newSpaceField} from "../../componentsIds";
 
 
 function changeSpaceAndReload(spaceId) {
@@ -27,7 +31,7 @@ function AddSpaceForm() {
         let response;
         try {
 
-            response = await axios.request({
+            response = await router_auth.request({
                 method: 'POST',
                 url: ApiCreateSpace,
                 headers: {'content-type': 'application/json',},
@@ -40,19 +44,17 @@ function AddSpaceForm() {
             alert(buildErrorMessage(error));
             return;
         }
-
+        document.getElementById(newSpaceField).value = "";
         changeSpaceAndReload(response.data._id)
     }
 
 
     return (
-        <form onSubmit={handleSpaceCreation}>
-            <input
-                type="text"
-                placeholder="Space name"
-                onChange={(e) => setSpaceName(e.target.value)}
-            />
-            <button>Create new space</button>
+        <form>
+            <TextField id={newSpaceField} label="Space name" variant="outlined" sx={{marginRight: 1}}
+                       size="small"
+                       onChange={(e) => setSpaceName(e.target.value)}/>
+            <Button variant="contained" onClick={handleSpaceCreation}>Create space</Button>
         </form>
     )
 }
@@ -63,7 +65,7 @@ function LeaveSpaceButton() {
         event.preventDefault();  // prevent reload
         let response;
         try {
-            response = await axios.request({
+            response = await router_auth.request({
                 method: 'DELETE',
                 url: ApiDeleteSpaceMember,
                 headers: {'content-type': 'application/json',},
@@ -81,23 +83,24 @@ function LeaveSpaceButton() {
     }
 
     return (
-        <button type="button" onClick={handleSpaceExit}>Leave current space</button>
+        <Button variant="contained" onClick={handleSpaceExit}>Leave current space</Button>
     )
 }
 
 function InviteCodeComponent() {
-    const [inviteCode, setInviteCode] = useState("not available");
+    const [inviteCode, setInviteCode] = useState("Not available");
 
     useEffect(() => {
         async function fetchInviteCode() {
             let response;
             try {
-                response = await axios.request({
+                response = await router_auth.request({
                     method: 'POST',
                     url: ApiGetInviteCode,
                     headers: {'content-type': 'application/json',},
                     data: {
                         spaceId: getSafe(localStorage, "spaceId"),
+                        userId: getSafe(localStorage, "userId")
                     },
                 });
             } catch (error) {
@@ -108,8 +111,7 @@ function InviteCodeComponent() {
             setInviteCode(response.data.inviteCode)
         }
 
-        // TODO
-        if (localStorage.hasOwnProperty("spaceId")){
+        if (localStorage.hasOwnProperty("spaceId")) {
             void fetchInviteCode();
         }
     }, []);
@@ -119,12 +121,13 @@ function InviteCodeComponent() {
         event.preventDefault();  // prevent reload
         let response;
         try {
-            response = await axios.request({
+            response = await router_auth.request({
                 method: 'PUT',
                 url: ApiChangeInviteCode,
                 headers: {'content-type': 'application/json',},
                 data: {
                     spaceId: getSafe(localStorage, "spaceId"),
+                    userId: getSafe(localStorage, "userId")
                 },
             });
         } catch (error) {
@@ -136,10 +139,14 @@ function InviteCodeComponent() {
 
     return (
         <>
-            <button type="button" onClick={handleCodeChange}>
+            <p>
+                Invite code for the current space:
+                <br/>
+                {inviteCode}
+            </p>
+            <Button variant="contained" onClick={handleCodeChange}>
                 Generate new invite code
-            </button>
-            <p> Invite code for this space: {inviteCode} </p>
+            </Button>
         </>
     )
 }
@@ -152,7 +159,7 @@ function JoinNewSpace() {
 
         let response;
         try {
-            response = await axios.request({
+            response = await router_auth.request({
                 method: 'POST',
                 url: ApiJoinSpace,
                 headers: {'content-type': 'application/json',},
@@ -165,18 +172,16 @@ function JoinNewSpace() {
             alert(buildErrorMessage(error));
             return;
         }
-
+        document.getElementById(inviteCodeField).value = "";
         changeSpaceAndReload(response.data._id)
     }
 
     return (
-        <form onSubmit={handleSpaceJoin}>
-            <input
-                type="text"
-                placeholder="Secret code"
-                onChange={(e) => setInviteCode(e.target.value)}
-            />
-            <button>Join space</button>
+        <form>
+            <TextField id={inviteCodeField} label="Secret code" variant="outlined" sx={{marginRight: 1}}
+                       size="small"
+                       onChange={(e) => setInviteCode(e.target.value)}/>
+            <Button variant="contained" onClick={handleSpaceJoin}>Join space</Button>
         </form>
     )
 }
@@ -185,8 +190,11 @@ function SpaceManagementComponent() {
     return (
         <>
             <JoinNewSpace/>
+            <SMinorDivider/>
             <InviteCodeComponent/>
+            <SMinorDivider/>
             <AddSpaceForm/>
+            <SMinorDivider/>
             <LeaveSpaceButton/>
         </>
     )

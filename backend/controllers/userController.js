@@ -24,6 +24,7 @@ class UserController {
         return pick(user, returnableUserFields);
     };
 
+
     updateUser = async (requestBody) => {
         assertKeysValid(requestBody, ['userId'],
             ['userName', 'userEmail', 'userDescription', 'userPassword'])
