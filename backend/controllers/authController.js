@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 const genToken = (res, userId) => {
     const token = jwt.sign({ 
         userId 
-    }, process.env.JWT_SECRET, {expiresIn: 43200});
+    }, process.env.JWT_SECRET, {expiresIn: 24 * 600 * 60 * 1000});
   
     res.cookie("HousemateCookie", token, {
       httpOnly: true,
       sameSite: "strict",
-      maxAge: 43200,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 };
 

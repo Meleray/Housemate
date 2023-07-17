@@ -4,8 +4,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
-import { ApiFindSpace, ApiFindUserById } from "../../constants";
-import axios from 'axios';
+import { ApiFindSpace, ApiFindUserById, router_auth } from "../../constants";
 import { useState, useEffect } from 'react';
 
 
@@ -26,7 +25,7 @@ export default function TaskFilter({ onChange, selectedUser }) {
   
   useEffect(() => {
     async function fetchData() {
-      const result = await axios.request({
+      const result = await router_auth.request({
         method: 'POST',
         url: ApiFindSpace,
         headers: { 'content-type': 'application/json' },
@@ -37,7 +36,7 @@ export default function TaskFilter({ onChange, selectedUser }) {
 
       // Fetch user information for each member
       const memberPromisesTaskFilter = membersTaskFilter.map(async (memberTaskFilter) => {
-        const userResultTaskFilter = await axios.request({
+        const userResultTaskFilter = await router_auth.request({
           method: 'POST',
           url: ApiFindUserById,
           headers: { 'content-type': 'application/json' },

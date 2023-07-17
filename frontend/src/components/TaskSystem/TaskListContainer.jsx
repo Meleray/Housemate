@@ -7,8 +7,7 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import axios from "axios";
-import { ApiDeleteTask, ApiFindTasksBySpaceId, ApiEditTask, ApiUpdateTaskCompletion, ApiFindUserById, ApiAddTask } from "../../constants";
+import { ApiDeleteTask, ApiFindTasksBySpaceId, ApiEditTask, ApiUpdateTaskCompletion, ApiFindUserById, ApiAddTask, router_auth } from "../../constants";
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
@@ -72,7 +71,8 @@ export default function TaskListContainer() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.request({
+        console.log("started processing request")
+        const response = await router_auth.request({
           method: 'POST',
           url: ApiFindTasksBySpaceId,
           headers: { 'content-type': 'application/json' },
@@ -90,6 +90,7 @@ export default function TaskListContainer() {
         setCompletedTasks(completedTasks);
         setFilteredCompletedTasks(completedTasks);
       } catch (error) {
+        console.log(localStorage.getItem('spaceId'))
         console.error(error);
       }
     }
@@ -107,7 +108,7 @@ export default function TaskListContainer() {
       updatedTasks.splice(index, 1);
       updatedCompletedTasks.push(task);
       // Update completion status in the backend
-      await axios.put(ApiUpdateTaskCompletion, {
+      await router_auth.put(ApiUpdateTaskCompletion, {
         taskId: task._id,
         completion: true,
       });
@@ -115,7 +116,7 @@ export default function TaskListContainer() {
       updatedCompletedTasks.splice(completedIndex, 1);
       updatedTasks.push(task);
       // Update completion status in the backend
-      await axios.put(ApiUpdateTaskCompletion, {
+      await router_auth.put(ApiUpdateTaskCompletion, {
         taskId: task._id,
         completion: false,
       });
@@ -137,7 +138,7 @@ export default function TaskListContainer() {
     event.preventDefault();
   
     try {
-      const response = await axios.request({
+      const response = await router_auth.request({
         method: 'POST',
         url: ApiAddTask,
         headers: {
@@ -163,7 +164,7 @@ export default function TaskListContainer() {
   
       // Fetch the newly added task from the API using its ID
       const newTaskId = response.data._id;
-      const newTaskResponse = await axios.request({
+      const newTaskResponse = await router_auth.request({
         method: 'POST',
         url: ApiFindTasksBySpaceId,
         headers: { 'content-type': 'application/json' },
@@ -200,7 +201,7 @@ export default function TaskListContainer() {
 
   const handleDeleteTask = useCallback(async (taskId) => {
     try {
-      await axios.request({
+      await router_auth.request({
         method: 'DELETE',
         url: ApiDeleteTask,
         headers: {
@@ -233,7 +234,7 @@ export default function TaskListContainer() {
     event.preventDefault();
 
     try {
-      await axios.request({
+      await router_auth.request({
         method: 'PUT',
         url: ApiEditTask,
         headers: {
@@ -289,7 +290,7 @@ export default function TaskListContainer() {
     setOpenShowTaskDetailsModal(true);
 
     try {
-      const response = await axios.request({
+      const response = await router_auth.request({
         method: 'POST',
         url: ApiFindUserById,
         headers: { 'content-type': 'application/json' },
