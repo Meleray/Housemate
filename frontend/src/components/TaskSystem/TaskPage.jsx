@@ -5,8 +5,6 @@ import Sidebar from "../Sidebar/Sidebar";
 import TaskListContainer from "./TaskListContainer"
 
 const TaskPage = () => {
-  localStorage.setItem("userId", "64b3f82ac0adffa1fa3fa128");  // TODO during the registration
-
   return (
     <SLayout>
       <Sidebar />
