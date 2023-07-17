@@ -2,11 +2,11 @@ const taskModel = require("../database/models/task");
 const {assertKeysValid, pick} = require("./utilsForControllers");
 const spaceController = require("./spaceController");
 
-const returnableTaskFields = ['_id', 'spaceId', 'taskName', 'start_date', 'end_date', 'complexity', 'repetition', 'body', 'notification_type', 'notification_time', 'admin_approval', 'completion'];
+const returnableTaskFields = ['_id', 'assigned_user', 'spaceId', 'taskName', 'start_date', 'end_date', 'complexity', 'repetition', 'body', 'notification_type', 'notification_time', 'admin_approval', 'completion'];
 
 class TaskController {
     getTaskById = async (requestBody) => {
-        assertKeysValid(requestBody, ['._id'], [])
+        assertKeysValid(requestBody, ['userId', '._id'], [])
         const task = await taskModel.findById(requestBody.taskId)
             .select(returnableTaskFields);
         if (!task) {
@@ -15,8 +15,9 @@ class TaskController {
         return task;
     };
 
+
     addTask = async (requestBody) => {
-        assertKeysValid(requestBody, ['spaceId', 'start_date', 
+        assertKeysValid(requestBody, ['userId', 'assigned_user', 'spaceId', 'start_date', 
             'end_date', 'complexity', 'repetition', 'body', 'notification_type', 
             'notification_time', 'admin_approval', 'completion'])
         const task = await taskModel.create(requestBody);
@@ -24,7 +25,7 @@ class TaskController {
     };
 
     editTask = async (requestBody) => {
-        assertKeysValid(requestBody, ['start_date', 
+        assertKeysValid(requestBody, ['userId', 'assigned_user', 'start_date', 
             'end_date', 'complexity', 'repetition', 'body', 'notification_type', 
             'notification_time', 'admin_approval', 'spaceId', 'taskId', 'completion'])
         let updValues = structuredClone(requestBody)
@@ -33,14 +34,14 @@ class TaskController {
     }
 
     updateTaskCompletion = async (requestBody) => {
-        assertKeysValid(requestBody, ['taskId', 'completion'])
+        assertKeysValid(requestBody, ['userId', 'taskId', 'completion'])
         let updValues = structuredClone(requestBody)
         delete updValues._id
         return taskModel.findByIdAndUpdate(requestBody.taskId, {$set: updValues}, {new: true})
     }
 
     deleteTask = async (requestBody) => {
-        assertKeysValid(requestBody, ['taskId'], [])
+        assertKeysValid(requestBody, ['userId', 'taskId'], [])
         const taskId = requestBody.taskId
         const task = await taskModel.findByIdAndDelete(taskId);
       
@@ -54,7 +55,7 @@ class TaskController {
       };
 
     getTasksBySpaceId = async (requestBody) => {
-        assertKeysValid(requestBody, ['spaceId'], [])
+        assertKeysValid(requestBody, ['userId', 'spaceId'], [])
         const {spaceId} = requestBody;
 
         return taskModel.find({

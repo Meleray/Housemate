@@ -18,6 +18,7 @@ export const ApiFindSpacesByUserId = `find-spaces-by-userid`
 export const ApiCreateSpace = `create-space`
 export const ApiDeleteSpaceMember = `delete-space-member`
 export const ApiJoinSpace = `join-space`
+export const ApiFindSpaceById = `find-space`
 
 export const ApiFindChatsBySpaceAndUserId = `find-chats-by-space-and-userid`
 export const ApiFindChatMembers = `find-chat-members`
@@ -27,15 +28,16 @@ export const ApiAddChatMember = `add-chat-member`
 export const ApiGetInviteCode = `get-invite-code`
 export const ApiChangeInviteCode = `change-invite-code`
 export const ApiDeleteChatMember = `delete-chat-member`
-export const ApiUpdateTaskCompletion = `update-task-completion`
 
 export const ApiSendMessage = `send-message`
 export const ApiLoadMessageChunk = `load-message-chunk`
 
 export const ApiAddTask = `add-task`
+export const ApiFindTasksBySpaceId = `find-tasks-by-spaceid`
 export const ApiFindTasksBySpaceAndUserId = `find-tasks-by-space-and-userid`
 export const ApiDeleteTask = `delete-task`
 export const ApiEditTask = `edit-task`
+export const ApiUpdateTaskCompletion = `update-task-completion`
 
 export const ApiFindUserById = `find-user`
 

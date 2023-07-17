@@ -1,9 +1,8 @@
 export function buildErrorMessage(error) {
     let errorMessage;
-    if (error.response.data.error !== undefined){
-        errorMessage = JSON.stringify(error.response.data.error, null, 4);
-    }
-    else {
+    if (error.response.data.error !== undefined) {
+        errorMessage = error.response.data.error
+    } else {
         errorMessage = {
             message: error.message,
             method: error.response.config.method,
@@ -15,7 +14,7 @@ export function buildErrorMessage(error) {
 }
 
 export function getSafe(obj, propertyName) {
-    if (!obj.hasOwnProperty(propertyName)){
+    if (!obj.hasOwnProperty(propertyName)) {
         const err = new Error(`Unknown property: ${propertyName}`);
         console.error(err);
     }
