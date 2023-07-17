@@ -11,6 +11,7 @@ import BillTrackerPage from './components/BillTrackerSystem/BillTrackerPage';
 import MessagesPage from "./components/MessagingSystem/MessagesPage";
 import SettingsPage from './components/SettingsPage';
 import TaskPage from "./components/TaskSystem/TaskPage";
+import TransactionDetails from "./components/BillTrackerSystem/TransactionDetails";
 
 export const ThemeContext = React.createContext(null);
 
@@ -47,6 +48,7 @@ const App = () => {
             <Route exact path="/billtracker">
               <BillTrackerPage />
             </Route>
+            <Route path="/transaction-details/:memberName" component={TransactionDetails} />
             <Route exact path="/messages">
               <MessagesPage />
             </Route>

@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { TextField, MenuItem, Select } from "@material-ui/core";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 
 const MoneyScale = styled.div`
     width: 350px;
@@ -43,7 +44,7 @@ const ViewDetails = styled.button`
     cursor: pointer;
 `;
 
-const Slider = styled.div`
+export const Slider = styled.div`
     display: flex;
     scroll-behavior: smooth;
 `;
@@ -83,6 +84,7 @@ const BillTrackerPage = () => {
     const [billSplit, setbillSplit] = useState('Equal');
     const [totalSum, setTotalSum] = useState('');
     const [payments, setPayments] = useState([]);
+    const history = useHistory();
 
 
     const handleOpenForm = () => {
@@ -151,15 +153,6 @@ const BillTrackerPage = () => {
                 const sum = new_payments.reduce((acc, payment) => acc + payment.amount, 0);
                 curr_totalSum = Number(sum);
             }
-            console.log({
-                userId: getSafe(localStorage, 'userId'),
-                spaceId: getSafe(localStorage, 'spaceId'),
-                isEqualSplit: (billSplit === 'Equal'),
-                billName: billName,
-                totalSum: curr_totalSum,
-                payments: new_payments,
-                billDescription: billDescription,
-            })
             router_auth.post(ApiAddBill, {
                 userId: getSafe(localStorage, 'userId'),
                 spaceId: getSafe(localStorage, 'spaceId'),
@@ -239,6 +232,16 @@ const BillTrackerPage = () => {
         }
     };
 
+    const handleViewDetails = (member) => {
+        const state = { memberId: member.id };
+        const encodedName = encodeURIComponent(member.name);
+        const to = {
+          pathname: `/transaction-details/${encodedName}`,
+          state,
+        };
+        history.push(to);
+    };
+
     return (
         <SLayout>
             <Sidebar />
@@ -275,25 +278,25 @@ const BillTrackerPage = () => {
                                     label="Bill Name"
                                     value={billName}
                                     onChange={(e) => setBillName(e.target.value)}
-                                    inputProps={{ maxLength: 100 }}
+                                    inputProps={{ maxLength: 50 }}
                                     fullWidth
                                     required
                                 />
                                 <Typography variant="body2" color="textSecondary">
-                                    {billName.length}/100
+                                    {billName.length}/50
                                 </Typography>
 
                                 <TextField
                                     label="Bill Description"
                                     value={billDescription}
                                     onChange={(e) => setBillDescription(e.target.value)}
-                                    inputProps={{ maxLength: 500 }}
+                                    inputProps={{ maxLength: 300 }}
                                     fullWidth
                                     multiline
                                     rows={4}
                                 />
                                 <Typography variant="body2" color="textSecondary">
-                                    {billDescription.length}/500
+                                    {billDescription.length}/300
                                 </Typography>
 
                                 <Typography variant="subtitle1" component="label" htmlFor="distribution-schema" style={{ fontSize: '20px', fontWeight: 'bold', margin: '0', }}>
@@ -340,7 +343,7 @@ const BillTrackerPage = () => {
                             {(member.inboundOutstanding !== 0 || member.outboundOutstanding !== 0) && (<p style={{ fontSize: '20px', color: '#fa7b0a', margin: '0', top: '100px', position: 'absolute' }}>Transactions awaiting confirmation!</p>)}
                             <p style={{ fontSize: '25px', color: 'green', margin: '0', maxHeight: '10px', top: '200px', position: 'absolute' }}>Owed to you: +{Number(member?.inbound).toFixed(2) || 0}€</p>
                             <p style={{ fontSize: '25px', color: 'red', margin: '0', maxHeight: '10px', top: '250px', position: 'absolute' }}>You owe: -{Number(member?.outbound).toFixed(2) || 0}€</p>
-                            <ViewDetails style={{ fontSize: '30px', bottom: '30px', margin: '0', position: "absolute" }}>View Details</ViewDetails>
+                            <ViewDetails onClick={() => handleViewDetails(member)} style={{ fontSize: '30px', bottom: '30px', margin: '0', position: "absolute" }}>View Details</ViewDetails>
                         </UserProfile>
                     ))}
                 </Slider>

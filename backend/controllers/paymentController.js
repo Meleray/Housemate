@@ -21,7 +21,7 @@ class PaymentController {
 
         if (requestBody.isEqualSplit) {
             const members = await SpaceController.getSpaceMembers({userId: requestBody.userId, spaceId: requestBody.spaceId});
-            const paymentSum = requestBody.totalSum / (members.length - 1)
+            const paymentSum = requestBody.totalSum / members.length;
             for (const member of members) {
                 if (member._id != requestBody.userId) {
                     const payment = await paymentModel.create({
@@ -52,7 +52,7 @@ class PaymentController {
     confirmTransaction = async (requestBody) => {
         assertKeysValid(requestBody, ['userId', 'paymentId'], []);
         
-        const payment = await Payment.findOne({ _id: requestBody.paymentId  });
+        const payment = await paymentModel.findOne({ _id: requestBody.paymentId  });
 
         if (!payment) {
             return {
@@ -67,12 +67,13 @@ class PaymentController {
         }
 
         if (payment.recepientConfirmation && payment.senderConfirmation) {
-            await payment.remove();
+            await paymentModel.deleteOne({ _id: payment._id });
             console.log(`[INFO] REMOVED PAYMENT: ${payment}`);
         } else {
             await payment.save();
             console.log(`[INFO] UPDATED PAYMENT: ${payment}`);
         }
+        return { message: "Sucessfully updated transaction"};
     }
 
     getTransactions = async (requestBody) => {
@@ -129,17 +130,17 @@ class PaymentController {
             });
 
             let inboundMemberOutstandingSum = 0;
-            transactions.inbound.filter(tr => {
-                tr.senderConfirmation
-            }).map(tr => {
-                inboundMemberOutstandingSum += tr.paymentSum;
+            transactions.inbound.map(tr => {
+                if (tr.senderConfirmation) {
+                    inboundMemberOutstandingSum += tr.paymentSum;
+                }
             });
 
             let outboundMemberOutstandingSum = 0;
-            transactions.outbound.filter(tr => {
-                tr.senderConfirmation
-            }).map(tr => {
-                outboundMemberOutstandingSum += tr.paymentSum;
+            transactions.outbound.map(tr => {
+                if (tr.senderConfirmation && !tr.recepientConfirmation) {
+                    outboundMemberOutstandingSum += tr.paymentSum;
+                }
             });
 
             memberBalance.push({
