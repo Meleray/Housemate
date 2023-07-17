@@ -12,8 +12,8 @@ const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpir
 
 class SpaceController {
     getSpaceById = async (requestBody) => {
-        assertKeysValid(requestBody, ['userId', 'spaceId'], [])
-        const space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
+        assertKeysValid(requestBody, ['spaceId'], ['userId'])
+        let space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
         if (!space) {
             return {
                 error: {type: "SPACE_NOT_FOUND", message: "There is no space for this id"},
@@ -87,7 +87,7 @@ class SpaceController {
         if (!(await spaceModel.exists({_id: spaceId}))) {
             return {error: `There is no space for id=${spaceId}`};
         }
-        if ((await spaceModel.exists({spaceId: spaceId, spaceMembers: {$elemMatch: {memberId: userId}}}))) {
+        if ((await spaceModel.exists({_id: spaceId, spaceMembers: {$elemMatch: {memberId: userId}}}))) {
             return {error: `There user ${userId} is already a member of the space ${spaceId}`};
         }
 
@@ -103,7 +103,8 @@ class SpaceController {
         assertKeysValid(requestBody, ['inviteCode', 'userId'], [])
         const {inviteCode, userId} = requestBody
 
-        let space = await spaceModel.findOne({inviteCode: inviteCode}).select("spaceId")
+        let space = await spaceModel.findOne({inviteCode: inviteCode})//.select("spaceId")
+        console.log(`invite: ${inviteCode}, space: ${JSON.stringify(space)}`)
         if (space === null) {
             return {error: `The code ${inviteCode} is invalid`}
         }
