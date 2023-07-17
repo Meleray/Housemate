@@ -28,6 +28,7 @@ const ChatSchema = new mongoose.Schema({
     chatMembers: [{
         type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true
     }]
 });
 

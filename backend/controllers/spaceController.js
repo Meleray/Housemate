@@ -15,9 +15,7 @@ class SpaceController {
         assertKeysValid(requestBody, ['spaceId'], ['userId'])
         let space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
         if (!space) {
-            return {
-                error: {type: "SPACE_NOT_FOUND", message: "There is no space for this id"},
-            };
+            return {error: `There is no space with id=${requestBody.spaceId}`};
         }
         // https://stackoverflow.com/a/30510902/13221007
         // I don't know why, but this astonishing db returns objects
@@ -36,6 +34,7 @@ class SpaceController {
         })
             .select(['spaceMembers', '-_id'])
         let plainSpaceMembers = []
+        console.log(JSON.stringify(spaceMembers))
         for (const member of spaceMembers.spaceMembers) {
             plainSpaceMembers.push({
                 isAdmin: member.isAdmin,

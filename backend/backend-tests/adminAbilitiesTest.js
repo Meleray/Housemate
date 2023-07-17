@@ -75,7 +75,7 @@ describe('Admin abilities', () => {
     it('get an invite code', (done) => {
         chai.request(server)
             .post('/api/get-invite-code')
-            .send({spaceId: spaceId})
+            .send({spaceId: spaceId, userId: adminUser._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body, JSON.stringify(res.body)).to.have.property("inviteCode");
@@ -87,7 +87,7 @@ describe('Admin abilities', () => {
     it('change an invite code', (done) => {
         chai.request(server)
             .put('/api/change-invite-code')
-            .send({spaceId: spaceId})
+            .send({spaceId: spaceId, userId: adminUser._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
                 chai.expect(res.body, JSON.stringify(res.body)).to.have.property("inviteCode");

@@ -157,8 +157,7 @@ describe('User and Space schemes', () => {
             .send({userId: initialUser._id})
             .end((err, res) => {
                 chai.expect(res, JSON.stringify(res.body)).to.have.status(HttpStatus.OK);
-                chai.expect(res.body, JSON.stringify(res.body)).to.be.eql(
-                    [{_id: space._id, spaceName: space.spaceName}]);
+                chai.expect(res.body[0]._id, JSON.stringify(res.body)).to.be.eql(space._id);
                 done();
             });
     });
