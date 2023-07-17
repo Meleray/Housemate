@@ -7,7 +7,7 @@ const SpaceController = require("./spaceController");
 class PaymentController {
 
     addBill = async (requestBody) => {
-        assertKeysValid(requestBody, ['userId', 'spaceId', 'totalSum', 'isEqualSplit', 'billName'], ['payments', 'billDescription']);
+        assertKeysValid(requestBody, ['userId', 'spaceId', 'isEqualSplit', 'billName'], ['totalSum', 'payments', 'billDescription']);
         await assertUserBelongs2Space({spaceId: requestBody.spaceId, userId: requestBody.userId});
 
         const bill = await billModel.create({
@@ -17,28 +17,31 @@ class PaymentController {
             reporterId: requestBody.userId,
             totalSum: requestBody.totalSum
         });
+        console.log(bill);
 
         if (requestBody.isEqualSplit) {
-            const members = await SpaceController.getSpaceMembers({spaceId: requestBody.spaceId});
-            const paymentSum = requestBody.totalSum / members.length
-            for (member of members) {
+            const members = await SpaceController.getSpaceMembers({userId: requestBody.userId, spaceId: requestBody.spaceId});
+            const paymentSum = requestBody.totalSum / (members.length - 1)
+            for (const member of members) {
                 if (member._id != requestBody.userId) {
                     const payment = await paymentModel.create({
                         payerId: member._id,
                         billId: bill._id,
                         paymentSum: paymentSum
                     })
+                    console.log(payment);
                 } 
             }
         } else {
             for (const payment of requestBody.payments) {
-                assertKeysValid(payment, ['userId', 'paymentSum'], []);
-                await assertUserBelongs2Space({spaceId: requestBody.spaceId, userId: payment.userId});
-                const payment = await paymentModel.create({
-                    payerId: payment.userId,
+                assertKeysValid(payment, ['id', 'amount'], ['name']);
+                await assertUserBelongs2Space({spaceId: requestBody.spaceId, userId: payment.id});
+                const createdPayment = await paymentModel.create({
+                    payerId: payment.id,
                     billId: bill._id,
-                    paymentSum: payment.paymentSum
-                })
+                    paymentSum: payment.amount
+                });
+                console.log(createdPayment);
             }
         }
         return {
@@ -89,10 +92,9 @@ class PaymentController {
             path: 'billId',
             match: { spaceId: requestBody.spaceId, reporterId: requestBody.userId}
         }).exec();
-
         return {
-            inbound: inboundTransactions,
-            outbound: outboundTransactions
+            inbound: inboundTransactions.filter((payment) => payment.billId !== null),
+            outbound: outboundTransactions.filter((payment) => payment.billId !== null)
         }
     }
 

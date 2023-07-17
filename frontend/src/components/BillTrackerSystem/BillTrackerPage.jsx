@@ -2,7 +2,7 @@ import React from "react";
 import PageTitle from "../Layout/PageTitle";
 import { SLayout, SMain } from "../Layout/styles.js";
 import Sidebar from "../Sidebar/Sidebar";
-import { router_auth, ApiBillTrackerMainInfo } from "../../constants";
+import { router_auth, ApiBillTrackerMainInfo, ApiAddBill } from "../../constants";
 import { useState, useEffect } from "react";
 import { getSafe } from "../../utils";
 import styled from "styled-components";
@@ -10,7 +10,7 @@ import Modal from '@mui/material/Modal';
 import Button from '@material-ui/core/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { TextField, MenuItem, Select} from "@material-ui/core";
+import { TextField, MenuItem, Select } from "@material-ui/core";
 
 const MoneyScale = styled.div`
     width: 350px;
@@ -44,10 +44,7 @@ const ViewDetails = styled.button`
 `;
 
 const Slider = styled.div`
-    width: 1500px;
-    height: 500px;
     display: flex;
-    overflow-x: auto;
     scroll-behavior: smooth;
 `;
 
@@ -74,6 +71,7 @@ const AddBillForm = {
     boxShadow: 24,
     p: 4,
     textAlign: 'center',
+    maxHeight: '80%',
 };
 
 const BillTrackerPage = () => {
@@ -83,67 +81,162 @@ const BillTrackerPage = () => {
     const [billName, setBillName] = useState('');
     const [billDescription, setBillDescription] = useState('');
     const [billSplit, setbillSplit] = useState('Equal');
-    const [totalSum, setTotalSum] = useState(0);
-    const [amounts, setAmounts] = useState({});
+    const [totalSum, setTotalSum] = useState('');
+    const [payments, setPayments] = useState([]);
 
 
-    const handleOpenForm = () => setOpenForm(true);
-    const handleCloseForm = () => setOpenForm(false);
+    const handleOpenForm = () => {
+        if (mainInfo?.memberBalance.length == 0) {
+            alert("You are alone in this space. Please add more users to create bills")
+        } else {
+            setOpenForm(true);
+        }
+    }
+
+    const resetValues = () => {
+        setBillName('');
+        setbillSplit('Equal');
+        setPayments([]);
+        setTotalSum('');
+        setBillDescription('');
+    }
+
+    const handleCloseForm = () => {
+        setOpenForm(false, resetValues);
+    }
+
+    const fetchData = async () => {
+        router_auth.post(ApiBillTrackerMainInfo, {
+            spaceId: getSafe(localStorage, 'spaceId'),
+        }).then(response => {
+            setMainInfo(response.data);
+        }).catch(error => {
+            console.error('Error fetching bill tracker main data:', error);
+        })
+    };
 
     useEffect(() => {
-
-        const fetchData = async () => {
-            router_auth.post(ApiBillTrackerMainInfo, {
-                spaceId: getSafe(localStorage, 'spaceId'),
-            }).then(response => {
-                setMainInfo(response.data);
-            }).catch(error => {
-                console.error('Error fetching bill tracker main data:', error);
-            })
-        };
-
         fetchData();
     }, []);
 
+    function checkValues() {
+        const floatRegex = /^\d+(\.\d{1,2})?$/;
+        if (billSplit === 'Advanced') {
+            for (const payment of payments) {
+                if (!floatRegex.test(payment.amount)) {
+                    return false;
+                }
+            }
+        } else {
+            if (!floatRegex.test(totalSum)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     const handleAddBill = async (event) => {
         event.preventDefault();
+        if (checkValues()) {
+            let curr_totalSum = Number(parseFloat(totalSum));
+            let new_payments = [];
+            if (billSplit === 'Advanced') {
+                payments.map((payment) => {
+                    new_payments.push({
+                        ...payment, 
+                        amount: Number(parseFloat(payment.amount))
+                    })
+                })
 
-        if (billSplit === 'Advanced') {
-            const sum = amounts.reduce((acc, amount) => acc + Number(amount.amount), 0);
-            setTotalSum(sum);
+                const sum = new_payments.reduce((acc, payment) => acc + payment.amount, 0);
+                curr_totalSum = Number(sum);
+            }
+            console.log({
+                userId: getSafe(localStorage, 'userId'),
+                spaceId: getSafe(localStorage, 'spaceId'),
+                isEqualSplit: (billSplit === 'Equal'),
+                billName: billName,
+                totalSum: curr_totalSum,
+                payments: new_payments,
+                billDescription: billDescription,
+            })
+            router_auth.post(ApiAddBill, {
+                userId: getSafe(localStorage, 'userId'),
+                spaceId: getSafe(localStorage, 'spaceId'),
+                isEqualSplit: (billSplit === 'Equal'),
+                billName: billName,
+                totalSum: curr_totalSum,
+                payments: new_payments,
+                billDescription: billDescription,
+            }).then(response => {
+                alert("Bill added sucessfully!");
+                fetchData();
+                handleCloseForm();
+            }).catch(error => {
+                console.error('Error adding bill:', error);
+                alert("Error addding bill!");
+            })
+        } else {
+            alert("Invalid amounts entered!");
         }
-
-
-        console.log('Form values:', {
-            billName,
-            billDescription,
-            billSplit,
-            totalSum,
-            amounts,
-        });
     }
 
     const renderAdvancedFields = () => {
         if (billSplit === 'Advanced') {
-          return mainInfo?.memberBalance.map((member) => (
-            <TextField
-                key={member.name}
-                label={member.name}
-                type="number"
-                value={amounts[member.id] || ''}
-                onChange={(e) => handleAmountChange(member.id, e.target.value)}
-                fullWidth
-            />
-          ));
+            return payments?.map((payment, index) => (
+                <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px'}}>
+                    <Select
+                        value={payment.name}
+                        onChange={(e) => handleSelectorChange(index, e.target.value)}
+                        fullWidth
+                        renderValue={(selectedValue) => {
+                            const selectedMember = mainInfo?.memberBalance.find((member) => member.name === selectedValue);
+                            return selectedMember ? selectedMember.name : '';
+                        }}
+                    >
+                        {mainInfo?.memberBalance.map((member) => (
+                            <MenuItem key={member.id} value={member}>
+                                {member.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+
+                    <TextField
+                        label="Amount"
+                        value={payment.amount}
+                        onChange={(e) => handleAmountChange(index, e.target.value)}
+                        fullWidthpayment
+                        required
+                    />
+                </Box>
+            ));
         }
         return null;
-      };
-    
-    const handleAmountChange = (id, value) => {
-        setAmounts((prevAmounts) => ({
-            ...prevAmounts,
-            [id]: Number(value),
-        }));
+    };
+
+    const handleSelectorChange = (index, member) => {
+        setPayments((prevAmounts) => {
+            const updatedPayments = [...prevAmounts];
+            updatedPayments[index] = { ...prevAmounts[index], name: member.name, id: member.id };
+            return updatedPayments;
+        });
+    };
+
+    const handleAmountChange = (index, value) => {
+        setPayments((prevAmounts) => {
+            const updatedPayments = prevAmounts.map((payment, i) => (i === index ? { ...payment, amount: value} : payment));
+            return updatedPayments;
+        });
+    };
+
+    const handleAddField = () => {
+        setPayments((prevAmounts) => [...prevAmounts, { id: '', name: '', amount: '' }]);
+    };
+
+    const handleRemoveField = () => {
+        if (payments.length > 0) {
+            setPayments((prevAmounts) => prevAmounts.slice(0, -1));
+        }
     };
 
     return (
@@ -153,18 +246,18 @@ const BillTrackerPage = () => {
                 <div style={{ display: 'flex', marginBottom: '20px' }}>
                     <MoneyScale style={{ left: '50px', top: '50px', position: 'relative' }}>
                         <p style={{ fontSize: '30px', fontWeight: 'bold', color: 'green', margin: '0' }}>Owed to you</p>
-                        <p style={{ fontSize: '40px', color: 'green', margin: '0' }}>+{mainInfo?.inboundSum || 0}€</p>
-                        {mainInfo?.inboundOutstandingSum !== 0 && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions:+{mainInfo?.inboundOutstandingSum || 0}€</p>)}
+                        <p style={{ fontSize: '40px', color: 'green', margin: '0' }}>+{Number(mainInfo?.inboundSum).toFixed(2) || 0}€</p>
+                        {mainInfo?.inboundOutstandingSum !== 0 && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions:+{Number(mainInfo?.inboundOutstandingSum).toFixed(2) || 0}€</p>)}
                     </MoneyScale>
                     <MoneyScale style={{ marginLeft: '20px', left: '50px', top: '50px', position: 'relative' }}>
                         <p style={{ fontSize: '30px', fontWeight: 'bold', color: 'red', margin: '0' }}>You owe</p>
-                        <p style={{ fontSize: '40px', color: 'red', margin: '0' }}>-{mainInfo?.outboundSum || 0}€</p>
-                        {mainInfo?.outboundOutstandingSum !== 0 && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions:-{mainInfo?.outboundOutstandingSum || 0}€</p>)}
+                        <p style={{ fontSize: '40px', color: 'red', margin: '0' }}>-{Number(mainInfo?.outboundSum).toFixed(2) || 0}€</p>
+                        {mainInfo?.outboundOutstandingSum !== 0 && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions:-{Number(mainInfo?.outboundOutstandingSum).toFixed(2) || 0}€</p>)}
                     </MoneyScale>
                     <MoneyScale style={{ marginLeft: '20px', left: '50px', top: '50px', position: 'relative' }}>
                         <p style={{ fontSize: '30px', fontWeight: 'bold', margin: '0' }}>Total Balance</p>
-                        <p style={{ fontSize: '40px', color: mainInfo?.inboundSum >= mainInfo?.outboundSum ? 'green' : 'red', margin: '0' }}>{mainInfo?.inboundSum >= mainInfo?.outboundSum ? `+${mainInfo?.inboundSum - mainInfo?.outboundSum}` : mainInfo?.inboundSum - mainInfo?.outboundSum}€</p>
-                        {(mainInfo?.inboundOutstandingSum !== 0 || mainInfo?.outboundOutstandingSum !== 0) && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions: {mainInfo?.inboundOutstandingSum >= mainInfo?.outboundOutstandingSum ? `+${mainInfo?.inboundOutstandingSum - mainInfo?.outboundOutstandingSum}` : mainInfo?.inboundOutstandingSum - mainInfo?.outboundOutstandingSum}€</p>)}
+                        <p style={{ fontSize: '40px', color: mainInfo?.inboundSum >= mainInfo?.outboundSum ? 'green' : 'red', margin: '0' }}>{mainInfo?.inboundSum >= mainInfo?.outboundSum ? `+${Number(mainInfo?.inboundSum - mainInfo?.outboundSum).toFixed(2)}` : Number(mainInfo?.inboundSum - mainInfo?.outboundSum).toFixed(2)}€</p>
+                        {(mainInfo?.inboundOutstandingSum !== 0 || mainInfo?.outboundOutstandingSum !== 0) && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions: {mainInfo?.inboundOutstandingSum >= mainInfo?.outboundOutstandingSum ? `+${Number(mainInfo?.inboundOutstandingSum - mainInfo?.outboundOutstandingSum).toFixed(2)}` : Number(mainInfo?.inboundOutstandingSum - mainInfo?.outboundOutstandingSum).toFixed(2)}€</p>)}
                     </MoneyScale>
                     <AddBill onClick={handleOpenForm} style={{ marginLeft: '70px', left: '50px', top: '50px', position: 'relative', fontWeight: 'bold', fontSize: '40px', }}>Add Bill</AddBill>
                     <Modal
@@ -203,8 +296,8 @@ const BillTrackerPage = () => {
                                     {billDescription.length}/500
                                 </Typography>
 
-                                <Typography variant="subtitle1" component="label" htmlFor="distribution-schema" style={{fontSize: '20px', fontWeight: 'bold', margin: '0', }}>
-                                Bill split method
+                                <Typography variant="subtitle1" component="label" htmlFor="distribution-schema" style={{ fontSize: '20px', fontWeight: 'bold', margin: '0', }}>
+                                    Bill split method
                                 </Typography>
 
                                 <Select value={billSplit} onChange={(e) => setbillSplit(e.target.value)} fullWidth>
@@ -212,18 +305,26 @@ const BillTrackerPage = () => {
                                     <MenuItem value="Advanced">Customizable Split</MenuItem>
                                 </Select>
 
+                                <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
                                 {renderAdvancedFields()}
+                                </div>
 
-                                { billSplit == 'Equal' && <TextField
+                                {billSplit === 'Advanced' && (
+                                    <>
+                                        <Button variant="outlined" onClick={handleAddField}>Add Recepient</Button>
+                                        <Button variant="outlined" onClick={handleRemoveField}>Remove Recepient</Button>
+                                    </>
+                                )}
+
+                                {billSplit === 'Equal' && <TextField
                                     label="TotalSum"
                                     value={totalSum}
                                     onChange={(e) => {
-                                        setTotalSum(Number(e.target.value));
+                                        setTotalSum(e.target.value);
                                     }}
-                                    type="number"
                                     fullWidth
                                     required
-                                /> }
+                                />}
                                 <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
                                     <Button type="submit" >Add Bill</Button>
                                     <Button onClick={handleCloseForm}>Cancel</Button>
@@ -232,19 +333,19 @@ const BillTrackerPage = () => {
                         </Box>
                     </Modal>
                 </div>
-                <Slider style={{ left: '50px', top: '100px', position: 'relative' }}>
+                <Slider style={{ left: '50px', top: '100px', position: 'relative', width: '1500px', height: '500px', overflowX: 'auto'}}>
                     {mainInfo?.memberBalance.map((member) => (
                         <UserProfile style={{ position: 'relative', marginRight: '20px' }} key={member.name}>
                             <p style={{ position: 'absolute', top: '10px', fontSize: '30px', fontWeight: 'bold', maxWidth: '300px', maxHeight: '100px' }}>{member.name}</p>
-                            {(member.inboundOutstanding !== 0 || member.outboundOutstanding !== 0) && (<p style={{ fontSize: '20px', color: '#fa7b0a', margin: '0', top: '100px', position: 'absolute'}}>Transactions awaiting confirmation!</p>)}
-                            <p style={{ fontSize: '25px', color: 'green', margin: '0', maxHeight: '10px', top: '200px', position: 'absolute'}}>Owed to you: +{member?.inbound || 0}€</p>
-                            <p style={{ fontSize: '25px', color: 'red', margin: '0', maxHeight: '10px', top: '250px', position: 'absolute'}}>You owe: -{member?.outbound || 0}€</p>
+                            {(member.inboundOutstanding !== 0 || member.outboundOutstanding !== 0) && (<p style={{ fontSize: '20px', color: '#fa7b0a', margin: '0', top: '100px', position: 'absolute' }}>Transactions awaiting confirmation!</p>)}
+                            <p style={{ fontSize: '25px', color: 'green', margin: '0', maxHeight: '10px', top: '200px', position: 'absolute' }}>Owed to you: +{Number(member?.inbound).toFixed(2) || 0}€</p>
+                            <p style={{ fontSize: '25px', color: 'red', margin: '0', maxHeight: '10px', top: '250px', position: 'absolute' }}>You owe: -{Number(member?.outbound).toFixed(2) || 0}€</p>
                             <ViewDetails style={{ fontSize: '30px', bottom: '30px', margin: '0', position: "absolute" }}>View Details</ViewDetails>
                         </UserProfile>
                     ))}
                 </Slider>
             </SMain>
-        </SLayout>
+        </SLayout >
     );
 };
 
