@@ -96,60 +96,62 @@ function Chat({chatId, onChatsChanged}) {
         if (message.hasOwnProperty('senderId')) {
             if (message.senderId.hasOwnProperty('_id')
                 && (message.senderId._id === getSafe(localStorage, "userId"))) {
-                return "Me"
+                return {background: '#d1e0de', senderName: 'Me'};
             }
-            return getSafe(message, "senderId").userName
+            return {background: 'none', senderName: getSafe(message, "senderId").userName}
         }
-        return "System"
+        return {background: '#d5ac83', senderName: 'System'}
+    }
+
+    function drawMessage(message) {
+        const {senderName, background} = getSenderName(message)
+        return (
+            <ListItem disablePadding divider
+                      key={getSafe(message, "_id")} style={{background: background}}>
+                <ListItemText>
+                    <Typography variant="subtitle1" sx={{display: 'inline'}} component="span" color="green">
+                        {senderName}
+                    </Typography>
+                    <br/>
+
+                    <Typography variant="caption" sx={{display: 'inline'}} component="span">
+                        at {moment(getSafe(message, "date")).format("ss:mm:hh MM/DD/YYYY")}
+                    </Typography>
+                    <br/>
+
+                    <Typography variant="body1" sx={{display: 'inline'}} component="span">
+                        {getSafe(message, "messageText")}
+                    </Typography>
+
+                </ListItemText>
+            </ListItem>
+        )
+
     }
 
     const emptyMessage = (messages.length === 0 && <h1>No messages in this chat</h1>)
 
     return (
-        // <div style={{ display: 'flex', flexDirection: 'column'}}>
-        <div>
+        <div style={{ height: '100%'}}>
             <Button variant="contained" onClick={handleLeaveChat}>Leave chat</Button>
             <ChatMemberManager chatId={chatId}/>
             <SMinorDivider/>
-
 
             <Box
                 sx={{
                     mb: 2,
                     display: "flex",
                     flexDirection: "column",
-                    height: '80vh',
+                    height: '75vh',
                     overflow: "hidden",
                     overflowY: "scroll",
                 }}
             >
-
                 <Button variant="contained" onClick={handleLoadOlderMessages}>Load more messages</Button>
 
                 {emptyMessage}
 
-                <List>
-                    {messages.map((r) =>
-                        <ListItem disablePadding divider key={getSafe(r, "_id")}>
-                            <ListItemText>
-                                <Typography variant="subtitle1" sx={{display: 'inline'}} component="span" color="green">
-                                    {(getSenderName(r))}
-                                </Typography>
-                                <br/>
-
-                                <Typography variant="caption" sx={{display: 'inline'}} component="span">
-                                    at {moment(getSafe(r, "date")).format("ss:mm:hh MM/DD/YYYY")}
-                                </Typography>
-                                <br/>
-
-                                <Typography variant="body1" sx={{display: 'inline'}} component="span">
-                                    {getSafe(r, "messageText")}
-                                </Typography>
-
-                            </ListItemText>
-                        </ListItem>
-                    )}
-                </List>
+                <List> {messages.map((r) => drawMessage(r))} </List>
             </Box>
 
             <SendMessageForm chatId={chatId}/>

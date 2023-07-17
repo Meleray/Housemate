@@ -55,17 +55,17 @@ class ChatController {
     };
 
     addChatMember = async (requestBody) => {
-        assertKeysValid(requestBody, ['chatId', 'userId'])
+        assertKeysValid(requestBody, ['chatId', 'newMemberId'], ['userId'])
 
-        const {chatId, userId} = requestBody
+        const {chatId, newMemberId} = requestBody
         const spaceId = await chatModel.findById(chatId).select('spaceId')
         if (spaceId == null) {
             return {error: `There is no chat with id=${chatId}`};
         }
-        await assertUserBelongs2Space({userId: userId, spaceId: spaceId})
+        await assertUserBelongs2Space({userId: newMemberId, spaceId: spaceId})
 
         return chatModel.findByIdAndUpdate(chatId,
-            {$addToSet: {chatMembers: userId}}, // update 'spaceMembers' only if userId is not presented in it
+            {$addToSet: {chatMembers: newMemberId}}, // update 'spaceMembers' only if userId is not presented in it
             {new: true}
         ).select(returnableChatFields)
     };

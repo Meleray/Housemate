@@ -57,7 +57,7 @@ class MessageController {
     }
 
     getMessagesChunk = async (requestBody) => {
-        const chunkSize = 4;  // TODO make the chunk bigger
+        const chunkSize = 20;
         const freeTierTimeDelta = new Date().setMonth(new Date().getMonth() - 3)  // 3 months ago
 
         assertKeysValid(requestBody, ['chatId'], ['getOlderThan', 'getNewerThan', 'userId'])

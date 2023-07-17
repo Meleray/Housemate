@@ -28,8 +28,11 @@ function ChatMemberManager({chatId}) {
 
     function requestAddMember(newMemberId) {
         router_auth.request({
-            method: 'PUT', url: ApiAddChatMember, headers: {'content-type': 'application/json',}, data: {
-                chatId: chatId, userId: newMemberId,
+            method: 'PUT',
+            url: ApiAddChatMember,
+            headers: {'content-type': 'application/json',},
+            data: {
+                chatId: chatId, newMemberId: newMemberId,
             },
         }).then();
     }
@@ -42,7 +45,7 @@ function ChatMemberManager({chatId}) {
     const chatMemberElement = (member) => {
         if (member.isChatMember) {
             return (<li key={getSafe(member, "_id")}>
-                {getSafe(member, "userName")}, color={getSafe(member, "userPicture")}
+                {getSafe(member, "userName")}
             </li>)
         }
     }
@@ -50,7 +53,7 @@ function ChatMemberManager({chatId}) {
 
     const chatNotMemberElement = (member) => {
         if (!member.isChatMember) {
-            return (<li key={getSafe(member, "_id")}
+            return (<li key={getSafe(member, "_id")} style={{textDecoration: 'underline'}}
                         onClick={() => {
                             requestAddMember(getSafe(member, "_id"));
                             // setSelectedId(getSafe(member, "_id"));  // TODO remove?

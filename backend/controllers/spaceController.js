@@ -34,7 +34,6 @@ class SpaceController {
         })
             .select(['spaceMembers', '-_id'])
         let plainSpaceMembers = []
-        console.log(JSON.stringify(spaceMembers))
         for (const member of spaceMembers.spaceMembers) {
             plainSpaceMembers.push({
                 isAdmin: member.isAdmin,
@@ -103,7 +102,6 @@ class SpaceController {
         const {inviteCode, userId} = requestBody
 
         let space = await spaceModel.findOne({inviteCode: inviteCode})//.select("spaceId")
-        console.log(`invite: ${inviteCode}, space: ${JSON.stringify(space)}`)
         if (space === null) {
             return {error: `The code ${inviteCode} is invalid`}
         }

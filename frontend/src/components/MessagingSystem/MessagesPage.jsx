@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
 
-import {SLayout, SMain} from '../Layout/styles.js';
+import {SLayout, SMessageMain} from '../Layout/styles.js';
 import Sidebar from '../Sidebar/Sidebar.jsx';
 import ChatList from "./ChatList";
 import AddChatForm from "./AddChatForm";
 import {SSidebar} from '../Sidebar/styles.js';
 import Chat from "./Chat";
-import {getSafe} from "../../utils";
 
 const MessagesPage = () => {
 
@@ -26,15 +25,13 @@ const MessagesPage = () => {
                     chatsChangedSemaphore={chatsChangedSemaphore}/>
                 <AddChatForm onChatsChanged={() => updateSemaphore()}/>
             </SSidebar>
-            <div style={{marginLeft: '10px'}}>
-                <SMain>
-                    {chosenChatId &&
-                        <Chat
-                            chatId={chosenChatId}
-                            onChatsChanged={() => updateSemaphore()}/>
-                    }
-                </SMain>
-            </div>
+            <SMessageMain>
+                {chosenChatId &&
+                    <Chat
+                        chatId={chosenChatId}
+                        onChatsChanged={() => updateSemaphore()}/>
+                }
+            </SMessageMain>
         </>
     )
 
