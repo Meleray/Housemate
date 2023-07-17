@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const genToken = (res, userId) => {
     const token = jwt.sign({ 
         userId 
-    }, process.env.JWT_SECRET, {expiresIn: 24 * 600 * 60 * 1000});
+    }, process.env.JWT_SECRET, {expiresIn: 24 * 60 * 60 * 1000});
   
     res.cookie("HousemateCookie", token, {
       httpOnly: true,
@@ -22,7 +22,7 @@ const login = async (req, res) => {
             res.status(200).json({
                 message: "Successful authentication",
                 userId: user._id
-            })
+            });
         } else {
             return res.status(401).json({error: "Invalid email or password"});
         }

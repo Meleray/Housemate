@@ -4,6 +4,7 @@ const checkJWT = async (req, res, next) => {
   if (process.env.VERTICAL == 'test') {
     next();
   } else {
+    console.log(req.cookies);
     const token = req.cookies.HousemateCookie;
     if (!token) {
       return res

@@ -41,6 +41,11 @@ export const ApiUpdateTaskCompletion = `update-task-completion`
 
 export const ApiFindUserById = `find-user`
 
+export const ApiBillTrackerMainInfo = `get-tracker-mainpage-info`
+export const ApiAddBill = `add-bill`
+export const ApiGetTransactions = `get-tranaction-list`
+export const ApiConfirmTransaction = `confirm-payment`
+
 export const ApiLogin = `/auth/login`
 export const ApiLogout = `/auth/logout`
 

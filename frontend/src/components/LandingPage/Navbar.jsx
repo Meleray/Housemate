@@ -61,7 +61,7 @@ const Navbar = () => {
         <a href="#cart">
           <BsCart2 className="navbar-cart-icon" />
         </a>
-        <Link to="/register" className="primary-button">Login</Link>
+        <Link to="/login" className="primary-button">Login</Link>
       </div>
       <div className="navbar-menu-container">
         <HiOutlineBars3 onClick={() => setOpenMenu(true)} />

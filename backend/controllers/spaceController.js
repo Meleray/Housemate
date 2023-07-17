@@ -12,8 +12,8 @@ const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpir
 
 class SpaceController {
     getSpaceById = async (requestBody) => {
-        assertKeysValid(requestBody, ['spaceId'], ['userId'])
-        let space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
+        assertKeysValid(requestBody, ['userId', 'spaceId'], [])
+        const space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
         if (!space) {
             return {
                 error: {type: "SPACE_NOT_FOUND", message: "There is no space for this id"},
