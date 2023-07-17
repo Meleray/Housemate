@@ -14,8 +14,6 @@ import {inviteCodeField, newChatField, newSpaceField} from "../../componentsIds"
 
 
 function changeSpaceAndReload(space) {
-    console.log(`changeSpaceAndReload: ${JSON.stringify(localStorage, null, 4)}`)
-    //await new Promise(r => setTimeout(r, 3000));
     localStorage.setItem("spaceId", getSafe(space, '_id'))
     localStorage.setItem("isPremium", getSafe(space, 'isPremium'))
     // We set local storage variable.

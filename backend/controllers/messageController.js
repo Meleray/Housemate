@@ -10,7 +10,7 @@ const {assertUserExist} = require("./assert");
 class MessageController {
 
     addMessage = async (requestBody) => {
-        assertKeysValid(requestBody, ['messageText', 'chatId', 'senderId'], [])
+        assertKeysValid(requestBody, ['messageText', 'chatId', 'senderId'], ['userId'])
 
         let chat = await chatModel.findById(requestBody.chatId)
         if (chat == null) {
@@ -32,7 +32,7 @@ class MessageController {
 
     addNotificationMessage = async (requestBody) => {
         // TODO: I did not test this method. But I believe it works
-        assertKeysValid(requestBody, ['spaceId', 'recipientId', 'messageText'], [])
+        assertKeysValid(requestBody, ['spaceId', 'recipientId', 'messageText'], ['userId'])
 
         const notificationChatName = "Personal notifications"
         const userId = requestBody.recipientId
@@ -60,7 +60,7 @@ class MessageController {
         const chunkSize = 4;  // TODO make the chunk bigger
         const freeTierTimeDelta = new Date().setMonth(new Date().getMonth() - 3)  // 3 months ago
 
-        assertKeysValid(requestBody, ['chatId'], ['getOlderThan', 'getNewerThan'])
+        assertKeysValid(requestBody, ['chatId'], ['getOlderThan', 'getNewerThan', 'userId'])
 
         let filter = {chatId: requestBody.chatId}
         if (requestBody.hasOwnProperty("getOlderThan")) {

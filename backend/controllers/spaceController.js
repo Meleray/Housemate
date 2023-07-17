@@ -12,7 +12,7 @@ const returnableSpaceFields = ['_id', 'spaceName', 'spaceMembers', 'premiumExpir
 
 class SpaceController {
     getSpaceById = async (requestBody) => {
-        assertKeysValid(requestBody, ['userId', 'spaceId'], [])
+        assertKeysValid(requestBody, ['spaceId'], ['userId'])
         let space = await spaceModel.findById(requestBody.spaceId).select(returnableSpaceFields);
         if (!space) {
             return {
@@ -29,7 +29,7 @@ class SpaceController {
     };
 
     getSpaceMembers = async (requestBody) => {
-        assertKeysValid(requestBody, ['userId', 'spaceId'], [])
+        assertKeysValid(requestBody, ['spaceId'], ['userId'])
         const spaceMembers = await spaceModel.findById(requestBody.spaceId).populate({
             path: 'spaceMembers.memberId',
             select: ['userName', 'userPicture', 'userEmail']
@@ -61,7 +61,7 @@ class SpaceController {
     }
 
     addSpace = async (requestBody) => {
-        assertKeysValid(requestBody, ['userId','spaceName'], ['spaceMembersIds'])
+        assertKeysValid(requestBody, ['spaceName'], ['spaceMembersIds', 'userId'])
         let spaceData = {
             spaceName: requestBody.spaceName, inviteCode: randomInviteCode()
         }

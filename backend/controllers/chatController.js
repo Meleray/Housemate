@@ -10,7 +10,7 @@ const returnableChatFields = ['_id', 'chatName', 'spaceId', 'chatMembers'];
 class ChatController {
 
     getChatById = async (requestBody) => {
-        assertKeysValid(requestBody, ['chatId'], [])
+        assertKeysValid(requestBody, ['chatId'], ['userId'])
 
         const chat = await chatModel.findById(requestBody.chatId).select(returnableChatFields);
         if (!chat) {
@@ -20,14 +20,14 @@ class ChatController {
     };
 
     getChatMembers = async (requestBody) => {
-        assertKeysValid(requestBody, ['chatId'], [])
+        assertKeysValid(requestBody, ['chatId'], ['userId'])
         return chatModel.findById(requestBody.chatId).populate(
             {path: 'chatMembers', select: ['userName', 'userPicture', 'userEmail']})
             .select(['chatMembers', '-_id'])
     };
 
     getMembersAndNotMembers = async (requestBody) => {
-        assertKeysValid(requestBody, ['chatId'], [])
+        assertKeysValid(requestBody, ['chatId'], ['userId'])
 
         // I was trying to execute this request inside the database.
         // I spent several hours trying to implement this with 'chatModel.aggregate([..])'. But I was desperate
@@ -40,7 +40,7 @@ class ChatController {
     }
 
     addChat = async (requestBody) => {
-        assertKeysValid(requestBody, ['chatName', 'spaceId'], ['chatMembers'])
+        assertKeysValid(requestBody, ['chatName', 'spaceId'], ['chatMembers', 'userId'])
 
         if (requestBody.hasOwnProperty('chatMembers')) {
             for (const userId of requestBody.chatMembers) {
@@ -86,7 +86,7 @@ class ChatController {
     };
 
     updateChat = async (requestBody) => {
-        assertKeysValid(requestBody, ['chatId'], ['chatName'])
+        assertKeysValid(requestBody, ['chatId'], ['chatName', 'userId'])
         const {chatId, ...updData} = requestBody;
         return chatModel.findByIdAndUpdate(chatId, updData, {new: true}).select(returnableChatFields);
     }
