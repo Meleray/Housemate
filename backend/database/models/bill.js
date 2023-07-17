@@ -4,12 +4,12 @@ const Schema = mongoose.Schema;
 const BillSchema = new mongoose.Schema({
     name: {
         type: String,
-        maxlen: 100,
+        maxlen: 50,
         required: true,
     },
     body: {
         type: String,
-        maxlen: 500,
+        maxlen: 300,
         default: ""
     },
     spaceId: {
