@@ -9,9 +9,9 @@ import LoginPage from "./components/LandingPage/Login";
 import RegisterPage from "./components/LandingPage/Register";
 import BillTrackerPage from './components/BillTrackerSystem/BillTrackerPage';
 import MessagesPage from "./components/MessagingSystem/MessagesPage";
-import SettingsPage from './components/SettingsPage';
 import TaskPage from "./components/TaskSystem/TaskPage";
 import TransactionDetails from "./components/BillTrackerSystem/TransactionDetails";
+import MembersPage from "./components/Members/MembersPage";
 
 export const ThemeContext = React.createContext(null);
 
@@ -55,8 +55,8 @@ const App = () => {
             <Route exact path="/task">
               <TaskPage />
             </Route>
-            <Route exact path="/settings">
-              <SettingsPage />
+            <Route exact path="/members">
+              <MembersPage />
             </Route>
           </Switch>
         </BrowserRouter>

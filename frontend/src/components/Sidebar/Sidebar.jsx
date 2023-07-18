@@ -10,7 +10,8 @@ import {
     SSidebar
 } from "./styles";
 import { ReactComponent as LogoSVG } from "../../images/Housemate.svg";
-import { AiOutlineMessage, AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineMessage } from "react-icons/ai";
+import PersonSearchTwoToneIcon from '@mui/icons-material/PersonSearchTwoTone';
 import { MdFormatListBulleted, MdLogout } from "react-icons/md";
 import { RiMoneyEuroBoxLine } from 'react-icons/ri';
 import SpaceManagementComponent from "./SpaceManagementComponent";
@@ -108,9 +109,9 @@ const linksArray = [
 
 const secondaryLinksArray = [
     {
-        label: "Settings",
-        icon: <AiOutlineSetting />,
-        to: "/settings",
+        label: "Space Members",
+        icon: <PersonSearchTwoToneIcon />,
+        to: "/members",
     }
 ];
 

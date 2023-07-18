@@ -5,6 +5,8 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
+import {StarBorder} from "@mui/icons-material";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 
 function SpaceList() {
@@ -46,6 +48,11 @@ function SpaceList() {
                             onClick={() => onSelectSpace(r)}
                         >
                             <ListItemText primary={getSafe(r, "spaceName")}/>
+                            {getSafe(r, 'isPremium') &&
+                                <ListItemIcon>
+                                    <StarBorder/>
+                                </ListItemIcon>
+                            }
                         </ListItemButton>
                     </ListItem>
                 )}
