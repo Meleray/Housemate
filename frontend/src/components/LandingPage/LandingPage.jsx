@@ -2,9 +2,6 @@ import "./LandingPage.css";
 import Home from "./Home";
 import About from "./About";
 import Work from "./Work";
-import Testimonial from "./Testimonial";
-import Contact from "./Contact";
-import Footer from "./Footer";
 import React from "react";
 
 function LandingPage() {
@@ -19,13 +16,6 @@ function LandingPage() {
       <section id="work">
         <Work />
       </section>
-      <section id="testimonials">
-        <Testimonial />
-      </section>
-      <section id="contact">
-        <Contact />
-      </section>
-      <Footer />
     </div>
   );
 }

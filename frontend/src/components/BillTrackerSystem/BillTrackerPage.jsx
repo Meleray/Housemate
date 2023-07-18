@@ -145,7 +145,7 @@ const BillTrackerPage = () => {
             if (billSplit === 'Advanced') {
                 payments.map((payment) => {
                     new_payments.push({
-                        ...payment, 
+                        ...payment,
                         amount: Number(parseFloat(payment.amount))
                     })
                 })
@@ -177,7 +177,7 @@ const BillTrackerPage = () => {
     const renderAdvancedFields = () => {
         if (billSplit === 'Advanced') {
             return payments?.map((payment, index) => (
-                <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px'}}>
+                <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                     <Select
                         value={payment.name}
                         onChange={(e) => handleSelectorChange(index, e.target.value)}
@@ -217,7 +217,7 @@ const BillTrackerPage = () => {
 
     const handleAmountChange = (index, value) => {
         setPayments((prevAmounts) => {
-            const updatedPayments = prevAmounts.map((payment, i) => (i === index ? { ...payment, amount: value} : payment));
+            const updatedPayments = prevAmounts.map((payment, i) => (i === index ? { ...payment, amount: value } : payment));
             return updatedPayments;
         });
     };
@@ -236,120 +236,126 @@ const BillTrackerPage = () => {
         const state = { memberId: member.id };
         const encodedName = encodeURIComponent(member.name);
         const to = {
-          pathname: `/transaction-details/${encodedName}`,
-          state,
+            pathname: `/transaction-details/${encodedName}`,
+            state,
         };
         history.push(to);
     };
-
-    return (
-        <SLayout>
-            <Sidebar />
-            <SMain>
-                <div style={{ display: 'flex', marginBottom: '20px' }}>
-                    <MoneyScale style={{ left: '50px', top: '50px', position: 'relative' }}>
-                        <p style={{ fontSize: '30px', fontWeight: 'bold', color: 'green', margin: '0' }}>Owed to you</p>
-                        <p style={{ fontSize: '40px', color: 'green', margin: '0' }}>+{Number(mainInfo?.inboundSum).toFixed(2) || 0}€</p>
-                        {mainInfo?.inboundOutstandingSum !== 0 && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions:+{Number(mainInfo?.inboundOutstandingSum).toFixed(2) || 0}€</p>)}
-                    </MoneyScale>
-                    <MoneyScale style={{ marginLeft: '20px', left: '50px', top: '50px', position: 'relative' }}>
-                        <p style={{ fontSize: '30px', fontWeight: 'bold', color: 'red', margin: '0' }}>You owe</p>
-                        <p style={{ fontSize: '40px', color: 'red', margin: '0' }}>-{Number(mainInfo?.outboundSum).toFixed(2) || 0}€</p>
-                        {mainInfo?.outboundOutstandingSum !== 0 && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions:-{Number(mainInfo?.outboundOutstandingSum).toFixed(2) || 0}€</p>)}
-                    </MoneyScale>
-                    <MoneyScale style={{ marginLeft: '20px', left: '50px', top: '50px', position: 'relative' }}>
-                        <p style={{ fontSize: '30px', fontWeight: 'bold', margin: '0' }}>Total Balance</p>
-                        <p style={{ fontSize: '40px', color: mainInfo?.inboundSum >= mainInfo?.outboundSum ? 'green' : 'red', margin: '0' }}>{mainInfo?.inboundSum >= mainInfo?.outboundSum ? `+${Number(mainInfo?.inboundSum - mainInfo?.outboundSum).toFixed(2)}` : Number(mainInfo?.inboundSum - mainInfo?.outboundSum).toFixed(2)}€</p>
-                        {(mainInfo?.inboundOutstandingSum !== 0 || mainInfo?.outboundOutstandingSum !== 0) && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions: {mainInfo?.inboundOutstandingSum >= mainInfo?.outboundOutstandingSum ? `+${Number(mainInfo?.inboundOutstandingSum - mainInfo?.outboundOutstandingSum).toFixed(2)}` : Number(mainInfo?.inboundOutstandingSum - mainInfo?.outboundOutstandingSum).toFixed(2)}€</p>)}
-                    </MoneyScale>
-                    <AddBill onClick={handleOpenForm} style={{ marginLeft: '70px', left: '50px', top: '50px', position: 'relative', fontWeight: 'bold', fontSize: '40px', }}>Add Bill</AddBill>
-                    <Modal
-                        open={openForm}
-                        onClose={handleCloseForm}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                    >
-                        <Box sx={AddBillForm}>
-                            <Typography id="modal-modal-title" variant="h6" component="h2" style={{ fontSize: '30px', fontWeight: 'bold' }}>
-                                New Bill Information
-                            </Typography>
-                            <form onSubmit={handleAddBill}>
-                                <TextField
-                                    label="Bill Name"
-                                    value={billName}
-                                    onChange={(e) => setBillName(e.target.value)}
-                                    inputProps={{ maxLength: 50 }}
-                                    fullWidth
-                                    required
-                                />
-                                <Typography variant="body2" color="textSecondary">
-                                    {billName.length}/50
+    if (localStorage.hasOwnProperty("spaceId")) {
+        return (
+            <SLayout>
+                <Sidebar />
+                <SMain>
+                    <div style={{ display: 'flex', marginBottom: '20px' }}>
+                        <MoneyScale style={{ left: '50px', top: '50px', position: 'relative' }}>
+                            <p style={{ fontSize: '30px', fontWeight: 'bold', color: 'green', margin: '0' }}>Owed to you</p>
+                            <p style={{ fontSize: '40px', color: 'green', margin: '0' }}>+{Number(mainInfo?.inboundSum).toFixed(2) || 0}€</p>
+                            {mainInfo?.inboundOutstandingSum !== 0 && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions:+{Number(mainInfo?.inboundOutstandingSum).toFixed(2) || 0}€</p>)}
+                        </MoneyScale>
+                        <MoneyScale style={{ marginLeft: '20px', left: '50px', top: '50px', position: 'relative' }}>
+                            <p style={{ fontSize: '30px', fontWeight: 'bold', color: 'red', margin: '0' }}>You owe</p>
+                            <p style={{ fontSize: '40px', color: 'red', margin: '0' }}>-{Number(mainInfo?.outboundSum).toFixed(2) || 0}€</p>
+                            {mainInfo?.outboundOutstandingSum !== 0 && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions:-{Number(mainInfo?.outboundOutstandingSum).toFixed(2) || 0}€</p>)}
+                        </MoneyScale>
+                        <MoneyScale style={{ marginLeft: '20px', left: '50px', top: '50px', position: 'relative' }}>
+                            <p style={{ fontSize: '30px', fontWeight: 'bold', margin: '0' }}>Total Balance</p>
+                            <p style={{ fontSize: '40px', color: mainInfo?.inboundSum >= mainInfo?.outboundSum ? 'green' : 'red', margin: '0' }}>{mainInfo?.inboundSum >= mainInfo?.outboundSum ? `+${Number(mainInfo?.inboundSum - mainInfo?.outboundSum).toFixed(2)}` : Number(mainInfo?.inboundSum - mainInfo?.outboundSum).toFixed(2)}€</p>
+                            {(mainInfo?.inboundOutstandingSum !== 0 || mainInfo?.outboundOutstandingSum !== 0) && (<p style={{ fontSize: '15px', color: '#fa7b0a', margin: '0' }}>Unconfirmed transactions: {mainInfo?.inboundOutstandingSum >= mainInfo?.outboundOutstandingSum ? `+${Number(mainInfo?.inboundOutstandingSum - mainInfo?.outboundOutstandingSum).toFixed(2)}` : Number(mainInfo?.inboundOutstandingSum - mainInfo?.outboundOutstandingSum).toFixed(2)}€</p>)}
+                        </MoneyScale>
+                        <AddBill onClick={handleOpenForm} style={{ marginLeft: '70px', left: '50px', top: '50px', position: 'relative', fontWeight: 'bold', fontSize: '40px', }}>Add Bill</AddBill>
+                        <Modal
+                            open={openForm}
+                            onClose={handleCloseForm}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                        >
+                            <Box sx={AddBillForm}>
+                                <Typography id="modal-modal-title" variant="h6" component="h2" style={{ fontSize: '30px', fontWeight: 'bold' }}>
+                                    New Bill Information
                                 </Typography>
+                                <form onSubmit={handleAddBill}>
+                                    <TextField
+                                        label="Bill Name"
+                                        value={billName}
+                                        onChange={(e) => setBillName(e.target.value)}
+                                        inputProps={{ maxLength: 50 }}
+                                        fullWidth
+                                        required
+                                    />
+                                    <Typography variant="body2" color="textSecondary">
+                                        {billName.length}/50
+                                    </Typography>
 
-                                <TextField
-                                    label="Bill Description"
-                                    value={billDescription}
-                                    onChange={(e) => setBillDescription(e.target.value)}
-                                    inputProps={{ maxLength: 300 }}
-                                    fullWidth
-                                    multiline
-                                    rows={4}
-                                />
-                                <Typography variant="body2" color="textSecondary">
-                                    {billDescription.length}/300
-                                </Typography>
+                                    <TextField
+                                        label="Bill Description"
+                                        value={billDescription}
+                                        onChange={(e) => setBillDescription(e.target.value)}
+                                        inputProps={{ maxLength: 300 }}
+                                        fullWidth
+                                        multiline
+                                        rows={4}
+                                    />
+                                    <Typography variant="body2" color="textSecondary">
+                                        {billDescription.length}/300
+                                    </Typography>
 
-                                <Typography variant="subtitle1" component="label" htmlFor="distribution-schema" style={{ fontSize: '20px', fontWeight: 'bold', margin: '0', }}>
-                                    Bill split method
-                                </Typography>
+                                    <Typography variant="subtitle1" component="label" htmlFor="distribution-schema" style={{ fontSize: '20px', fontWeight: 'bold', margin: '0', }}>
+                                        Bill split method
+                                    </Typography>
 
-                                <Select value={billSplit} onChange={(e) => setbillSplit(e.target.value)} fullWidth>
-                                    <MenuItem value="Equal">Equal Split</MenuItem>
-                                    <MenuItem value="Advanced">Customizable Split</MenuItem>
-                                </Select>
+                                    <Select value={billSplit} onChange={(e) => setbillSplit(e.target.value)} fullWidth>
+                                        <MenuItem value="Equal">Equal Split</MenuItem>
+                                        <MenuItem value="Advanced">Customizable Split</MenuItem>
+                                    </Select>
 
-                                <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                                {renderAdvancedFields()}
-                                </div>
+                                    <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                                        {renderAdvancedFields()}
+                                    </div>
 
-                                {billSplit === 'Advanced' && (
-                                    <>
-                                        <Button variant="outlined" onClick={handleAddField}>Add Recepient</Button>
-                                        <Button variant="outlined" onClick={handleRemoveField}>Remove Recepient</Button>
-                                    </>
-                                )}
+                                    {billSplit === 'Advanced' && (
+                                        <>
+                                            <Button variant="outlined" onClick={handleAddField}>Add Recepient</Button>
+                                            <Button variant="outlined" onClick={handleRemoveField}>Remove Recepient</Button>
+                                        </>
+                                    )}
 
-                                {billSplit === 'Equal' && <TextField
-                                    label="TotalSum"
-                                    value={totalSum}
-                                    onChange={(e) => {
-                                        setTotalSum(e.target.value);
-                                    }}
-                                    fullWidth
-                                    required
-                                />}
-                                <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
-                                    <Button type="submit" >Add Bill</Button>
-                                    <Button onClick={handleCloseForm}>Cancel</Button>
-                                </div>
-                            </form>
-                        </Box>
-                    </Modal>
-                </div>
-                <Slider style={{ left: '50px', top: '100px', position: 'relative', width: '1500px', height: '500px', overflowX: 'auto'}}>
-                    {mainInfo?.memberBalance.map((member) => (
-                        <UserProfile style={{ position: 'relative', marginRight: '20px' }} key={member.name}>
-                            <p style={{ position: 'absolute', top: '10px', fontSize: '30px', fontWeight: 'bold', maxWidth: '300px', maxHeight: '100px' }}>{member.name}</p>
-                            {(member.inboundOutstanding !== 0 || member.outboundOutstanding !== 0) && (<p style={{ fontSize: '20px', color: '#fa7b0a', margin: '0', top: '100px', position: 'absolute' }}>Transactions awaiting confirmation!</p>)}
-                            <p style={{ fontSize: '25px', color: 'green', margin: '0', maxHeight: '10px', top: '200px', position: 'absolute' }}>Owed to you: +{Number(member?.inbound).toFixed(2) || 0}€</p>
-                            <p style={{ fontSize: '25px', color: 'red', margin: '0', maxHeight: '10px', top: '250px', position: 'absolute' }}>You owe: -{Number(member?.outbound).toFixed(2) || 0}€</p>
-                            <ViewDetails onClick={() => handleViewDetails(member)} style={{ fontSize: '30px', bottom: '30px', margin: '0', position: "absolute" }}>View Details</ViewDetails>
-                        </UserProfile>
-                    ))}
-                </Slider>
-            </SMain>
-        </SLayout >
-    );
+                                    {billSplit === 'Equal' && <TextField
+                                        label="TotalSum"
+                                        value={totalSum}
+                                        onChange={(e) => {
+                                            setTotalSum(e.target.value);
+                                        }}
+                                        fullWidth
+                                        required
+                                    />}
+                                    <div style={{ display: 'flex', gap: '175px', marginTop: '30px' }}>
+                                        <Button type="submit" >Add Bill</Button>
+                                        <Button onClick={handleCloseForm}>Cancel</Button>
+                                    </div>
+                                </form>
+                            </Box>
+                        </Modal>
+                    </div>
+                    <Slider style={{ left: '50px', top: '100px', position: 'relative', width: '1500px', height: '500px', overflowX: 'auto' }}>
+                        {mainInfo?.memberBalance.map((member) => (
+                            <UserProfile style={{ position: 'relative', marginRight: '20px' }} key={member.name}>
+                                <p style={{ position: 'absolute', top: '10px', fontSize: '30px', fontWeight: 'bold', maxWidth: '300px', maxHeight: '100px' }}>{member.name}</p>
+                                {(member.inboundOutstanding !== 0 || member.outboundOutstanding !== 0) && (<p style={{ fontSize: '20px', color: '#fa7b0a', margin: '0', top: '100px', position: 'absolute' }}>Transactions awaiting confirmation!</p>)}
+                                <p style={{ fontSize: '25px', color: 'green', margin: '0', maxHeight: '10px', top: '200px', position: 'absolute' }}>Owed to you: +{Number(member?.inbound).toFixed(2) || 0}€</p>
+                                <p style={{ fontSize: '25px', color: 'red', margin: '0', maxHeight: '10px', top: '250px', position: 'absolute' }}>You owe: -{Number(member?.outbound).toFixed(2) || 0}€</p>
+                                <ViewDetails onClick={() => handleViewDetails(member)} style={{ fontSize: '30px', bottom: '30px', margin: '0', position: "absolute" }}>View Details</ViewDetails>
+                            </UserProfile>
+                        ))}
+                    </Slider>
+                </SMain>
+            </SLayout >
+        );
+    } else {
+        return <SLayout>
+            <Sidebar/>
+            Create, join or select a space
+        </SLayout>;
+    }
 };
 
 export default BillTrackerPage;

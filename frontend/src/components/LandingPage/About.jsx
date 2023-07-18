@@ -1,6 +1,6 @@
 import React from "react";
 import AboutBackground from "../../images/about-background.png";
-import AboutBackgroundImage from "../../images/about-background-image.png";
+import AboutBackgroundImage from "../../images/Other22.png";
 import { BsFillPlayCircleFill } from "react-icons/bs";
 
 const About = () => {
@@ -15,22 +15,14 @@ const About = () => {
       <div className="about-section-text-container">
         <p className="primary-subheading">About</p>
         <h1 className="primary-heading">
-          Food Is An Important Part Of A Balanced Diet
+          Convenient living spaces pave the way for better life
         </h1>
         <p className="primary-text">
-          Lorem ipsum dolor sit amet consectetur. Non tincidunt magna non et
-          elit. Dolor turpis molestie dui magnis facilisis at fringilla quam.
+          It may be very daunting to organize your household and especially so when you live with many other people.
         </p>
         <p className="primary-text">
-          Non tincidunt magna non et elit. Dolor turpis molestie dui magnis
-          facilisis at fringilla quam.
+          Housemate is an application that has many tools to help you create the best household.
         </p>
-        <div className="about-buttons-container">
-          <button className="secondary-button">Learn More</button>
-          <button className="watch-video-button">
-            <BsFillPlayCircleFill /> Watch Video
-          </button>
-        </div>
       </div>
     </div>
   );
