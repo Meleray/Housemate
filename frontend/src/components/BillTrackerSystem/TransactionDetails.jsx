@@ -130,7 +130,7 @@ const TransactionDetails = () => {
                                 onClick={() => handleExpandTransaction(transaction._id)}
                             >
                                 <TransactionText style={{ position: "absolute", left: "10px", top: "10px", maxWidth: "150px", overflowX: "auto" }}>{transaction.billId.name}</TransactionText>
-                                <TransactionText style={{ color: "green", position: "absolute", left: "220px", top: "10px", maxWidth: "100px", overflowX: "auto" }}>+{transaction.paymentSum}€</TransactionText>
+                                <TransactionText style={{ color: "green", position: "absolute", left: "220px", top: "10px", maxWidth: "100px", overflowX: "auto" }}>+{Number(transaction.paymentSum).toFixed(2)}€</TransactionText>
                                 <InboundButton style={{ position: "absolute", left: "360px", top: "10px" }}
                                     active={transaction.senderConfirmation}
                                     onClick={() => transaction.senderConfirmation && handleConfirm(transaction._id)}
