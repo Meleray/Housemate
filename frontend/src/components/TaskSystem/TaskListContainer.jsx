@@ -31,7 +31,6 @@ const useStylesAddTask = makeStyles((theme) => ({
 
 export default function TaskListContainer() {
   const [tasks, setTasks] = useState([]);
-  const [taskSelectedIndex, setTaskSelectedIndex] = useState(-1);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openShowTaskDetailsModal, setOpenShowTaskDetailsModal] = useState(false);
   const [checked, setChecked] = useState([]);
@@ -40,8 +39,6 @@ export default function TaskListContainer() {
   const [editAssignedUser, setEditAssignedUser] = useState('');
   const [editDateTime, setEditDateTime] = useState('');
   const [completedTasks, setCompletedTasks] = useState([]);
-  const [editTaskAssignedUserName, setEditTaskAssignedUserName] = useState('');
-  const [selectedTask, setSelectedTask] = useState(null);
   const [selectedTaskDetails, setSelectedTaskDetails] = useState(null);
   const [assignedUserName, setAssignedUserName] = useState('');
   const [assignedUserId, setAssignedUserId] = useState('');
@@ -309,6 +306,7 @@ export default function TaskListContainer() {
 
   const handleChangeTaskFilter = (event) => {
     const selectedUserId = event.target.value;
+    console.log(selectedUserId)
     setSelectedUser(selectedUserId);
   
     if (selectedUserId === 'off') {
@@ -348,7 +346,9 @@ export default function TaskListContainer() {
           Add Task
         </Button>
       </div>
+
       <TaskFilter selectedUser={selectedUser} onChange={handleChangeTaskFilter} />
+
       <Modal
         open={open}
         onClose={handleClose}
