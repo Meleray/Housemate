@@ -17,9 +17,13 @@ import SpaceManagementComponent from "./SpaceManagementComponent";
 import SpaceList from "./SpaceList";
 import { router_auth, ApiLogout } from "../../constants";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
+import Button from "@material-ui/core/Button";
+import {ExpandLess, ExpandMore} from "@mui/icons-material";
 
 const Sidebar = () => {
     const [sidebarOpen] = useState(true);
+    const [spacesOpen, setSpacesOpen] = useState(false);
+
     const { pathname } = useLocation();
     const history = useHistory();
 
@@ -37,8 +41,16 @@ const Sidebar = () => {
                 </Link>
             </SLogo>
             <SDivider />
-            <SpaceList/>
-            <SpaceManagementComponent/>
+
+            <Button variant="contained" onClick={() => setSpacesOpen(!spacesOpen)}>Change space
+                {spacesOpen ? <ExpandLess /> : <ExpandMore />}
+            </Button>
+
+            {spacesOpen ? (<>
+                <SpaceList/>
+                <SpaceManagementComponent/>
+            </>) : null}
+
             <SDivider />
             {linksArray.map(({ icon, label, to }) => (
                 <SLinkContainer key={label} isActive={pathname === to}>

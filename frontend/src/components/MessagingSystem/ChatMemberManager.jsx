@@ -5,6 +5,7 @@ import {
 } from "../../constants";
 import {getSafe} from "../../utils";
 import Button from "@material-ui/core/Button";
+import {ExpandLess, ExpandMore} from "@mui/icons-material";
 
 function ChatMemberManager({chatId}) {
     const [open, setOpen] = useState(false);
@@ -69,7 +70,9 @@ function ChatMemberManager({chatId}) {
     return (
         <div>
             <br/>
-            <Button variant="contained" onClick={handleOpen}>Chat members</Button>
+            <Button variant="contained" onClick={handleOpen}>Chat members
+                {open ? <ExpandLess /> : <ExpandMore />}
+            </Button>
 
             {open ? (<>
                 <ul> {members.map(r => chatMemberElement(r))} </ul>
