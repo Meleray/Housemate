@@ -155,11 +155,7 @@ class SpaceController {
 
         // only admin can change the invite code
         if (!(await isUserAdmin({userId: requestBody.userId, spaceId: requestBody.spaceId}))) {
-            return {
-                error: {
-                    type: "FAILED_TO_CHANGE_INVITE_CODE", message: `Only the space admin can change the invite code`
-                }
-            };
+            return {error: `Only the space admin can change the invite code`};
         }
         const newInviteCode = randomInviteCode()
         return spaceModel.findByIdAndUpdate(

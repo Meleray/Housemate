@@ -27,16 +27,23 @@ assertUserExist = async function (requestBody) {
 
 isUserAdmin = async function (requestBody) {
     assertKeysValid(requestBody, ['userId', 'spaceId'])
-    const space = await spaceModel.find(
-        {_id: requestBody.spaceId, 'spaceMembers.memberId': requestBody.userId, 'spaceMembers.isAdmin': true})
-    return space.length !== 0;
+    return (await spaceModel.exists(
+        {
+            _id: requestBody.spaceId,
+            spaceMembers: {
+                memberId: requestBody.userId,
+                isAdmin: true
+            }
+        }))
 }
 
 isSpacePremium = async function (requestBody) {
     assertKeysValid(requestBody, ['spaceId'])
-    const space = await spaceModel.find(
-        {_id: requestBody.spaceId, premiumExpiration: {$gt: Date.now()}})
-    return space.length !== 0;
+    return (await spaceModel.exists(
+        {
+            _id: requestBody.spaceId,
+            premiumExpiration: {$gt: Date.now()}
+        }))
 }
 
 module.exports = {assertUserBelongs2Space, assertUserExist, isUserAdmin, isSpacePremium};
