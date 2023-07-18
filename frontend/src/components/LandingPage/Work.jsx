@@ -1,24 +1,24 @@
 import React from "react";
-import PickMeals from "../../images/pick-meals-image.png";
-import ChooseMeals from "../../images/choose-image.png";
-import DeliveryMeals from "../../images/delivery-image.png";
+import Connect from "../../images/chat.png";
+import Tasks from "../../images/task.png";
+import Bills from "../../images/bill.png";
 
 const Work = () => {
   const workInfoData = [
     {
-      image: PickMeals,
-      title: "Pick Meals",
-      text: "Lorem ipsum dolor sit amet consectetur. Maecenas orci et sagittis duis elementum interdum facilisi bibendum.",
+      image: Connect,
+      title: "Connect",
+      text: "With our app you can chat with all of your neighbors",
     },
     {
-      image: ChooseMeals,
-      title: "Choose How Often",
-      text: "Lorem ipsum dolor sit amet consectetur. Maecenas orci et ",
+      image: Tasks,
+      title: "Manage tasks",
+      text: "Assign tasks and share responsibility for making your house a great place to live",
     },
     {
-      image: DeliveryMeals,
-      title: "Fast Deliveries",
-      text: "Lorem ipsum dolor sit amet consectetur. Maecenas orci et lorem ipsum",
+      image: Bills,
+      title: "Split Bills",
+      text: "Make sure everyone pays their share for general household ecpenses",
     },
   ];
   return (
@@ -26,10 +26,6 @@ const Work = () => {
       <div className="work-section-top">
         <p className="primary-subheading">Work</p>
         <h1 className="primary-heading">How It Works</h1>
-        <p className="primary-text">
-          Lorem ipsum dolor sit amet consectetur. Non tincidunt magna non et
-          elit. Dolor turpis molestie dui magnis facilisis at fringilla quam.
-        </p>
       </div>
       <div className="work-section-bottom">
         {workInfoData.map((data) => (

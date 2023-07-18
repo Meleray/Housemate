@@ -17,6 +17,7 @@ import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 
 const Navbar = () => {
@@ -54,13 +55,8 @@ const Navbar = () => {
         <img src={Logo} alt="" />
       </div>
       <div className="navbar-links-container">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#testimonials">Testimonials</a>
-        <a href="#contact">Contact</a>
-        <a href="#cart">
-          <BsCart2 className="navbar-cart-icon" />
-        </a>
+        <a style={{color: "white"}} href="#home">Home</a>
+        <a style={{color: "white"}} href="#about">About</a>
         <Link to="/login" className="primary-button">Login</Link>
       </div>
       <div className="navbar-menu-container">
