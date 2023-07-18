@@ -44,6 +44,7 @@ export default function TaskListContainer() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedTaskDetails, setSelectedTaskDetails] = useState(null);
   const [assignedUserName, setAssignedUserName] = useState('');
+  const [assignedUserId, setAssignedUserId] = useState('');
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [filteredCompletedTasks, setFilteredCompletedTasks] = useState([]);
   const [selectedUser, setSelectedUser] = useState('off');
@@ -299,6 +300,8 @@ export default function TaskListContainer() {
 
       const user = response.data;
       setAssignedUserName(user.userName);
+      setAssignedUserId(user._id);
+
     } catch (error) {
       console.error(error);
     }
@@ -448,7 +451,7 @@ export default function TaskListContainer() {
                 <Typography id="task-details-modal-description" sx={{ mt: 2 }}>
                   <div>
                     <p>Task Name: {selectedTaskDetails.body}</p>
-                    <p>Assigned User: {assignedUserName}</p>
+                    <p>Assigned User: {selectedTaskDetails.assigned_user}</p>
                     <p>Date and Time: {formatDateTime(selectedTaskDetails.start_date)}</p>
                   </div>
                 </Typography>
