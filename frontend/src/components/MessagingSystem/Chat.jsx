@@ -115,7 +115,7 @@ function Chat({chatId, onChatsChanged}) {
                     <br/>
 
                     <Typography variant="caption" sx={{display: 'inline'}} component="span">
-                        at {moment(getSafe(message, "date")).format("ss:mm:hh MM/DD/YYYY")}
+                        at {moment(getSafe(message, "date")).format("HH:mm:ss DD/MM/YYYY")}
                     </Typography>
                     <br/>
 
