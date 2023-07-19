@@ -1,6 +1,6 @@
 import { Link, withRouter } from "react-router-dom";
 import { useState } from "react";
-import { ApiLogin, router_noauth } from '../../constants';
+import { ApiLogin, router_auth } from '../../constants';
 import styled from "styled-components";
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
