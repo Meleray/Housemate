@@ -1,6 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {ApiFindSpaceMembers, ApiFindSpacesByUserId, router_auth} from "../../constants";
-import {getSafe} from "../../utils";
+import {
+    ApiDeleteSpaceMemberSafe,
+    ApiFindSpaceMembers,
+    router_auth
+} from "../../constants";
+import {buildErrorMessage, getSafe} from "../../utils";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -9,36 +13,51 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Typography from "@mui/material/Typography";
 import {SLayout, SMessageMain} from "../Layout/styles";
 import Sidebar from "../Sidebar/Sidebar";
+import Button from "@material-ui/core/Button";
 
 
 function MembersPage() {
     const [members, setMembers] = useState([]);
 
+    async function fetchSpaceMembers() {
+        const result = await router_auth.request({
+            method: 'POST',
+            url: ApiFindSpaceMembers,
+            headers: {'content-type': 'application/json',},
+            data: {spaceId: getSafe(localStorage, "spaceId")},
+        });
+        setMembers(result.data)
+    }
 
     useEffect(() => {
-        async function fetchData() {
-            const result = await router_auth.request({
-                method: 'POST',
-                url: ApiFindSpaceMembers,
-                headers: {'content-type': 'application/json',},
-                data: {spaceId: getSafe(localStorage, "spaceId")},
-            });
-            setMembers(result.data)
-        }
-
-        void fetchData();
-        console.log(members)
+        void fetchSpaceMembers();
     }, []);
 
-    function onSelectSpace(space) {
-        localStorage.setItem("spaceId", getSafe(space, '_id'));
-        localStorage.setItem("isPremium", getSafe(space, 'isPremium'));
-        window.location.reload()
+
+    const handleDeleteMember = async (event, memberId) => {
+        event.preventDefault();  // prevent reload
+        let response;
+        try {
+            response = await router_auth.request({
+                method: 'DELETE',
+                url: ApiDeleteSpaceMemberSafe,
+                headers: {'content-type': 'application/json',},
+                data: {
+                    spaceId: getSafe(localStorage, "spaceId"),
+                    userId: getSafe(localStorage, "userId"),
+                    memberId: memberId
+                },
+            });
+        } catch (error) {
+            alert(buildErrorMessage(error));
+            return;
+        }
+        void fetchSpaceMembers()
     }
 
 
     function isYou(userId) {
-        if (getSafe(localStorage, "userId") === userId){
+        if (getSafe(localStorage, "userId") === userId) {
             return " (you)"
         }
     }
@@ -52,7 +71,7 @@ function MembersPage() {
 
                 <List>
                     {members.map((r) =>
-                        <ListItem disablePadding key={getSafe(r, "_id")}>
+                        <ListItem key={getSafe(r, "_id")}>
                             <ListItemText>
                                 <ListItemIcon>
                                     {getSafe(r, 'isAdmin') && <StarBorder/>}
@@ -61,6 +80,13 @@ function MembersPage() {
                                 {isYou(getSafe(r, "_id"))}
                                 , email: {getSafe(r, "userEmail")}
                             </ListItemText>
+
+                            {(!getSafe(r, 'isAdmin')) &&
+                                <Button variant="contained"
+                                        onClick={(event) => handleDeleteMember(event, getSafe(r, "_id"))}>
+                                    Delete member
+                                </Button>
+                            }
                         </ListItem>
                     )}
                 </List>

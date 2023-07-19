@@ -116,14 +116,24 @@ class SpaceController {
             $pull: {spaceMembers: {memberId: userId}}  // update 'spaceMembers' only if userId is not presented in it
         }, {new: true}).select('spaceMembers')
         if (!space) {
-            return {
-                error: {type: "SPACE_NOT_FOUND", message: `There is no space for id=${spaceId}`}
-            }
+            return {error: `There is no space for id=${spaceId}`}
         }
         space = JSON.parse(JSON.stringify(space));
         space.isPremium = Date.parse(space.premiumExpiration) > Date.now()
         return space;
     };
+
+    deleteSpaceMemberSafe = async (requestBody) => {
+        assertKeysValid(requestBody, ['spaceId', 'memberId', 'userId'], [])
+
+        if (!(await isUserAdmin({'userId': requestBody.userId, 'spaceId': requestBody.spaceId}))) {
+            return {error: `Only admin can delete other space members`}
+        }
+        if (await isUserAdmin({'userId': requestBody.memberId, 'spaceId': requestBody.spaceId})) {
+            return {error: `Nobody can delete an admin except the admin itself`}
+        }
+        return this.deleteSpaceMember({'userId': requestBody.memberId, 'spaceId': requestBody.spaceId})
+    }
 
     promoteToAdmin = async (requestBody) => {
         assertKeysValid(requestBody, ['spaceId', 'userId'], [])
