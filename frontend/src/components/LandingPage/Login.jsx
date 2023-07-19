@@ -14,7 +14,7 @@ function LoginPage({ history }) {
 
   function handleFormSubmit(event) {
     event.preventDefault();
-    router_noauth.post(ApiLogin, {
+    router_auth.post(ApiLogin, {
       "userEmail": userEmail,
       "userPassword": userPassword
     }).then(response => {
