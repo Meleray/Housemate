@@ -1,6 +1,10 @@
 import { Link, withRouter } from "react-router-dom";
 import { useState } from "react";
-import {ApiLogin, router_noauth} from '../../constants';
+import { ApiLogin, router_noauth } from '../../constants';
+import styled from "styled-components";
+import EmailIcon from '@mui/icons-material/Email';
+import KeyIcon from '@mui/icons-material/Key';
+import { TextField } from "@mui/material";
 
 
 function LoginPage({ history }) {
@@ -11,41 +15,86 @@ function LoginPage({ history }) {
   function handleFormSubmit(event) {
     event.preventDefault();
     router_noauth.post(ApiLogin, {
-      "userEmail": userEmail, 
-      "userPassword": userPassword 
-    }, {withCredentials: true}).then(response => {
+      "userEmail": userEmail,
+      "userPassword": userPassword
+    }).then(response => {
       localStorage.clear()
       localStorage.setItem('userId', response.data.userId);
       history.push('/messages');
     }).catch(error => {
-      if (error) {
-        setError(error.response.data.error.message);
-      } else if (error.request) {
-        setError('No response received from the server.');
-      } else {
-        setError('An error occurred during the request.');
-      }
+      setError(error.response.data.error);
     })
   }
 
   return (
-    <div className="mt-4 grow flex items-center justify-around">
-      <div className="mb-64">
-        <h1 className="text-4xl text-center mb-4">Login</h1>
-        <form className="max-w-md mx-auto" onSubmit={handleFormSubmit}>
-          <input type="email" placeholder="your@email.com" onChange={e => setUserEmail(e.target.value)}/>
-          <input type="password" placeholder="password" onChange={e => setUserPassword(e.target.value)}/>
-          <button className="primary">Login</button>
-          {error && <div style={{ color: 'red' }}>{error}</div>}
-          <div className="text-center py-2 text-gray-500">
-            Don't have an account yet?{" "}
-            <Link className="underline text-black" to="/register">
-              Register now
-            </Link>
-          </div>
-        </form>
+    <form onSubmit={handleFormSubmit} style={{
+      width: "20%",
+      height: "50%",
+      position: "absolute",
+      top: "25%",
+      left: "40%",
+      background: "linear-gradient(135deg, #88eda5,  #dbf9e0)",
+      textAlign: "center",
+    }}>
+      <legend style={{
+        fontSize: "40px",
+        alignContent: "center"
+      }}>Login</legend>
+
+      <TextField
+          label="EMAIL"
+          InputProps={{
+            startAdornment: (
+              <EmailIcon color="action" fontSize="20px" style={{marginRight: '10px', color: 'black'}}/>
+            ),
+          }}
+          style={{
+            color: "black",
+            marginTop: "30px"
+          }}
+          onChange={e => setUserEmail(e.target.value)}
+          required
+      />
+
+      <TextField
+          label="PASSWORD"
+          InputProps={{
+            startAdornment: (
+              <KeyIcon color="action" fontSize="20px" style={{marginRight: '10px', color: 'black'}}/>
+            ),
+          }}
+          style={{
+            color: "black",
+            marginTop: "30px"
+          }}
+          type="password"
+          onChange={e => setUserPassword(e.target.value)}
+          required
+      />
+
+      {error != null && <div style={{ color: 'red', fontSize: "20px", marginTop: "30px"}}>{error}</div>}
+      <button type="submit" style={{
+        width: "60%",
+        height: "10%",
+        backgroundColor: "#2B7A78",
+        color: "#fff",
+        border: "none",
+        position: "absolute",
+        bottom: "15%",
+        left: "20%"
+      }}>Login</button>
+      <div style={{
+        position: "absolute",
+        fontSize: "17px",
+        bottom: "10px",
+        left: "20px"
+      }}>
+        Don't have an account yet?{" "}
+        <Link className="underline text-black" to="/register">
+          Register now
+        </Link>
       </div>
-    </div>
+    </form>
   );
 }
 
