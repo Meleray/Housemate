@@ -35,7 +35,7 @@ function SendMessageForm({chatId}) {
             <TextField id={newMessageField} label="Message" variant="outlined" sx={{width: '75vh', marginRight: 1}}
                        size="small"
                        onChange={(e) => setMessageText(e.target.value)}/>
-            <Button variant="contained">
+            <Button variant="contained" onClick={handleSendMessage}>
                 Send message
             </Button>
         </form>

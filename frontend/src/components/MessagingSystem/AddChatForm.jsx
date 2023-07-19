@@ -37,7 +37,7 @@ function AddChatForm({onChatsChanged}) {
             <TextField id={newChatField} label="Chat name" variant="outlined" sx={{marginRight: 1}}
                        size="small"
                        onChange={(e) => setChatName(e.target.value)}/>
-            <Button variant="contained">Create chat</Button>
+            <Button variant="contained" onClick={handleAddChat}>Create chat</Button>
         </form>
     )
 }
