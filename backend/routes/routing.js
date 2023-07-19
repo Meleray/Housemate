@@ -50,6 +50,7 @@ router.post("/find-spaces-by-userid", checkJWT, handleController(spaceService.ge
 router.put("/create-space-member", checkJWT, handleController(spaceService.addSpaceMember));
 router.post("/join-space", checkJWT, handleController(spaceService.joinSpace));
 router.delete("/delete-space-member", checkJWT, handleController(spaceService.deleteSpaceMember));
+router.delete("/delete-space-member-safe", checkJWT, handleController(spaceService.deleteSpaceMemberSafe));
 router.put("/promote-to-admin", checkJWT, handleController(spaceService.promoteToAdmin));
 router.post("/get-invite-code", checkJWT, handleController(spaceService.getInviteCode));
 router.put("/change-invite-code", checkJWT, handleController(spaceService.changeInviteCode));
