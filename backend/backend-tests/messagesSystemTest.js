@@ -59,7 +59,7 @@ describe('Message system', () => {
 
             const resAddChatMember = await chai.request(server)
                 .put('/api/add-chat-member')
-                .send({userId: user._id, chatId: chat._id})
+                .send({newMemberId: user._id, chatId: chat._id})
             chai.expect(resAddChatMember, JSON.stringify(resAddChatMember.body)).to.have.status(HttpStatus.OK);
         }
     });
