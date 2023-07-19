@@ -9,7 +9,6 @@ import {ExpandLess, ExpandMore} from "@mui/icons-material";
 
 function ChatMemberManager({chatId}) {
     const [open, setOpen] = useState(false);
-    const [selectedId, setSelectedId] = useState(null);  // todo remove?
     const [members, setMembers] = useState([]);
     const [reloadSemaphore, setReloadSemaphore] = useState(0);
 
@@ -57,7 +56,6 @@ function ChatMemberManager({chatId}) {
             return (<li key={getSafe(member, "_id")} style={{textDecoration: 'underline'}}
                         onClick={() => {
                             requestAddMember(getSafe(member, "_id"));
-                            // setSelectedId(getSafe(member, "_id"));  // TODO remove?
                             const newValue = (reloadSemaphore + 1) % 2
                             setReloadSemaphore(newValue)
                         }}

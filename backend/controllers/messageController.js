@@ -31,7 +31,6 @@ class MessageController {
     };
 
     addNotificationMessage = async (requestBody) => {
-        // TODO: I did not test this method. But I believe it works
         assertKeysValid(requestBody, ['spaceId', 'recipientId', 'messageText'], ['userId'])
 
         const notificationChatName = "Personal notifications"
