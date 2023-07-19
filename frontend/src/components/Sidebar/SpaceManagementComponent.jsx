@@ -50,11 +50,11 @@ function AddSpaceForm() {
 
 
     return (
-        <form>
+        <form onSubmit={handleSpaceCreation}>
             <TextField id={newSpaceField} label="Space name" variant="outlined" sx={{marginRight: 1}}
                        size="small"
                        onChange={(e) => setSpaceName(e.target.value)}/>
-            <Button variant="contained" onClick={handleSpaceCreation}>Create space</Button>
+            <Button variant="contained">Create space</Button>
         </form>
     )
 }
@@ -179,11 +179,11 @@ function JoinNewSpace() {
     }
 
     return (
-        <form>
+        <form onSubmit={handleSpaceJoin}>
             <TextField id={inviteCodeField} label="Secret code" variant="outlined" sx={{marginRight: 1}}
                        size="small"
                        onChange={(e) => setInviteCode(e.target.value)}/>
-            <Button variant="contained" onClick={handleSpaceJoin}>Join space</Button>
+            <Button variant="contained">Join space</Button>
         </form>
     )
 }

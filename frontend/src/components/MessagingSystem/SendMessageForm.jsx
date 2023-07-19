@@ -31,11 +31,13 @@ function SendMessageForm({chatId}) {
     }
 
     return (
-        <form>
+        <form onSubmit={handleSendMessage}>
             <TextField id={newMessageField} label="Message" variant="outlined" sx={{width: '75vh', marginRight: 1}}
                        size="small"
                        onChange={(e) => setMessageText(e.target.value)}/>
-            <Button variant="contained" onClick={handleSendMessage}>Send message</Button>
+            <Button variant="contained">
+                Send message
+            </Button>
         </form>
     )
 }
