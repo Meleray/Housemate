@@ -24,7 +24,7 @@ services:
       - MONGODB_URL=mongodb://houseApp:housePass@database:27017/houseDB?retryWrites=true&w=majority
       - PORT=5001
       - JWT_SECRET=+j1Q1_VVZDji|mC@m}b;(Cf~K
-      - VERTICAL=test
+      - VERTICAL=prod
     ports:
       - "5001:5001"
     depends_on:
