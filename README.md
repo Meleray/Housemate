@@ -18,6 +18,12 @@ docker compose build
 docker compose up
 ```
 
+## Contributors
+Mariia Cherepnina (MariaMsu)  
+Mikhail Konov (Meleray)  
+Andrian Raja Naibaho (Andrian Raja Naibaho, Andrian Naibaho)  
+
+
 ### Debug
 
 You can connect to each of these containers by running
