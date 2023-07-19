@@ -129,8 +129,8 @@ const TransactionDetails = () => {
                                 style={{ marginTop: "15px", position: "relative", height: expandedTransactions[transaction._id] ? "170px" : "70px" }}
                                 onClick={() => handleExpandTransaction(transaction._id)}
                             >
-                                <TransactionText style={{ position: "absolute", left: "10px", top: "10px", maxWidth: "150px", overflowX: "auto" }}>{transaction.billId.name}</TransactionText>
-                                <TransactionText style={{ color: "green", position: "absolute", left: "220px", top: "10px", maxWidth: "100px", overflowX: "auto" }}>+{Number(transaction.paymentSum).toFixed(2)}€</TransactionText>
+                                <TransactionText style={{ position: "absolute", left: "10px", top: "10px", maxWidth: "150px", overflowX: "auto", whiteSpace: "nowrap"}}>{transaction.billId.name}</TransactionText>
+                                <TransactionText style={{ color: "green", position: "absolute", left: "220px", top: "10px", maxWidth: "100px", overflowX: "auto", whiteSpace: "nowrap"}}>+{Number(transaction.paymentSum).toFixed(2)}€</TransactionText>
                                 <InboundButton style={{ position: "absolute", left: "360px", top: "10px" }}
                                     active={transaction.senderConfirmation}
                                     onClick={() => transaction.senderConfirmation && handleConfirm(transaction._id)}
@@ -160,8 +160,8 @@ const TransactionDetails = () => {
                                 style={{ marginTop: "15px", position: "relative", height: expandedTransactions[transaction._id] ? "170px" : "70px"}}
                                 onClick={() => handleExpandTransaction(transaction._id)}
                             >
-                                <TransactionText style={{ position: "absolute", left: "10px", top: "10px", maxWidth: "150px", overflowX: "auto" }}>{transaction.billId.name}</TransactionText>
-                                <TransactionText style={{ color: "red", position: "absolute", left: "220px", top: "10px", maxWidth: "100px", overflowX: "auto" }}>-{Number(transaction.paymentSum).toFixed(2)}€</TransactionText>
+                                <TransactionText style={{ position: "absolute", left: "10px", top: "10px", maxWidth: "150px", overflowX: "auto", whiteSpace: "nowrap"}}>{transaction.billId.name}</TransactionText>
+                                <TransactionText style={{ color: "red", position: "absolute", left: "220px", top: "10px", maxWidth: "100px", overflowX: "auto", whiteSpace: "nowrap"}}>-{Number(transaction.paymentSum).toFixed(2)}€</TransactionText>
                                 <OutboundButton style={{ position: "absolute", left: "360px", top: "10px" }}
                                     active={!transaction.senderConfirmation}
                                     onClick={() => !transaction.senderConfirmation && handleConfirm(transaction._id)}
