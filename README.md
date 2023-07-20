@@ -18,6 +18,18 @@ docker compose build
 docker compose up
 ```
 
+## Test the application
+
+You can test our application on the following url: `http://34.141.101.102:3000/`
+
+Here we provide the admin and regular user accounts:
+
+Email: david@gmail.com
+Password: admin
+
+Email: bob@gmail.com
+Password: user  
+
 ## Contributors
 Mariia Cherepnina (MariaMsu)  
 Mikhail Konov (Meleray)  
